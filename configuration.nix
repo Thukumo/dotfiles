@@ -49,7 +49,14 @@
     secrets = {
       "passwd_tsukumo" = {
         file = ./secrets/passwd_tsukumo.age;
-    };
+      };
+      "gh_hosts_tsukumo" = {
+        file = ./secrets/gh_hosts_tsukumo.age;
+        path = "/home/tsukumo/.config/gh/hosts.yml";
+        owner = "tsukumo";
+        group = "users";
+        mode = "400";
+      };
     };
   };
 
@@ -159,7 +166,7 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
     podman-compose
-    ragenix
+    inputs.ragenix.packages."${stdenv.hostPlatform.system}".default
   ];
 
   # for gnome-disk-utility

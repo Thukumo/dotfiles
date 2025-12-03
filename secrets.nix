@@ -4,7 +4,8 @@ let
   };
   allKeys = builtins.attrValues keys;
 in {
-  "secrets/ssh-key.age".publicKeys = allKeys;
+  "secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
   "secrets/passwd_tsukumo.age".publicKeys = allKeys;
-  "secrets/gh_hosts.age".publicKeys = allKeys;
+  "secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
 }
+

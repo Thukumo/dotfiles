@@ -9,7 +9,6 @@
         ".config/google-chrome"
         ".config/discord"
         ".config/Mattermost"
-        ".config/gh"
         ".local/share/fish"
         ".local/share/Steam"
         ".local/share/applications" # Steamのアプリ用

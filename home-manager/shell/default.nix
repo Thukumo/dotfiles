@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     lazygit
-    gh
 
     nerd-fonts.adwaita-mono
     fastfetch
@@ -50,11 +49,11 @@
         name = "Tsukumo";
         email = "92912896+Thukumo@users.noreply.github.com";
       };
-      credential = {
-        "https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
-	"https://gist.github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
-      };
     };
+  };
+  programs.gh = {
+    enable = true;
+    settings.git_protocol = "https";
   };
   programs.yazi = {
     enable = true;
