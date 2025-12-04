@@ -11,8 +11,8 @@
 
   boot.kernelParams = [ 
     "resume=/dev/mapper/vg-swap" 
+    "amd_pstate=disable"
   ];
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # for Btrfs
   # boot.initrd.systemd.enable = true;

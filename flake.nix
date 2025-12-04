@@ -47,6 +47,10 @@
           {
             networking.hostName = name;
             nixpkgs.config.allowUnfree = true;
+            imports = [
+              (./hosts + "/${name}/hardware-configuration.nix")
+              (./hosts + "/${name}/hardware.nix")
+            ];
           }
 
           inputs.home-manager.nixosModules.home-manager
