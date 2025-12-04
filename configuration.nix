@@ -166,7 +166,6 @@
   environment.shellAliases = {
     rebuild = "sudo nixos-rebuild switch --flake ${config.users.users.tsukumo.home}/dotfiles/";
     update = "pushd ${config.users.users.tsukumo.home}/dotfiles/ && sudo nix flake update && cd -";
-    clean = "nix-collect-garbage --delete-older-than 7d";
     docker = "podman";
   };
   programs.fish.enable = true;
@@ -189,9 +188,15 @@
     };
   };
 
-  # nix.settings.auto-optimise-store
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    randomizedDelaySec = "45min";
+    options = "--delete-older-than 7d";
+  };
   nix.optimise = {
     automatic = true;
+    dates = "weekly";
     randomizedDelaySec = "45min";
   };
 
