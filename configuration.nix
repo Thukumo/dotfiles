@@ -66,10 +66,6 @@
     networkmanager = {
       enable = true;
       dns = "systemd-resolved";
-      connectionConfig = {
-        "ipv4.ignore-auto-dns" = true;
-        "ipv6.ignore-auto-dns" = true;
-      };
     };
     nameservers = [
       "2606:4700:4700::1111"
@@ -89,6 +85,7 @@
     fallbackDns = [];
   };
 
+  security.rtkit.enable = true;
   # services.pipewire.enable = false;
   # services.pulseaudio = {
   #   enable = true;
