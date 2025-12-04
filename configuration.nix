@@ -30,8 +30,9 @@
     directories = [
       "/etc/NetworkManager/system-connections"
       "/var/lib/NetworkManager/system-connections"
-      "/var/lib/nixos"
       "/var/lib/bluetooth"
+      "/var/lib/systemd/timers"
+      "/var/lib/nixos"
       "/etc/age"
       "/var/log"
     ];
@@ -188,9 +189,10 @@
     };
   };
 
+  # nix.settings.auto-optimise-store
   nix.optimise = {
     automatic = true;
-    dates = [ "11:30" "20:00" ];
+    randomizedDelaySec = "45min";
   };
 
   powerManagement.enable = true;
