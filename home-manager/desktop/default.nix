@@ -18,6 +18,7 @@
 
   imports = [
     ./desktop_app.nix
+    # ./steam.nix
   ];
 
   # 少なくとも今使ってるNiriのflakeだと勝手に設定されてる?

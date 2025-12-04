@@ -4,14 +4,13 @@
   home.packages = with pkgs; [
     chromium
     mattermost-desktop
-    steam
     discord
     google-chrome
     libreoffice-still
     zoom-us
     gnome-disk-utility
     blender
-    davinci-resolve
+    # davinci-resolve
     rquickshare
   ];
   # Mattermost Desktopが~/.config/autostart/electron.desktopを作ってきて困るので、
