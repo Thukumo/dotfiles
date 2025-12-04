@@ -80,7 +80,7 @@
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = "HotPurpleTrafficLight";
+      color_theme = "adapta";
     };
   };
   home.file = {

@@ -34,6 +34,7 @@
     # ./xremap
     ./ime.nix
     ./impermanence.nix
+    ./ragenix
   ];
   programs.fish = {
     enable = true;
