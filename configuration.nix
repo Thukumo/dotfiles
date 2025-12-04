@@ -188,6 +188,11 @@
     };
   };
 
+  nix.optimise = {
+    automatic = true;
+    dates = [ "11:30" "20:00" ];
+  };
+
   powerManagement.enable = true;
   services.tlp = {
     enable = true;
