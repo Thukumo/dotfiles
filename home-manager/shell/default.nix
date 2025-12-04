@@ -2,12 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    lazygit
-    gh
-
     nerd-fonts.adwaita-mono
     fastfetch
-    btop
     gotop
     speedtest-cli
     bluetui
@@ -50,11 +46,14 @@
         name = "Tsukumo";
         email = "92912896+Thukumo@users.noreply.github.com";
       };
-      credential = {
-        "https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
-	"https://gist.github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
-      };
     };
+  };
+  programs.gh = {
+    enable = true;
+  };
+  programs.lazygit = {
+    enable = true;
+    settings = {};
   };
   programs.yazi = {
     enable = true;
@@ -76,6 +75,12 @@
           }
         ];
       };
+    };
+  };
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "HotPurpleTrafficLight";
     };
   };
   home.file = {

@@ -33,7 +33,6 @@
     directories = [
       "/etc/NetworkManager/system-connections"
       "/var/lib/NetworkManager/system-connections"
-      "/etc/nixos"
       "/var/lib/nixos"
       "/var/lib/bluetooth"
       "/etc/age"
@@ -49,7 +48,7 @@
     secrets = {
       "passwd_tsukumo" = {
         file = ./secrets/passwd_tsukumo.age;
-    };
+      };
     };
   };
 
@@ -236,6 +235,14 @@
       };
     };
   };
+
+  # enable mDNS for rQuickShare
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

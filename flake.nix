@@ -37,8 +37,6 @@
             # { environment.systemPackages = [affinity-nix.packages.x86_64-linux.v3]; }
 
             { home-manager.sharedModules = [
-              nixvim.homeModules.nixvim
-              niri.homeModules.niri
               impermanence.homeManagerModules.impermanence
             ]; }
           ];
@@ -61,6 +59,14 @@
           { programs.nix-index-database.comma.enable = true; }
 
           ragenix.nixosModules.default
+
+          {
+            home-manager.sharedModules = [
+              nixvim.homeModules.nixvim
+              niri.homeModules.niri
+              ragenix.homeManagerModules.default
+            ];
+          }
         ]; 
       });
     in {

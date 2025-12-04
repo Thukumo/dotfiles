@@ -17,28 +17,16 @@
   # for Btrfs
   # boot.initrd.systemd.enable = true;
 
-  # boot.initrd.postDeviceCommands = lib.mkAfter ''
-  #   mkdir -p /mnt
-  #   mount -o subvolid=5 /dev/mapper/vg-root /mnt
-  #   if [ -e /mnt/@root ]; then
-  #     btrfs subvolume delete -R /mnt/@root
-  #   fi
-  #   btrfs subvolume create /mnt/@root
-  #   umount /mnt
-  # '';
-
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     mkdir -p /mnt
     mount -o subvolid=5 /dev/mapper/vg-root /mnt
     mkdir -p /mnt/old_roots
 
     if [ -e /mnt/old_roots/backup ]; then
-      echo removing backup
       btrfs subvolume delete -R /mnt/old_roots/backup
     fi
 
     if [ -e /mnt/@root ]; then
-      echo moving old root
       mv /mnt/@root /mnt/old_roots/backup
     fi
 
