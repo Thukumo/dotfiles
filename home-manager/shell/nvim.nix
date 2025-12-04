@@ -17,6 +17,7 @@
       shiftwidth = 2;
       clipboard = "unnamedplus";
       timeoutlen = 300;
+      autoread = true;
       wrap = false;
       # wrap = true;
       # breakindent = true;

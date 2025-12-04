@@ -2,11 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    lazygit
-
     nerd-fonts.adwaita-mono
     fastfetch
-    btop
     gotop
     speedtest-cli
     bluetui
@@ -53,7 +50,10 @@
   };
   programs.gh = {
     enable = true;
-    settings.git_protocol = "https";
+  };
+  programs.lazygit = {
+    enable = true;
+    settings = {};
   };
   programs.yazi = {
     enable = true;
@@ -75,6 +75,12 @@
           }
         ];
       };
+    };
+  };
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "HotPurpleTrafficLight";
     };
   };
   home.file = {
