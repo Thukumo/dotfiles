@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -18,16 +18,17 @@
   xdg.configFile = {
     "autostart/electron.desktop".source = config.lib.file.mkOutOfStoreSymlink "/dev/null";
   };
-  programs.chromium = rec {
+  home.persistence."/persist/${config.home.homeDirectory}".directories = [
+    ".config/google-chrome"
+    ".config/discord"
+    ".config/Mattermost"
+  ];
+  programs.chromium = {
     enable = true;
     extensions = [
       "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
       "ammoloihpcbognfddfjcljgembpibcmb" # JShelter
     ];
-    # extraOpts = lib.genAttrs extensions (_: {
-    #     runtime_allowed_hosts = [ "*://*/*" ];
-    #     incognito_mode = "split";
-    #   });
   };
   home.sessionVariables = {
   };

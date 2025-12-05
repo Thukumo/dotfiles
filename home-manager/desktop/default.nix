@@ -60,7 +60,6 @@
         };
       };
       layout = {
-        # default-column-width.proportion = 0.48;
         default-column-width.proportion = 0.5;
         gaps = 8;
       };
@@ -108,7 +107,7 @@
         in (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (normalBind // worksp)) // other
       );
       spawn-at-startup = [
-        # { argv = [ "fcitx5" "-rd" ]; } # fcitx5側でautostartが設定されてるから不要っぽい
+        # fcitx5は、autostartにファイルがあるから不要っぽい
         { argv = [ "brightnessctl" "set" "100%" ]; }
       ];
     };
@@ -164,7 +163,6 @@
   services.mako = {
     enable = true;
     settings = {
-      # ignore-timeout = true;
       ignore-timeout = 1;
       default-timeout = 5000;
       max-visible = 10;

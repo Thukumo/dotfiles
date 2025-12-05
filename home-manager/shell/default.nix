@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   home.packages = with pkgs; [
@@ -35,8 +35,11 @@
     ./nixvim.nix
     ./convd-md2pdf
   ];
-  home.sessionPath = [
-    "$HOME/.cargo/bin"
+  # home.sessionPath = [
+  #   "$HOME/.cargo/bin"
+  # ];
+  home.persistence."/persist/${config.home.homeDirectory}".directories = [
+    ".gemini"
   ];
   home.shell.enableFishIntegration = true;
   programs.git = {

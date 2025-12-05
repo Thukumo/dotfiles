@@ -35,12 +35,5 @@
       };
     };
   };
-  # xdg.configFile."fcitx5/conf/skk.conf".text = ''
-  #   [General]
-  #   Rule=azik
-  #   # # 以下は好みで設定（句読点の扱いなど）
-  #   # PunctuationStyle=Ja
-  #   # PageSize=5
-  # '';
 }
 
