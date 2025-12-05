@@ -163,7 +163,6 @@
   environment.shellAliases = {
     rebuild = "sudo nixos-rebuild switch --flake ${config.users.users.tsukumo.home}/dotfiles/";
     update = "pushd ${config.users.users.tsukumo.home}/dotfiles/ && sudo nix flake update && cd -";
-    docker = "podman";
   };
   programs.fish.enable = true;
   users.defaultUserShell = pkgs.fish;

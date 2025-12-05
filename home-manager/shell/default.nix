@@ -28,8 +28,9 @@
     p7zip
 
     wiremix
-    
+
     lsd
+    bat
   ];
   imports = [
     ./nixvim.nix
@@ -62,7 +63,7 @@
     enable = true;
     settings = {
       mgr = {
-          linemode = "mtime";
+        linemode = "mtime";
       };
       opener = {
         edit = [
@@ -93,5 +94,7 @@
   };
   home.shellAliases = {
     ls = "lsd";
+    cat = "bat";
+    docker = "podman";
   };
 }
