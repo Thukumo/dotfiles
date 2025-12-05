@@ -32,7 +32,7 @@
     lsd
   ];
   imports = [
-    ./nvim.nix
+    ./nixvim.nix
     ./convd-md2pdf
   ];
   home.sessionPath = [

@@ -1,8 +1,6 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-  ];
   imports = [
   ];
   programs.nixvim = {
@@ -36,12 +34,6 @@
         action = "\"_dP";
         options.silent = true;
       }
-      # {
-      #   mode = "i";
-      #   key = "jj";
-      #   action = "<Esc>";
-      #   options.silent = true;
-      # }
     ];
     plugins = {
       lualine.enable = true;

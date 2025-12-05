@@ -114,7 +114,7 @@
       }
       {
         mode = "n";
-        key = "gr";
+        key = "<space>gr";
         action = "<cmd>Telescope lsp_references<cr>";
         options = { silent = true; desc = "References"; };
       }
@@ -150,10 +150,24 @@
       lualine.enable = true;
       barbar.enable = true;
       web-devicons.enable = true;
+      mini = {
+        enable = true;
+        mockDevIcons = true;
+        modules.icons = {};
+      };
       dropbar.enable = true;
       zen-mode.enable = true;
       nvim-autopairs.enable = true;
       which-key.enable = true;
+      
+      # コメント
+      comment = {
+        enable = true;
+        settings = {
+          opleader.line = "gc";
+          toggler.line = "gcc";
+        };
+      };
       
       # ナビゲーション
       telescope.enable = true;
@@ -166,24 +180,15 @@
       # Copilot
       copilot-vim.enable = true;
       
-      # Rust特化
-      rustaceanvim = {
-        enable = true;
-        settings.server.default_settings = {
-          rust-analyzer = {
-            check.command = "clippy";
-            inlayHints.lifetimeElisionHints.enable = "always";
-          };
-        };
-      };
-      
       # Cargo依存管理
-      crates-nvim = {
+      crates = {
         enable = true;
-        extraOptions = {
-          completion.cmp.enabled = true;
-          src = {
-            cmp.enabled = true;
+        settings = {
+          lsp = {
+            enabled = true;
+            actions = true;
+            completion = true;
+            hover = true;
           };
         };
       };
@@ -192,20 +197,58 @@
       lsp = {
         enable = true;
         servers = {
-          rust-analyzer = {
+          rust_analyzer = {
             enable = true;
             installCargo = false;
             installRustc = false;
-          };
-          nil-ls.enable = true;
-          lua-ls = {
-            enable = true;
-            settings.Lua = {
-              diagnostics.globals = ["vim"];
+            settings = {
+              check = {
+                command = "clippy";
+                allTargets = true;
+              };
+              diagnostics = {
+                enable = true;
+                experimental.enable = true;
+              };
+              cargo = {
+                allFeatures = true;
+                loadOutDirsFromCheck = true;
+              };
+              procMacro = {
+                enable = true;
+              };
             };
           };
-          clangd.enable = true;
-          gopls.enable = true;
+          nil_ls = {
+            enable = true;
+            settings = {
+              diagnostics.enable = true;
+            };
+          };
+          lua_ls = {
+            enable = true;
+            settings.Lua = {
+              diagnostics = {
+                globals = ["vim"];
+                enable = true;
+              };
+              workspace.checkThirdParty = false;
+            };
+          };
+          clangd = {
+            enable = true;
+            cmd = ["clangd" "--background-index" "--clang-tidy"];
+          };
+          gopls = {
+            enable = true;
+            settings = {
+              analyses = {
+                unusedparams = true;
+                shadow = true;
+              };
+              staticcheck = true;
+            };
+          };
         };
       };
       
