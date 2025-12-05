@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     xfce.thunar
+    nautilus  # For GNOME portal file chooser
 
     # for niri
     xwayland-satellite
@@ -22,13 +23,13 @@
   ];
 
   # 少なくとも今使ってるNiriのflakeだと勝手に設定されてる?
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gtk ];
-    config.preferred = {
-      default = ["wlr" "gtk"];
-    };  
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #   extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gtk ];
+  #   config.preferred = {
+  #     default = ["wlr" "gtk"];
+  #   };
+  # };
   programs.niri = {
     enable = true;
     package = pkgs.niri.overrideAttrs (old: {
