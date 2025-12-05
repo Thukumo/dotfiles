@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [
@@ -107,8 +107,6 @@
     LC_TELEPHONE = "ja_JP.UTF-8";
     LC_TIME = "ja_JP.UTF-8";
   };
-
-  # services.xserver.exportConfiguration = true;
 
   console.keyMap = "jp106";
   # Configure keymap in X11
@@ -223,11 +221,7 @@
           katakanahiragana = "end";
           space = "overload(nav, space)";
           tab = "/";
-        } // (lib.genAttrs (map toString (lib.range 1 9)) (n: "S-${n}"));
-        shift = {
-        } // lib.genAttrs (map toString (lib.range 1 9)) (n: "${n}");
-        meta = lib.genAttrs (map toString (lib.range 1 9)) (n: "M-${n}");
-        "meta+shift" = lib.genAttrs (map toString (lib.range 1 9)) (n: "MS-${n}");
+        };
         nav = {
           h = "left";
           k = "up";
