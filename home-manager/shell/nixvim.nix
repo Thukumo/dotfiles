@@ -10,6 +10,7 @@
     # 基本オプション
     opts = {
       number = true;
+      relativenumber = true;
       expandtab = true;
       tabstop = 2;
       shiftwidth = 2;
