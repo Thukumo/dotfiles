@@ -219,8 +219,8 @@
       ids = [ "*" ];
       settings = {
         main = {
-          capslock = "overload(meta, esc)";
-          shift = "overload(shift, tab)";
+          capslock = "overload(meta, tab)";
+          shift = "overload(shift, esc)";
           muhenkan = "home";
           henkan = "end";
           katakanahiragana = "end";

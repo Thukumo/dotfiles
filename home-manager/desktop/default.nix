@@ -91,7 +91,7 @@
 
             "P" = spawn "sh" "-c" "slurp | grim -g - - | wl-copy";
 
-            "Tab" = spawn "sh" "-c" "notify-send \"$(date +%H:%M:%S)\" \"$(date +%Y/%m/%d)\n$(acpi -b | cut -d: -f2- | sed 's/^, //')\"";
+            "A" = spawn "sh" "-c" "notify-send \"$(date +%H:%M:%S)\" \"$(date +%Y/%m/%d)\n$(acpi -b | cut -d: -f2- | sed 's/^, //')\"";
           };
           worksp = builtins.listToAttrs (map (n: {
             name = toString n;
