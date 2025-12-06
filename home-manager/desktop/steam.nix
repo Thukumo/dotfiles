@@ -1,9 +1,10 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    steam
-  ];
+  # home-managerのSteamは正常に動作しなさそう...?
+  # home.packages = with pkgs; [
+  #   steam
+  # ];
   home.persistence."/persist/${config.home.homeDirectory}".directories = [
     ".local/share/Steam"
     ".local/share/applications" # たぶんランチャーにゲームを表示するために入れてる
