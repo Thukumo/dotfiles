@@ -186,13 +186,13 @@
 
   nix.gc = {
     automatic = true;
-    dates = "weekly";
+    dates = "00:00";
     randomizedDelaySec = "45min";
     options = "--delete-older-than 7d";
   };
   nix.optimise = {
     automatic = true;
-    dates = "weekly";
+    dates = "13:00";
     randomizedDelaySec = "45min";
   };
 
