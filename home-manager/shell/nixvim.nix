@@ -224,6 +224,7 @@
             enable = true;
             settings = {
               diagnostics.enable = true;
+              nix.flake.autoArchive = true;
             };
           };
           lua_ls = {
