@@ -1,0 +1,3 @@
+FUSE+Chromeとスリープの相性がわるわるなのでなんとかしたい
+Neovim+SKK
+
