@@ -6,8 +6,8 @@
   specialArgs = { };
 
   modules = [
+    ./configuration.nix
     ./hardware-configuration.nix
-    ./hardware.nix
 
     impermanence.nixosModules.impermanence
 

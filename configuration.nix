@@ -5,6 +5,15 @@
 { config, pkgs, inputs, ... }:
 
 {
+
+  # for XDGportal
+  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
+
+
+  # for gnome-disk-utility
+  services.udisks2.enable = true;
+  services.gvfs.enable = true;
+
   imports = [
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -20,29 +29,7 @@
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  zramSwap = {
-    enable = true;
-    memoryPercent = 200;
-  };
-
-  environment.persistence."/persist" = {
-    hideMounts = true;
-    directories = [
-      "/etc/NetworkManager/system-connections"
-      "/var/lib/NetworkManager/system-connections"
-      "/var/lib/bluetooth"
-      "/var/lib/systemd/timers"
-      "/var/lib/nixos"
-      "/etc/age"
-      "/var/log"
-    ];
-    files = [ "/etc/machine-id" ];
-  };
-  # for "home-manager" impermanence
-  programs.fuse.userAllowOther = true;
-
   age = {
-    identityPaths = [ "/persist/etc/age/key.txt" ];
     secrets = {
       "passwd_tsukumo".file = ./secrets/passwd_tsukumo.age;
       "home-manager_key" = {
@@ -108,25 +95,6 @@
     LC_TIME = "ja_JP.UTF-8";
   };
 
-  console.keyMap = "jp106";
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "jp106";
-    variant = "";
-  };
-
-  virtualisation = {
-    containers.enable = true;
-    podman = {
-      enable = true;
-      # dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
-    };
-  };
-
-  # for XDGportal
-  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
-
   users.mutableUsers = false;
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.tsukumo = {
@@ -135,14 +103,13 @@
     hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
     extraGroups = [ "networkmanager" "wheel" ];
   };
-
-  security.sudo.wheelNeedsPassword = false;
   home-manager.users.tsukumo = {
     imports = [
       ./home-manager/home.nix
     ];
   };
 
+  security.sudo.wheelNeedsPassword = false;
 
   # Enable automatic login for the user.
   # services.getty.autologinUser = "tsukumo";
@@ -152,13 +119,8 @@
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
-    podman-compose
     inputs.ragenix.packages."${stdenv.hostPlatform.system}".default
   ];
-
-  # for gnome-disk-utility
-  services.udisks2.enable = true;
-  services.gvfs.enable = true;
 
   environment.shellAliases = {
     rebuild = "sudo nixos-rebuild switch --flake ${config.users.users.tsukumo.home}/dotfiles/";
@@ -177,7 +139,6 @@
     enable = true;
     settings = rec {
       default_session = {
-        # command = "${config.home-manager.users.tsukumo.wayland.windowManager.sway.package}/bin/sway";
         command = "${config.home-manager.users.tsukumo.programs.niri.package}/bin/niri-session";
         user = "tsukumo";
       };
@@ -206,41 +167,6 @@
       CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
       CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_performance";
     };
-  };
-
-  services.keyd = {
-    enable = true;
-    keyboards.default = {
-      ids = [ "*" ];
-      settings = {
-        main = {
-          capslock = "overload(meta, tab)";
-          shift = "overload(shift, esc)";
-          muhenkan = "home";
-          henkan = "end";
-          katakanahiragana = "end";
-          space = "overload(nav, space)";
-          tab = "/";
-        };
-        nav = {
-          h = "left";
-          k = "up";
-          j= "down";
-          l = "right";
-        };
-        "nav+meta" = {
-          h = "home";
-          l = "end";
-        };
-      };
-    };
-  };
-
-  # enable mDNS for rQuickShare
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
   };
 
   # Some programs need SUID wrappers, can be configured further or are
