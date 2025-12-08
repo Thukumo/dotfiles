@@ -29,7 +29,7 @@
       hosts = lib.mapAttrs (name: _: import (./hosts + "/${name}") inputs) hostDirectories;
       
       commonModules = name: [
-        ./configuration.nix
+        ./common-config.nix
         {
           networking.hostName = name;
           nixpkgs.config.allowUnfree = true;
