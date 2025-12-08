@@ -22,59 +22,43 @@
     ragenix.url = "github:yaxitech/ragenix";
   };
 
-  outputs = { self, nixpkgs, home-manager, impermanence, affinity-nix, nixvim, niri, ragenix, ... }@inputs: 
+  outputs = { nixpkgs, home-manager, nixvim, niri, ragenix, ... }@inputs: 
     let
-      configurations = {
-        "thinkpadx13-nix" = {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+      inherit (nixpkgs) lib;
+      hostDirectories = lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts);
+      hosts = lib.mapAttrs (name: _: import (./hosts + "/${name}") inputs) hostDirectories;
+      
+      commonModules = name: [
+        ./configuration.nix
+        {
+          networking.hostName = name;
+          nixpkgs.config.allowUnfree = true;
+        }
 
-          modules = [
-            impermanence.nixosModules.impermanence
-
-            ./configuration.nix
-
-            # { environment.systemPackages = [affinity-nix.packages.x86_64-linux.v3]; }
-
-            { home-manager.sharedModules = [
-              impermanence.homeManagerModules.impermanence
-            ]; }
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.sharedModules = [
+            nixvim.homeModules.nixvim
+            niri.homeModules.niri
+            ragenix.homeManagerModules.default
           ];
-        };
+        }
+
+        inputs.nix-index-database.nixosModules.nix-index
+        { programs.nix-index-database.comma.enable = true; }
+
+        ragenix.nixosModules.default
+      ];
+
+      mkHost = name: host: lib.nixosSystem {
+        inherit (host) system;
+        specialArgs = (host.specialArgs or {}) // { inherit inputs; };
+        modules = (host.modules or []) ++ (commonModules name);
       };
-      genConfig = name: val: nixpkgs.lib.nixosSystem (val // {
-        modules = val.modules ++ [
-          {
-            networking.hostName = name;
-            nixpkgs.config.allowUnfree = true;
-            imports = [
-              (./hosts + "/${name}/hardware-configuration.nix")
-              (./hosts + "/${name}/hardware.nix")
-            ];
-          }
-
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-          }
-
-          inputs.nix-index-database.nixosModules.nix-index
-          { programs.nix-index-database.comma.enable = true; }
-
-          ragenix.nixosModules.default
-
-          {
-            home-manager.sharedModules = [
-              nixvim.homeModules.nixvim
-              niri.homeModules.niri
-              ragenix.homeManagerModules.default
-            ];
-          }
-        ]; 
-      });
     in {
-      nixosConfigurations = nixpkgs.lib.mapAttrs genConfig configurations;
+      nixosConfigurations = lib.mapAttrs mkHost hosts;
     };
 }
 
