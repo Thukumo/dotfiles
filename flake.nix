@@ -54,8 +54,8 @@
 
       mkHost = name: host: lib.nixosSystem {
         inherit (host) system;
-        specialArgs = (host.specialArgs or {}) // { inherit inputs; };
-        modules = (host.modules or []) ++ (commonModules name);
+        specialArgs = { inherit inputs; } // (host.specialArgs or {});
+        modules = (commonModules name) ++ (host.modules or []);
       };
     in {
       nixosConfigurations = lib.mapAttrs mkHost hosts;
