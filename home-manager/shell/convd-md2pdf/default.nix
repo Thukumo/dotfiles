@@ -7,9 +7,14 @@
  #    '';
  #  };
   home.packages = with pkgs; [
-    pandoc
-    typst
-    parallel
-    (pkgs.writeShellScriptBin "convd-md2pdf" (builtins.readFile ./convd-md2pdf.sh))
+    (pkgs.writeShellApplication {
+      name = "convd-md2pdf";
+      runtimeInputs = with pkgs; [
+        pandoc
+        typst
+        parallel
+      ];
+      text = builtins.readFile ./convd-md2pdf.sh;
+    })
   ];
 }

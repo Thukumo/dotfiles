@@ -1,9 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    activate-linux
-  ];
-  programs.niri.settings.spawn-at-startup = [ { argv = [ "bash" "-c" "LANG=C activate-linux -d" ]; } ];
+  programs.niri.settings.spawn-at-startup = [ { argv = [ "bash" "-c" "LANG=C ${pkgs.activate-linux}/bin/activate-linux -d" ]; } ];
 }
 

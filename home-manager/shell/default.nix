@@ -28,9 +28,6 @@
     p7zip
 
     wiremix
-
-    lsd
-    bat
   ];
   imports = [
     ./nixvim.nix
@@ -75,7 +72,7 @@
         play = [
           {
             # run = ''vlc "$@"'';
-            run = ''ffplay -i "$@"'';
+            run = ''${pkgs.ffmpeg}/bin/ffplay -i "$@"'';
           }
         ];
       };
@@ -93,8 +90,7 @@
     # EDITOR = "emacs";
   };
   home.shellAliases = {
-    ls = "lsd";
-    cat = "bat";
-    docker = "podman";
+    ls = "${pkgs.lsd}/bin/lsd";
+    cat = "${pkgs.bat}/bin/bat";
   };
 }
