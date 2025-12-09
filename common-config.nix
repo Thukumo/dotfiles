@@ -18,6 +18,11 @@
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # nixpkgs for global + home-manager
+  nixpkgs.config.allowUnfree = true;
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+
   # Bootloader
   boot.loader = {
     systemd-boot.enable = true;

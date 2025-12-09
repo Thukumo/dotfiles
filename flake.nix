@@ -27,18 +27,15 @@
       inherit (nixpkgs) lib;
       hostDirectories = lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts);
       hosts = lib.mapAttrs (name: _: import (./hosts + "/${name}") inputs) hostDirectories;
-      
+
       commonModules = name: [
         ./common-config.nix
         {
           networking.hostName = name;
-          nixpkgs.config.allowUnfree = true;
         }
 
         home-manager.nixosModules.home-manager
         {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
           home-manager.sharedModules = [
             nixvim.homeModules.nixvim
             niri.homeModules.niri
