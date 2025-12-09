@@ -29,7 +29,7 @@
       hosts = lib.mapAttrs (name: _: import (./hosts + "/${name}") inputs) hostDirectories;
 
       commonModules = name: [
-        ./common-config.nix
+        ./common
         {
           networking.hostName = name;
         }
