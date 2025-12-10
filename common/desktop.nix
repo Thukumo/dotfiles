@@ -19,8 +19,8 @@
     enable = true;
     settings = rec {
       default_session = {
-        command = "${config.home-manager.users.tsukumo.programs.niri.package}/bin/niri-session";
-        user = "tsukumo";
+        command = "${config.home-manager.users."tsukumo".programs.niri.package}/bin/niri-session";
+        user = config.users.users."tsukumo".name;
       };
       initial_session = default_session;
     };

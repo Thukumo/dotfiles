@@ -45,7 +45,7 @@
     settings = {
       user = {
         name = "Tsukumo";
-        email = "92912896+Thukumo@users.noreply.github.com";
+        email = "contact@tsukumo.f5.si";
       };
     };
   };
