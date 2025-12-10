@@ -12,7 +12,7 @@
 
   home-manager.users.tsukumo = {
     imports = [
-      ../home-manager/home.nix
+      ./home-manager/home.nix
     ];
   };
 
