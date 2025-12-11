@@ -10,5 +10,6 @@
     ./secrets.nix
     ./power.nix
     ./nix.nix
+    ./impersistence.nix
   ];
 }

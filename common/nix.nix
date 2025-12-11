@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, ... }:
 
 {
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -19,10 +19,6 @@
     dates = "13:00";
     randomizedDelaySec = "45min";
   };
-
-  environment.systemPackages = with pkgs; [
-    inputs.ragenix.packages."${stdenv.hostPlatform.system}".default
-  ];
 
   environment.shellAliases = {
     rebuild = "sudo nixos-rebuild switch --flake ${config.users.users."tsukumo".home}/dotfiles/";

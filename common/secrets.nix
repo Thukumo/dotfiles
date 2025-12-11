@@ -1,6 +1,11 @@
-{ config, ... }:
+{ config, inputs, ... }:
 
 {
+
+  environment.systemPackages = [
+    inputs.ragenix.packages."${config.nixpkgs.system}".default
+  ];
+
   age = {
     secrets = {
       "passwd_tsukumo".file = ../secrets/passwd_tsukumo.age;

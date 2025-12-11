@@ -14,23 +14,11 @@
     memoryPercent = 200;
   };
 
+  # agenix key
   age.identityPaths = [ "/persist/etc/age/key.txt" ];
-
-  environment.persistence."/persist" = {
-    hideMounts = true;
-    directories = [
-      "/etc/NetworkManager/system-connections"
-      "/var/lib/NetworkManager/system-connections"
-      "/var/lib/bluetooth"
-      "/var/lib/systemd/timers"
-      "/var/lib/nixos"
-      "/etc/age"
-      "/var/log"
-    ];
-    files = [ "/etc/machine-id" ];
-  };
-  # for "home-manager" impermanence
-  programs.fuse.userAllowOther = true;
+  environment.persistence."/persist".directories = [
+    "/etc/age"
+  ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
