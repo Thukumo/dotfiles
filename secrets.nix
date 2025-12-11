@@ -8,6 +8,6 @@ let
 in {
   "secrets/passwd_tsukumo.age".publicKeys = allKeys;
   "secrets/home_manager_key.age".publicKeys = allKeys;
-  "home-manager/ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
-  "home-manager/ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
+  "common/home-manager/ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
+  "common/home-manager/ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
 }

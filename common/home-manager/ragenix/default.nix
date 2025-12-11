@@ -1,4 +1,4 @@
-{ config, pkgs, osConfig, ... }:
+{ osConfig, ... }:
 
 {
   age = {
