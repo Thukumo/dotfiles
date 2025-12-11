@@ -7,7 +7,10 @@
     isNormalUser = true;
     description = "tsukumo";
     hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     shell = pkgs.fish;
   };
   # for shell

@@ -18,19 +18,21 @@
       modifier = "Mod4";
       terminal = "foot";
       input = {
-        "type:keyboard" = { "xkb_layout" = "jp"; };
+        "type:keyboard" = {
+          "xkb_layout" = "jp";
+        };
       };
       startup = [
         { command = "fcitx5 -rd"; }
       ];
-      keybindings = lib.mkOptionDefault (lib.attrsets.mapAttrs' (
-        name: lib.nameValuePair "${modifier}+${name}"
-      ) {
+      keybindings = lib.mkOptionDefault (
+        lib.attrsets.mapAttrs' (name: lib.nameValuePair "${modifier}+${name}") {
           "space" = "exec fuzzel";
           "q" = "kill";
           "Shift+e" = "exec swaymsg exit";
           "m" = "exec mattermost-desktop";
-        });
+        }
+      );
     };
     wrapperFeatures.gtk = true;
   };
@@ -81,4 +83,3 @@
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
   };
 }
-

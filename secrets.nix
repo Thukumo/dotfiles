@@ -5,7 +5,8 @@ let
     home_manager_key = "age1nzd7yc6dyg2m5ev35zdtydw8vprqx2qyt5pg6l5h786gqnge3vvsp6xxvh";
   };
   allKeys = builtins.attrValues keys;
-in {
+in
+{
   "secrets/passwd_tsukumo.age".publicKeys = allKeys;
   "secrets/home_manager_key.age".publicKeys = allKeys;
   "common/home-manager/ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;

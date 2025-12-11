@@ -8,7 +8,7 @@
   imports = [
     ./config.nix
   ];
- systemd.user.services.xremap = {
+  systemd.user.services.xremap = {
     Unit = {
       Description = "xremap auto start";
     };

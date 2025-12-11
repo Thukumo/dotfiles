@@ -76,7 +76,7 @@
         nav = {
           h = "left";
           k = "up";
-          j= "down";
+          j = "down";
           l = "right";
         };
         "nav+meta" = {

@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
+  environment.pathsToLink = [
+    "/share/xdg-desktop-portal"
+    "/share/applications"
+  ];
 
   services.udisks2.enable = true;
   services.gvfs.enable = true;

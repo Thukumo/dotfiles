@@ -21,6 +21,6 @@
     dnssec = "allow-downgrade";
     dnsovertls = "opportunistic";
     domains = [ "~." ];
-    fallbackDns = [];
+    fallbackDns = [ ];
   };
 }

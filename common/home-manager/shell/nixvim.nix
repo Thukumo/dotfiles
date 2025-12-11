@@ -24,7 +24,10 @@
     keymaps = [
       # ブラックホールレジスタ割り当て（ヤンク汚染防止）
       {
-        mode = ["n" "v"];
+        mode = [
+          "n"
+          "v"
+        ];
         key = "x";
         action = "\"_x";
         options.silent = true;
@@ -51,97 +54,145 @@
         mode = "n";
         key = "gD";
         action = "<cmd>lua vim.lsp.buf.declaration()<cr>";
-        options = { silent = true; desc = "Go to declaration"; };
+        options = {
+          silent = true;
+          desc = "Go to declaration";
+        };
       }
       {
         mode = "n";
         key = "gd";
         action = "<cmd>lua vim.lsp.buf.definition()<cr>";
-        options = { silent = true; desc = "Go to definition"; };
+        options = {
+          silent = true;
+          desc = "Go to definition";
+        };
       }
       {
         mode = "n";
         key = "<C-h>";
         action = "<cmd>lua vim.lsp.buf.hover()<cr>";
-        options = { silent = true; desc = "Hover"; };
+        options = {
+          silent = true;
+          desc = "Hover";
+        };
       }
       {
         mode = "n";
         key = "gi";
         action = "<cmd>lua vim.lsp.buf.implementation()<cr>";
-        options = { silent = true; desc = "Go to implementation"; };
+        options = {
+          silent = true;
+          desc = "Go to implementation";
+        };
       }
       {
         mode = "n";
         key = "<C-k>";
         action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
-        options = { silent = true; desc = "Signature help"; };
+        options = {
+          silent = true;
+          desc = "Signature help";
+        };
       }
       {
         mode = "n";
         key = "<space>wa";
         action = "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>";
-        options = { silent = true; desc = "Add workspace folder"; };
+        options = {
+          silent = true;
+          desc = "Add workspace folder";
+        };
       }
       {
         mode = "n";
         key = "<space>wr";
         action = "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>";
-        options = { silent = true; desc = "Remove workspace folder"; };
+        options = {
+          silent = true;
+          desc = "Remove workspace folder";
+        };
       }
       {
         mode = "n";
         key = "<space>wl";
         action = "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>";
-        options = { silent = true; desc = "List workspace folders"; };
+        options = {
+          silent = true;
+          desc = "List workspace folders";
+        };
       }
       {
         mode = "n";
         key = "<space>D";
         action = "<cmd>lua vim.lsp.buf.type_definition()<cr>";
-        options = { silent = true; desc = "Type definition"; };
+        options = {
+          silent = true;
+          desc = "Type definition";
+        };
       }
       {
         mode = "n";
         key = "<space>rn";
         action = "<cmd>lua vim.lsp.buf.rename()<cr>";
-        options = { silent = true; desc = "Rename"; };
+        options = {
+          silent = true;
+          desc = "Rename";
+        };
       }
       {
         mode = "n";
         key = "<space>ca";
         action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
-        options = { silent = true; desc = "Code action"; };
+        options = {
+          silent = true;
+          desc = "Code action";
+        };
       }
       {
         mode = "n";
         key = "<space>gr";
         action = "<cmd>Telescope lsp_references<cr>";
-        options = { silent = true; desc = "References"; };
+        options = {
+          silent = true;
+          desc = "References";
+        };
       }
       {
         mode = "n";
         key = "<space>e";
         action = "<cmd>lua vim.diagnostic.open_float()<cr>";
-        options = { silent = true; desc = "Open diagnostic"; };
+        options = {
+          silent = true;
+          desc = "Open diagnostic";
+        };
       }
       {
         mode = "n";
         key = "[d";
         action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
-        options = { silent = true; desc = "Previous diagnostic"; };
+        options = {
+          silent = true;
+          desc = "Previous diagnostic";
+        };
       }
       {
         mode = "n";
         key = "]d";
         action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
-        options = { silent = true; desc = "Next diagnostic"; };
+        options = {
+          silent = true;
+          desc = "Next diagnostic";
+        };
       }
       {
         mode = "n";
         key = "<space>q";
         action = "<cmd>lua vim.diagnostic.setloclist()<cr>";
-        options = { silent = true; desc = "Set loclist"; };
+        options = {
+          silent = true;
+          desc = "Set loclist";
+        };
       }
     ];
 
@@ -154,13 +205,13 @@
       mini = {
         enable = true;
         mockDevIcons = true;
-        modules.icons = {};
+        modules.icons = { };
       };
       dropbar.enable = true;
       zen-mode.enable = true;
       nvim-autopairs.enable = true;
       which-key.enable = true;
-      
+
       # コメント
       comment = {
         enable = true;
@@ -169,18 +220,18 @@
           toggler.line = "gcc";
         };
       };
-      
+
       # ナビゲーション
       telescope.enable = true;
       neo-tree.enable = true;
-      
+
       # 診断/ブラウジング
       trouble.enable = true;
       treesitter-context.enable = true;
-      
+
       # Copilot
       copilot-vim.enable = true;
-      
+
       # Cargo依存管理
       crates = {
         enable = true;
@@ -193,7 +244,7 @@
           };
         };
       };
-      
+
       # LSP設定
       lsp = {
         enable = true;
@@ -231,7 +282,7 @@
             enable = true;
             settings.Lua = {
               diagnostics = {
-                globals = ["vim"];
+                globals = [ "vim" ];
                 enable = true;
               };
               workspace.checkThirdParty = false;
@@ -239,7 +290,11 @@
           };
           clangd = {
             enable = true;
-            cmd = ["clangd" "--background-index" "--clang-tidy"];
+            cmd = [
+              "clangd"
+              "--background-index"
+              "--clang-tidy"
+            ];
           };
           gopls = {
             enable = true;
@@ -253,7 +308,7 @@
           };
         };
       };
-      
+
       # 補完
       cmp = {
         enable = true;
@@ -299,11 +354,11 @@
           };
         };
       };
-      
+
       # cmp cmdline設定
       cmp-cmdline.enable = true;
       luasnip.enable = true;
-      
+
       # Treesitter
       treesitter = {
         enable = true;
@@ -321,7 +376,7 @@
           go
         ];
       };
-      
+
       # マークダウン
       markdown-preview.enable = true;
     };
@@ -418,19 +473,19 @@
       # CLI補助
       ripgrep
       fd
-      
+
       # Rustツールチェーン
       cargo
       rustc
       rustfmt
       rust-analyzer
-      
+
       # その他言語サーバー
       nil
       lua-language-server
       clang-tools
       gopls
-      
+
       # その他ツール
       watchexec
       deno

@@ -1,8 +1,11 @@
 { lib, pkgs, ... }:
 
 {
-  xdg.configFile."xremap/config.yml".source = (pkgs.formats.yaml {}).generate "xremap-config.yml" {
-    virtual_modifiers = ["Ctrl_R" "PROG1"];
+  xdg.configFile."xremap/config.yml".source = (pkgs.formats.yaml { }).generate "xremap-config.yml" {
+    virtual_modifiers = [
+      "Ctrl_R"
+      "PROG1"
+    ];
     modmap = [
       {
         name = "Global";
@@ -52,22 +55,54 @@
         name = "launch";
         exact_match = true;
         remap = {
-            Win-C = {
-              launch = ["systemd-run" "--user" "--scope" "chromium" "--new-window" "--incognito"];
-            };
-            Win-Shift-C = {
-              launch = ["systemd-run" "--user" "--scope" "google-chrome-stable" "--new-window"];
-            };
-            Win-M = {
-              launch = ["systemd-run" "--user" "--scope" "mattermost-desktop"];
-            };
-            Win-X = {
-              launch = ["systemd-run" "--user" "--scope" "chromium" "--new-window" "https://x.com/home"];
-            };
-            Win-Shift-X = {
-              launch = ["systemd-run" "--user" "--scope" "google-chrome-stable" "--new-window" "https://x.com/home"];
-            };
+          Win-C = {
+            launch = [
+              "systemd-run"
+              "--user"
+              "--scope"
+              "chromium"
+              "--new-window"
+              "--incognito"
+            ];
           };
+          Win-Shift-C = {
+            launch = [
+              "systemd-run"
+              "--user"
+              "--scope"
+              "google-chrome-stable"
+              "--new-window"
+            ];
+          };
+          Win-M = {
+            launch = [
+              "systemd-run"
+              "--user"
+              "--scope"
+              "mattermost-desktop"
+            ];
+          };
+          Win-X = {
+            launch = [
+              "systemd-run"
+              "--user"
+              "--scope"
+              "chromium"
+              "--new-window"
+              "https://x.com/home"
+            ];
+          };
+          Win-Shift-X = {
+            launch = [
+              "systemd-run"
+              "--user"
+              "--scope"
+              "google-chrome-stable"
+              "--new-window"
+              "https://x.com/home"
+            ];
+          };
+        };
       }
       {
         name = "Chromium";
@@ -86,50 +121,76 @@
       }
       {
         name = "digicre";
-        remap = (builtins.listToAttrs
-          (lib.lists.flatten
-            (builtins.attrValues
-              (builtins.mapAttrs (
-                name: (lib.zipListsWith (
-                  shift: val: [
-                    {
-                      name = "Ctrl_R-${shift}${name}";
-                      value = {
-                        launch = ["fish" "-c" "wtype ${val}"];
-                      };
-                    }
-                    {
-                      name = "Ctrl_R-Alt-${shift}${name}";
-                      value = {
-                        launch = ["fish" "-c" "wtype :${val}:"];
-                      };
-                    }
+        remap =
+          (builtins.listToAttrs (
+            lib.lists.flatten (
+              builtins.attrValues (
+                builtins.mapAttrs
+                  (
+                    name:
+                    (lib.zipListsWith
+                      (shift: val: [
+                        {
+                          name = "Ctrl_R-${shift}${name}";
+                          value = {
+                            launch = [
+                              "fish"
+                              "-c"
+                              "wtype ${val}"
+                            ];
+                          };
+                        }
+                        {
+                          name = "Ctrl_R-Alt-${shift}${name}";
+                          value = {
+                            launch = [
+                              "fish"
+                              "-c"
+                              "wtype :${val}:"
+                            ];
+                          };
+                        }
 
-                  ]
-                ) ["" "Shift-"])
-              ) (builtins.groupBy (builtins.substring 0 1) [
-                  "digicre"
-                  "good_story"
-                  "inu_downer"
-                  "kawaiine"
-                  "kusa"
-                  "ohayo"
-                  "mattermost"
-                  "soukamo"
-                  "soukana"
-                  "thonk"
-                  "tadashii"
-                  "yosasou"
-                ])
+                      ])
+                      [
+                        ""
+                        "Shift-"
+                      ]
+                    )
+                  )
+                  (
+                    builtins.groupBy (builtins.substring 0 1) [
+                      "digicre"
+                      "good_story"
+                      "inu_downer"
+                      "kawaiine"
+                      "kusa"
+                      "ohayo"
+                      "mattermost"
+                      "soukamo"
+                      "soukana"
+                      "thonk"
+                      "tadashii"
+                      "yosasou"
+                    ]
+                  )
               )
             )
-          )
-        ) // {
+          ))
+          // {
             Ctrl_R-b = {
-              launch = ["fish" "-c" "wtype cat_beluga"];
+              launch = [
+                "fish"
+                "-c"
+                "wtype cat_beluga"
+              ];
             };
             Ctrl_R-Alt-b = {
-              launch = ["fish" "-c" "wtype :cat_beluga:"];
+              launch = [
+                "fish"
+                "-c"
+                "wtype :cat_beluga:"
+              ];
             };
           };
       }

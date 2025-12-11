@@ -5,12 +5,12 @@
   ];
 
   boot.initrd.luks.devices."cryptroot" = {
-    device = "/dev/disk/by-uuid/d480d1df-a949-4d5a-8a3e-58214637b087"; 
+    device = "/dev/disk/by-uuid/d480d1df-a949-4d5a-8a3e-58214637b087";
     allowDiscards = true;
   };
 
-  boot.kernelParams = [ 
-    "resume=/dev/mapper/vg-swap" 
+  boot.kernelParams = [
+    "resume=/dev/mapper/vg-swap"
     "amd_pstate=disable"
   ];
 
@@ -33,7 +33,7 @@
     btrfs subvolume create /mnt/@root
 
     umount /mnt
-'';
+  '';
 
   # fileSystems."/" = {
   #   device = "none";
@@ -43,20 +43,32 @@
   fileSystems."/" = {
     device = "/dev/mapper/vg-root";
     fsType = "btrfs";
-    options = [ "subvol=@root" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@root"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   fileSystems."/nix" = {
     device = "/dev/mapper/vg-root";
     fsType = "btrfs";
-    options = [ "subvol=@nix" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@nix"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   fileSystems."/persist" = {
     device = "/dev/mapper/vg-root";
     neededForBoot = true;
     fsType = "btrfs";
-    options = [ "subvol=@persist" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@persist"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   services.btrbk = {

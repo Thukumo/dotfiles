@@ -22,7 +22,17 @@
     ragenix.url = "github:yaxitech/ragenix";
   };
 
-  outputs = { nixpkgs, home-manager, impermanence, nixvim, niri, ragenix, nix-index-database, ... }@inputs:
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      impermanence,
+      nixvim,
+      niri,
+      ragenix,
+      nix-index-database,
+      ...
+    }@inputs:
     let
       inherit (nixpkgs) lib;
       hostDirectories = lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts);
@@ -52,13 +62,21 @@
         ragenix.nixosModules.default
       ];
 
-      mkHost = name: host: lib.nixosSystem {
-        inherit (host) system;
-        specialArgs = { inherit inputs; } // (host.specialArgs or {});
-        modules = (commonModules name) ++ (host.modules or []);
-      };
-    in {
+      mkHost =
+        name: host:
+        lib.nixosSystem {
+          inherit (host) system;
+          specialArgs = {
+            inherit inputs;
+          }
+          // (host.specialArgs or { });
+          modules = (commonModules name) ++ (host.modules or [ ]);
+        };
+    in
+    {
+      formatter = lib.genAttrs (lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts))) (
+        name: nixpkgs.legacyPackages.${name}.nixfmt-tree
+      );
       nixosConfigurations = lib.mapAttrs mkHost hosts;
     };
 }
-

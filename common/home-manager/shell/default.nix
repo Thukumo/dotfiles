@@ -54,7 +54,7 @@
   };
   programs.lazygit = {
     enable = true;
-    settings = {};
+    settings = { };
   };
   programs.yazi = {
     enable = true;

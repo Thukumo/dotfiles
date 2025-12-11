@@ -1,11 +1,11 @@
 { pkgs, ... }:
 
 {
- # home.activation = {
- #    parallelNoCitation = lib.hm.dag.entryAfter ["writeBoundary"] ''
- #      ${pkgs.parallel}/bin/parallel --citation
- #    '';
- #  };
+  # home.activation = {
+  #    parallelNoCitation = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  #      ${pkgs.parallel}/bin/parallel --citation
+  #    '';
+  #  };
   home.packages = with pkgs; [
     (pkgs.writeShellApplication {
       name = "convd-md2pdf";
