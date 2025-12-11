@@ -15,6 +15,12 @@
       home-manager.sharedModules = [
         impermanence.homeManagerModules.impermanence
       ];
+
+      home-manager.users."tsukumo" = {
+        imports = [
+          ./home-manager
+        ];
+      };
     }
   ];
 }
