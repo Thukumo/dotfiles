@@ -22,7 +22,7 @@
     ragenix.url = "github:yaxitech/ragenix";
   };
 
-  outputs = { nixpkgs, home-manager, nixvim, niri, ragenix, ... }@inputs: 
+  outputs = { nixpkgs, home-manager, impermanence, nixvim, niri, ragenix, ... }@inputs:
     let
       inherit (nixpkgs) lib;
       hostDirectories = lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts);
@@ -37,11 +37,14 @@
         home-manager.nixosModules.home-manager
         {
           home-manager.sharedModules = [
+            impermanence.homeManagerModules.impermanence
             nixvim.homeModules.nixvim
             niri.homeModules.niri
             ragenix.homeManagerModules.default
           ];
         }
+
+        impermanence.nixosModules.impermanence
 
         inputs.nix-index-database.nixosModules.nix-index
         { programs.nix-index-database.comma.enable = true; }
