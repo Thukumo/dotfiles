@@ -5,7 +5,6 @@
 
   users.users."tsukumo" = {
     isNormalUser = true;
-    description = "tsukumo";
     hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
     extraGroups = [
       "networkmanager"

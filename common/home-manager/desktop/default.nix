@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -11,32 +11,7 @@
     ./activate-linux.nix
     ./niri.nix
   ];
-
-  wayland.windowManager.sway = {
-    enable = true;
-    config = rec {
-      modifier = "Mod4";
-      terminal = "foot";
-      input = {
-        "type:keyboard" = {
-          "xkb_layout" = "jp";
-        };
-      };
-      startup = [
-        { command = "fcitx5 -rd"; }
-      ];
-      keybindings = lib.mkOptionDefault (
-        lib.attrsets.mapAttrs' (name: lib.nameValuePair "${modifier}+${name}") {
-          "space" = "exec fuzzel";
-          "q" = "kill";
-          "Shift+e" = "exec swaymsg exit";
-          "m" = "exec mattermost-desktop";
-        }
-      );
-    };
-    wrapperFeatures.gtk = true;
-  };
-  programs.fuzzel = {
+ programs.fuzzel = {
     enable = true;
     settings = {
       main = {
@@ -52,13 +27,14 @@
     settings = {
       main = {
         font = "Adwaita Mono Nerd Font:size=12";
-        # include = "${pkgs.fetchurl {
-        #   url = "https://raw.githubusercontent.com/catppuccin/foot/8d263e0e6b58a6b9ea507f71e4dbf6870aaf8507/themes/catppuccin-latte.ini";
-        #   hash = "sha256-aAosa4MTxbYiqbNbcqLHIAwLfrsGsny4/VnObh47qOE=";
-        # }}";
+        include = toString (pkgs.fetchurl {
+          url = "https://codeberg.org/dnkl/foot/raw/commit/6e533231b016684a32a1975ce2e33ae3ae38b4c6/themes/catppuccin-latte";
+          hash = "sha256-kTrLlIhBLFpxHUlXHCaK2nyq/m15L1iQjNngo5gPfCE=";
+        });
       };
       mouse = {
         hide-when-typing = true;
+        # hide-when-typing = "yes";
       };
     };
   };
@@ -71,15 +47,6 @@
     };
   };
   home.sessionVariables = {
-    # GTK_IM_MODULE = "fcitx";
-    # QT_IM_MODULE = "fcitx";
-    # GTK_IM_MODULE = "wayland";
-    # QT_IM_MODULE = "wayland";
-    # # XMODIFIERS = lib.mkForce "@im=fcitx";
-    # Waylandネイティブアプリ用の設定
-    # INPUT_METHOD = "fcitx";
-    # # SDL_IM_MODULE = lib.mkForce "fcitx";
-
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
   };
 }

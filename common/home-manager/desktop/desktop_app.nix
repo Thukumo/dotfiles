@@ -9,9 +9,7 @@
     libreoffice-still
     zoom-us
     gnome-disk-utility
-    blender
-    # davinci-resolve
-    # rquickshare
+    rquickshare
   ];
   # Mattermost Desktopが~/.config/autostart/electron.desktopを作ってきて困るので、
   # 先に/dev/nullへのシンボリックリンクにしておく

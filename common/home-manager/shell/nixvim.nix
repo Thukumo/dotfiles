@@ -393,13 +393,6 @@
         };
       })
       (pkgs.vimUtils.buildVimPlugin {
-        name = "nanode.nvim";
-        src = builtins.fetchGit {
-          url = "https://github.com/KijitoraFinch/nanode.nvim";
-          rev = "cd85bbb5195b23adfb89a695b54e16daab259800";
-        };
-      })
-      (pkgs.vimUtils.buildVimPlugin {
         name = "accelerated-jk.nvim";
         src = builtins.fetchGit {
           url = "https://github.com/rainbowhxch/accelerated-jk.nvim";
@@ -462,12 +455,6 @@
       })
     '';
 
-    # Vimscript設定（カラースキーム）
-    extraConfigVim = ''
-      colorscheme nanode
-      " colorscheme tokyonight-day
-    '';
-
     # 追加パッケージ（LSP/ツール）
     extraPackages = with pkgs; [
       # CLI補助
@@ -492,8 +479,10 @@
       wget
     ];
 
-    # カラースキーム（tokyonightも利用可能）
-    # colorschemes.tokyonight.enable = true;
+    colorschemes.tokyonight = {
+      enable = true;
+      settings.light_style = "day";
+    };
   };
 
   # 環境変数
