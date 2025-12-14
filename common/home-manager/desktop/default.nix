@@ -8,7 +8,6 @@
   imports = [
     ./desktop_app.nix
     ./activate-linux.nix
-    ./niri.nix
   ];
   programs.fuzzel = {
     enable = true;
