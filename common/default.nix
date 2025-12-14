@@ -11,6 +11,6 @@
     ./power.nix
     ./nix.nix
     ./impersistence.nix
-    ./steam
+    ./options
   ];
 }
