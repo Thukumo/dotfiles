@@ -6,7 +6,6 @@
   ];
 
   imports = [
-    ./desktop_app.nix
     ./activate-linux.nix
   ];
   programs.fuzzel = {

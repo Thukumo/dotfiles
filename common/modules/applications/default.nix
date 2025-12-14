@@ -1,8 +1,10 @@
-{ ... }:
+{ lib, ... }:
 {
-  # 後でなんか考える
-  imports = [
-    ./chromium.nix
-    ./mattermost_desktop.nix
-  ];
+  imports = map (name: ./. + "/${name}") (
+    builtins.attrNames (
+      lib.filterAttrs (
+        name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
+      ) (builtins.readDir ./.)
+    )
+  );
 }
