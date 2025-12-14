@@ -6,7 +6,7 @@
 
 {
 
-  tsukumo.desktop.steam.enable = true;
+  # custom.desktop.steam.enable = true;
 
   imports = [
     ./hardware.nix
