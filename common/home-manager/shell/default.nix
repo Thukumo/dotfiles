@@ -9,6 +9,9 @@
     bluetui
     zellij
     trash-cli
+    ffmpeg
+    yt-dlp
+    wev
 
     # yazi用
     vlc
