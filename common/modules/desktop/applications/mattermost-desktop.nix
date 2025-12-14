@@ -1,12 +1,12 @@
 { lib, config, ... }:
 {
-  options.custom.apps.mattermost-desktop = {
+  options.custom.desktop.apps.mattermost-desktop = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = config.custom.desktop.type != null;
     };
   };
-  config = lib.mkIf config.custom.apps.mattermost-desktop.enable {
+  config = lib.mkIf config.custom.desktop.apps.mattermost-desktop.enable {
     home-manager.users."tsukumo" =
       { pkgs, config, ... }:
       {

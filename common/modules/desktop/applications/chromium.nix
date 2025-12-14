@@ -1,12 +1,12 @@
 { lib, config, ... }:
 {
-  options.custom.apps.chromium = {
+  options.custom.desktop.apps.chromium = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = config.custom.desktop.type != null;
     };
   };
-  config = lib.mkIf config.custom.apps.chromium.enable {
+  config = lib.mkIf config.custom.desktop.apps.chromium.enable {
     home-manager.users."tsukumo" =
       { ... }:
       {

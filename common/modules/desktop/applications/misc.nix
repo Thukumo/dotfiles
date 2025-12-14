@@ -6,10 +6,10 @@
 }:
 
 let
-  cfg = config.custom.apps;
+  cfg = config.custom.desktop.apps;
 in
 {
-  options.custom.apps = {
+  options.custom.desktop.apps = {
     libreoffice.enable = lib.mkOption {
       type = lib.types.bool;
       default = config.custom.desktop.type != null;

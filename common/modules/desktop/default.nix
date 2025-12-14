@@ -10,7 +10,7 @@
   imports = [
     ./greetd.nix
     ./niri
-    ./steam
+    ./applications
   ];
 
   config = lib.mkIf (config.custom.desktop.type != null) {
