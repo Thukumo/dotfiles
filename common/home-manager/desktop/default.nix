@@ -7,7 +7,6 @@
 
   imports = [
     ./desktop_app.nix
-    # ./steam.nix
     ./activate-linux.nix
     ./niri.nix
   ];

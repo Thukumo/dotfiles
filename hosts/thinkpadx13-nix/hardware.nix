@@ -116,9 +116,4 @@
 
   # bluetooth
   hardware.bluetooth.enable = true;
-
-  # for Steam
-  hardware.graphics = {
-    enable32Bit = true;
-  };
 }

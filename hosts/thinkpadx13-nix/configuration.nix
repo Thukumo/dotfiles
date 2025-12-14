@@ -5,6 +5,9 @@
 { pkgs, ... }:
 
 {
+
+  tsukumo.desktop.steam.enable = true;
+
   imports = [
     ./hardware.nix
   ];
