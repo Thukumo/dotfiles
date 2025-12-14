@@ -22,6 +22,10 @@
   #   };
   # };
 
+  imports = [
+    ./home-activate-linux.nix
+  ];
+
   programs.niri = {
     enable = true;
     package = pkgs.niri.overrideAttrs (old: {
@@ -119,6 +123,13 @@
             "${pkgs.brightnessctl}/bin/brightnessctl"
             "set"
             "100%"
+          ];
+        }
+        {
+          argv = [
+            "bash"
+            "-c"
+            "LANG=C ${pkgs.activate-linux}/bin/activate-linux -d"
           ];
         }
       ];

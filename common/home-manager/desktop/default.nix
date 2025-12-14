@@ -6,7 +6,6 @@
   ];
 
   imports = [
-    ./activate-linux.nix
   ];
   programs.fuzzel = {
     enable = true;
