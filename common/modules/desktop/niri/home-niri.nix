@@ -125,14 +125,7 @@
             "100%"
           ];
         }
-        {
-          argv = [
-            "bash"
-            "-c"
-            "LANG=C ${pkgs.activate-linux}/bin/activate-linux -d"
-          ];
-        }
-      ];
+     ];
     };
   };
 
