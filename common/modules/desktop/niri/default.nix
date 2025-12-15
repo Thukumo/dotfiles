@@ -10,8 +10,15 @@
         initial_session.command = default_session.command;
       };
     };
-    home-manager.users."tsukumo".imports = [
-      ./home-niri.nix
-    ];
+    home-manager.users."tsukumo" =
+      { ... }:
+      {
+        imports = [
+          ./home-niri.nix
+        ];
+        home.sessionVariables = {
+          ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+        };
+      };
   };
 }

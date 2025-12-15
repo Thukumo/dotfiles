@@ -11,6 +11,8 @@
     ./greetd.nix
     ./niri
     ./applications
+    ./term.nix
+    ./launcher.nix
   ];
 
   config = lib.mkIf (config.custom.desktop.type != null) {
@@ -27,5 +29,13 @@
 
     security.polkit.enable = true;
 
+    home-manager.users."tsukumo".services.mako = {
+      enable = true;
+      settings = {
+        ignore-timeout = 1;
+        default-timeout = 5000;
+        max-visible = 10;
+      };
+    };
   };
 }

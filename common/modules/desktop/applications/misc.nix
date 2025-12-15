@@ -26,6 +26,11 @@ in
       type = lib.types.bool;
       default = config.custom.desktop.type != null;
     };
+    thunar.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = config.custom.desktop.type != null;
+    };
+
   };
 
   config = lib.mkMerge [
@@ -54,6 +59,11 @@ in
         nssmdns4 = true;
         openFirewall = true;
       };
+    })
+    (lib.mkIf cfg.thunar.enable {
+      home-manager.users."tsukumo".home.packages = [
+        pkgs.xfce.thunar
+      ];
     })
   ];
 }

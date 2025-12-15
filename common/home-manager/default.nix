@@ -25,7 +25,6 @@
   imports = [
     ./podman.nix
     ./shell
-    ./desktop
     # ./xremap
     ./ime.nix
     ./impermanence.nix
