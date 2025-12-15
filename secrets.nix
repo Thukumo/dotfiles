@@ -9,6 +9,6 @@ in
 {
   "common/feats/secrets/secrets/passwd_tsukumo.age".publicKeys = allKeys;
   "common/feats/secrets/secrets/home_manager_key.age".publicKeys = allKeys;
-  "common/feats/secrets/ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
-  "common/feats/secrets/ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
+  "common/feats/secrets/home-ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
+  "common/feats/secrets/home-ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
 }
