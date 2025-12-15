@@ -63,7 +63,7 @@
               normalBind = {
                 "Shift+P" = power-off-monitors;
 
-                "Return" = spawn "${pkgs.foot}/bin/footclient";
+                "Return" = spawn "footclient";
                 "Space" = spawn "fuzzel";
                 # "Space" = spawn "anyrun";
                 "M" = spawn "mattermost-desktop";
