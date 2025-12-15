@@ -84,7 +84,7 @@
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = "adapta";
+      color_theme = "adwaita";
     };
   };
   home.file = {
