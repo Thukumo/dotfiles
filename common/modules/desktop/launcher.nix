@@ -21,5 +21,6 @@
         };
       };
     })
+    # (lib.mkIf (config.custom.desktop.launcher.type == "anyrun"))
   ];
 }

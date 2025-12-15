@@ -13,15 +13,6 @@
     # anyrun
   ];
 
-  # 少なくとも今使ってるNiriのflakeだと勝手に設定されてる?
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gtk ];
-  #   config.preferred = {
-  #     default = ["wlr" "gtk"];
-  #   };
-  # };
-
   imports = [
     ./home-activate-linux.nix
   ];
@@ -75,7 +66,10 @@
                 "Return" = spawn "${pkgs.foot}/bin/footclient";
                 "Space" = spawn "fuzzel";
                 # "Space" = spawn "anyrun";
-                "M" = spawn "chromium" "--new-window";
+                "M" = spawn "mattermost-desktop";
+                "C" = spawn "chromium";
+                "Shift+C" = spawn "google-chrome-stable" "--new-window";
+                "X" = spawn "google-chrome-stable" "--new-window" "https://x.com/home";
 
                 "H" = focus-column-left;
                 "L" = focus-column-right;
@@ -125,7 +119,7 @@
             "100%"
           ];
         }
-     ];
+      ];
     };
   };
 
