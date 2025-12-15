@@ -39,7 +39,7 @@
   # home.sessionPath = [
   #   "$HOME/.cargo/bin"
   # ];
-  home.persistence."/persist/${config.home.homeDirectory}".directories = [
+  home.persistence."/persist${config.home.homeDirectory}".directories = [
     ".gemini"
   ];
   home.shell.enableFishIntegration = true;

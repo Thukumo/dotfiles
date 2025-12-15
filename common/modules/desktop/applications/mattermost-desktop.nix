@@ -15,7 +15,7 @@
         # 先に/dev/nullへのシンボリックリンクにしておく
         xdg.configFile."autostart/electron.desktop".source =
           config.lib.file.mkOutOfStoreSymlink "/dev/null";
-        home.persistence."/persist/${config.home.homeDirectory}".directories = [
+        home.persistence."/persist${config.home.homeDirectory}".directories = [
           ".config/Mattermost"
         ];
       };

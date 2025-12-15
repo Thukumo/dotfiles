@@ -16,9 +16,11 @@
     LC_TELEPHONE = "ja_JP.UTF-8";
     LC_TIME = "ja_JP.UTF-8";
   };
-  home-manager.users."tsukumo" = { ... }: {
-    xdg.configFile."user-dirs.locale" = {
-      text = "en_US";
+  home-manager.users."tsukumo" =
+    { ... }:
+    {
+      xdg.configFile."user-dirs.locale" = {
+        text = "en_US";
+      };
     };
-  };
 }
