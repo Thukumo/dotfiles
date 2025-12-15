@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 
 {
   environment.persistence."/persist" = {
@@ -10,6 +10,7 @@
       "/var/lib/systemd/timers"
       "/var/lib/nixos"
       "/var/log"
+      (builtins.dirOf config.custom.secrets.secretKey) # これsecretsに置くべき？
     ];
     files = [ "/etc/machine-id" ];
   };

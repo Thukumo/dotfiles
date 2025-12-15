@@ -26,7 +26,6 @@
     ./podman.nix
     ./shell
     ./ime.nix
-    ./ragenix
   ];
   programs.fish = {
     enable = true;
