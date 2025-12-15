@@ -15,4 +15,7 @@
   };
   # for "home-manager" impermanence
   programs.fuse.userAllowOther = true;
+  home-manager.users."tsukumo".imports = [
+    ./home-impermanence.nix
+  ];
 }
