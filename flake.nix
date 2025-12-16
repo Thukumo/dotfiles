@@ -20,6 +20,11 @@
     niri.url = "github:sodiboo/niri-flake";
 
     ragenix.url = "github:yaxitech/ragenix";
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -31,6 +36,7 @@
       niri,
       ragenix,
       nix-index-database,
+      disko,
       ...
     }@inputs:
     let
@@ -60,6 +66,7 @@
         { programs.nix-index-database.comma.enable = true; }
 
         ragenix.nixosModules.default
+        disko.nixosModules.disko
       ];
 
       mkHost =

@@ -1,4 +1,9 @@
-{ config, inputs, lib, ... }:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 
 {
   options.custom.secrets.secretKey = lib.mkOption {
@@ -27,7 +32,9 @@
       ./home-ragenix
     ];
     environment.shellAliases = {
-      rekey = "pushd ${config.users.users."tsukumo".home}/dotfiles/ && sudo ragenix -r -i ${config.custom.secrets.secretKey} && cd -";
+      rekey = "pushd ${
+        config.users.users."tsukumo".home
+      }/dotfiles/ && sudo ragenix -r -i ${config.custom.secrets.secretKey} && cd -";
     };
   };
 }

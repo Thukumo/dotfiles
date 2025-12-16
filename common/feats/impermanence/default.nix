@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 {
   environment.persistence."/persist" = {

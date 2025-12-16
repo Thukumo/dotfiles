@@ -9,7 +9,7 @@
   # custom.desktop.steam.enable = true;
 
   imports = [
-    ./hardware.nix
+    # ./hardware.nix
   ];
 
   zramSwap = {
@@ -18,7 +18,14 @@
   };
 
   # agenix key
-  custom.secrets.secretKey = "/etc/age/key.txt";
+  custom = {
+    secrets.secretKey = "/etc/age/key.txt";
+    disko = {
+      enable = true;
+      diskName =  "/dev/disk/by-id/nvme-SKHynix_HFS256GD9TNI-L2B0B_NY06N11541090762N";
+      swapSize = "10G";
+    };
+  };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
