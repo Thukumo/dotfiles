@@ -4,48 +4,55 @@ set -e
 # Usage: ./install.sh <HOSTNAME>
 # Example: ./install.sh hostname
 
-FLAKE_URI="github:thukumo/dotfiles#$1"
-shift
+HOSTNAME="$1"
+
+# スクリプトがある場所のディレクトリ名を取得
+SCRIPT_DIR=$(cd $(dirname $0); pwd)
+
+# もし今いる場所が "dotfiles" という名前なら、すでに中にいると判断して何もしない
+# そうでなければ dotfiles ディレクトリを探して入る
+if [ "$(basename "$PWD")" != "dotfiles" ]; then
+    if [ -d "dotfiles" ]; then
+        cd dotfiles
+    elif [ -d "$SCRIPT_DIR/dotfiles" ]; then
+        cd "$SCRIPT_DIR/dotfiles"
+    else
+        echo "Error: 'dotfiles' directory not found."
+        exit 1
+    fi
+fi
+
+echo "Gen config"
+pushd "hosts/$HOSTNAME"
+nixos-generate-config --no-filesystems --dir .
+git add hardware-configuration.nix
+popd
 
 # 1. Disko (Partitioning & Mounting)
 echo "Running Disko..."
-nix run github:nix-community/disko -- --mode disko --flake "$FLAKE_URI"
+nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko --flake ".#$HOSTNAME"
 
 # 2. Generate Age Key
+echo "Generate age key"
 mkdir -p /mnt/persist/etc/age
-nix shell nixpkgs#rage -c rage-keygen -o /mnt/persist/etc/age/key.txt
+nix --extra-experimental-features "nix-command flakes" shell nixpkgs#rage -c rage-keygen -o /mnt/persist/etc/age/key.txt
 
-# 3. Clone Repository (Prepare for Pull)
-# FLAKE_URI (github:user/repo#host) から Git URL と Hostname を抽出
-RAW_URI="${FLAKE_URI%%#*}"
-HOSTNAME="${FLAKE_URI##*#}"
-
-# github:user/repo -> https://github.com/user/repo
-if [[ "$RAW_URI" == github:* ]]; then
-    GIT_URL="https://github.com/${RAW_URI#github:}"
-else
-    GIT_URL="$RAW_URI"
-fi
-
-DEST_DIR="/mnt/persist/home/tsukumo/dotfiles"
-if [ ! -d "$DEST_DIR/.git" ]; then
-    echo "Cloning config to $DEST_DIR..."
-    git clone "$GIT_URL" "$DEST_DIR"
-fi
-
-# 4. Wait for Rekey & Pull
+# 3. Wait for Rekey & Pull
 echo "Waiting for rekey..."
 read -p "Rekey secrets externally, push, then press [Enter] to pull and install..."
 
-echo "Pulling latest changes..."
-pushd "$DEST_DIR" > /dev/null
-git pull
+# 4. Clone Repository (Prepare for Pull)
+
+DEST_DIR="/mnt/persist/home/tsukumo/dotfiles"
+git clone https://github.com/thukumo/dotfiles "$DEST_DIR"
+
 echo "Gen config"
-pushd "hosts/$HOSTNAME" > /dev/null
-nixos-generate-config --no-filesystems
-popd > /dev/null
-popd > /dev/null
+pushd "$DEST_DIR/hosts/$HOSTNAME"
+nixos-generate-config --no-filesystems --dir .
+git add hardware-configuration.nix
+popd
 
 # 5. NixOS Install
 echo "Installing NixOS..."
 nixos-install --flake "${DEST_DIR}#${HOSTNAME}"
+
