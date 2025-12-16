@@ -18,10 +18,7 @@
   };
 
   # agenix key
-  custom.secrets.secretKey = "/persist/etc/age/key.txt";
-  environment.persistence."/persist".directories = [
-    "/etc/age"
-  ];
+  custom.secrets.secretKey = "/etc/age/key.txt";
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 

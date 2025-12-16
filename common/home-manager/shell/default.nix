@@ -95,5 +95,6 @@
   home.shellAliases = {
     ls = "${pkgs.lsd}/bin/lsd";
     cat = "${pkgs.bat}/bin/bat";
+    # nano = "${pkgs.micro-full}/bin/micro";
   };
 }
