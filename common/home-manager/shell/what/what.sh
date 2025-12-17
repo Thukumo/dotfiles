@@ -1,0 +1,1 @@
+readlink $(which "$1")
