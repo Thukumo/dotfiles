@@ -3,7 +3,7 @@ let
     home_manager_key = "age1nzd7yc6dyg2m5ev35zdtydw8vprqx2qyt5pg6l5h786gqnge3vvsp6xxvh";
     backup-pixel9a = "age1akl70p6av6sjhuqa8wrr9ms5vn0jy6kgn5vh35c9m0jmg6hlrqtq9hp4cm";
     thinkpadx13-gen1 = "age1y3w68vz3g24mcaqu42vg76q0p9urnjekn42p60nlxnkh2zgdwqfsm4txkl";
-    gf65 = "age1vjrjqzzz6fdkxg9vrnajx8lyr3r0qdv9xt6kcnxxd37pp7yt7s2q72hcsd";
+    gf65 = "age17rpnhyftca3hrzmafyd3rng6nnjezeywasxrawxhuvhsk7x8xewqfynggf";
   };
   allKeys = builtins.attrValues keys;
 in
