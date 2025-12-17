@@ -1,1 +1,1 @@
-tar cvf - "$1" | zstd -"$2"
+tar cvf - "$1" | zstd -T0 -"${2:-3}"
