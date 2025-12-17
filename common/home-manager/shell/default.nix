@@ -35,6 +35,8 @@
   imports = [
     ./nixvim.nix
     ./convd-md2pdf
+    ./pres
+    ./what
   ];
   # home.sessionPath = [
   #   "$HOME/.cargo/bin"
