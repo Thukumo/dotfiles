@@ -25,19 +25,25 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
-      nixpkgs,
-      home-manager,
-      impermanence,
-      nixvim,
-      niri,
-      ragenix,
-      nix-index-database,
-      disko,
-      ...
+    nixpkgs,
+    home-manager,
+    impermanence,
+    nixvim,
+    niri,
+    ragenix,
+    nix-index-database,
+    disko,
+    nixos-generators,
+    ...
     }@inputs:
     let
       inherit (nixpkgs) lib;
@@ -76,14 +82,49 @@
           specialArgs = {
             inherit inputs;
           }
-          // (host.specialArgs or { });
+            // (host.specialArgs or { });
           modules = (commonModules name) ++ (host.modules or [ ]);
         };
     in
-    {
+      {
       formatter = lib.genAttrs (lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts))) (
         name: nixpkgs.legacyPackages.${name}.nixfmt-tree
       );
-      nixosConfigurations = lib.mapAttrs mkHost hosts;
+      nixosConfigurations = lib.mapAttrs mkHost hosts // {
+        installer = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            {
+              networking.networkmanager.enable = lib.mkForce false;
+              networking.wireless = {
+                enable = true;
+                networks = {
+                  # ここにWi-Fiのパスワードを入れる
+                  # "ESSID".psk = "pwd";
+                };
+              };
+              # ホームディレクトリにあるキーペアと同一
+              users.users.nixos.openssh.authorizedKeys.keys = [
+                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbmCSnxi4i+LHKTtZsX++GocB95+Px+uMGC0rywgiXe tsukumo@thinkpadx13-nix"
+              ];
+              services.avahi = {
+                enable = true;
+                hostName = "installer";
+                nssmdns4 = true;
+                publish = {
+                  enable = true;
+                  userServices = true;
+                  addresses = true;
+                };
+              };
+              documentation = {
+                enable = false;
+                nixos.enable = false;
+              };
+            }
+          ];
+        };
+      };
     };
 }
