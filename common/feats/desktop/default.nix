@@ -13,6 +13,7 @@
     ./applications
     ./term.nix
     ./launcher.nix
+    ./ime.nix
   ];
 
   config = lib.mkIf (config.custom.desktop.type != null) {

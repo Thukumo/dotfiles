@@ -25,7 +25,6 @@
   imports = [
     ./podman.nix
     ./shell
-    ./ime.nix
   ];
   programs.fish = {
     enable = true;
