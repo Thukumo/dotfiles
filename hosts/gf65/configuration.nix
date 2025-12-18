@@ -26,6 +26,7 @@
   };
   home-manager.users."tya" = {
     home.persistence."/persist/home/tya" = {
+      allowOther = true;
       directories = [
        ".local/share/Steam"
       ".local/share/applications"
