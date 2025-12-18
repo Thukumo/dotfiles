@@ -200,7 +200,7 @@
     plugins = {
       # UI/UX
       lualine.enable = true;
-      barbar.enable = true;
+      # barbar.enable = true;
       web-devicons.enable = true;
       mini = {
         enable = true;
