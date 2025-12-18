@@ -34,7 +34,7 @@
     environment.shellAliases = {
       rekey = "pushd ${
         config.users.users."tsukumo".home
-      }/dotfiles/ && sudo ragenix -r -i ${config.custom.secrets.secretKey} && cd -";
+      }/dotfiles/ && sudo ragenix -r -i ${config.custom.secrets.secretKey} && popd";
     };
   };
 }
