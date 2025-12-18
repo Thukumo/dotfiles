@@ -7,7 +7,7 @@
     timeout = 0;
   };
 
-  boot.kernel.sysctl."kernel.sysrq" = 1;
+  boot.kernel.sysctl."kernel.sysrq" = 242;
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
 }

@@ -34,16 +34,16 @@
 
   outputs =
     {
-    nixpkgs,
-    home-manager,
-    impermanence,
-    nixvim,
-    niri,
-    ragenix,
-    nix-index-database,
-    disko,
-    nixos-generators,
-    ...
+      nixpkgs,
+      home-manager,
+      impermanence,
+      nixvim,
+      niri,
+      ragenix,
+      nix-index-database,
+      disko,
+      nixos-generators,
+      ...
     }@inputs:
     let
       inherit (nixpkgs) lib;
@@ -82,11 +82,11 @@
           specialArgs = {
             inherit inputs;
           }
-            // (host.specialArgs or { });
+          // (host.specialArgs or { });
           modules = (commonModules name) ++ (host.modules or [ ]);
         };
     in
-      {
+    {
       formatter = lib.genAttrs (lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts))) (
         name: nixpkgs.legacyPackages.${name}.nixfmt-tree
       );

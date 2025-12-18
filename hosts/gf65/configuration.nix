@@ -6,14 +6,25 @@
 
 {
 
-  # custom.desktop.steam.enable = true;
+  custom.desktop.apps = {
+    steam.enable = true;
+    chromium.enable = false;
+    discord.enable = false;
+    google-chrome.enable = false;
+    mattermost-desktop.enable = false;
+    libreoffice.enable = false;
+    zoom.enable = false;
+    gnome-disk-utility.enable = false;
+    rquickshare.enable = false;
+    thunar.enable = false;
+  };
 
   imports = [
   ];
 
   zramSwap = {
     enable = true;
-    memoryPercent = 200;
+    memoryPercent = 100;
   };
 
   # agenix key
@@ -21,7 +32,7 @@
     secrets.secretKey = "/etc/age/key.txt";
     disko = {
       enable = true;
-      diskName =  "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
+      diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
     };
   };
