@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
 
@@ -17,6 +17,25 @@
     gnome-disk-utility.enable = false;
     rquickshare.enable = false;
     thunar.enable = false;
+  };
+
+  # 一時的に人に貸すので、ゲストアカウント的なものを作成
+  users.users."tya" = {
+    isNormalUser = true;
+    password = "tya";
+  };
+  home-manager.users."tya" = {
+    home.persistence."/persist/home/tya" = {
+      directories = [
+       ".local/share/Steam"
+      ".local/share/applications"
+    ];
+  };
+    home.stateVersion = "25.05";
+  };
+  services.greetd.settings = {
+    default_session.user = lib.mkForce "tya";
+    initial_session.user = lib.mkForce "tya";
   };
 
   imports = [
@@ -56,53 +75,11 @@
     variant = "";
   };
 
-  virtualisation = {
-    containers.enable = true;
-    podman = {
-      enable = true;
-      # dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
-    };
-  };
-
   # Enable automatic login for the user.
   # services.getty.autologinUser = "tsukumo";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
-    podman-compose
-  ];
-
-  services.keyd = {
-    enable = true;
-    keyboards.default = {
-      ids = [ "*" ];
-      settings = {
-        main = {
-          capslock = "overload(meta, tab)";
-          shift = "overload(shift, esc)";
-          muhenkan = "home";
-          henkan = "end";
-          katakanahiragana = "end";
-          space = "overload(nav, space)";
-          tab = "/";
-        };
-        nav = {
-          h = "left";
-          k = "up";
-          j = "down";
-          l = "right";
-        };
-        "nav+meta" = {
-          h = "home";
-          l = "end";
-        };
-      };
-    };
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
