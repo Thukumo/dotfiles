@@ -15,7 +15,7 @@
 `rekey`\
 `ssh nixos@installer.local "nixos-generate-config --no-filesystems --show-hardware-config" > hosts/<構成名>/hardware-configuration.nix`\
 `git add hosts`\
-`nix run github:nix-community/nixos-anywhere -- --extra-files tmp --flake .#<構成名> nixos@installer.local`\
+`, nixos-anywhere -- --extra-files tmp --flake .#<構成名> nixos@installer.local`\
 `rm -r tmp && rm result`
 
 ## 暗号化されたデータの追加
