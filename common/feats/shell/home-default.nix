@@ -38,6 +38,9 @@
     ./pres
     ./what
   ];
+  programs.fish = {
+    enable = true;
+  };
   # home.sessionPath = [
   #   "$HOME/.cargo/bin"
   # ];

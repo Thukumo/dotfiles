@@ -15,11 +15,5 @@
   # for shell
   programs.fish.enable = true;
 
-  home-manager.users."tsukumo" = {
-    imports = [
-      ../home-manager
-    ];
-  };
-
   security.sudo.wheelNeedsPassword = false;
 }
