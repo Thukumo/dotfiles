@@ -28,11 +28,10 @@
     home.persistence."/persist/home/tya" = {
       allowOther = true;
       directories = [
-       ".local/share/Steam"
-      ".local/share/applications"
-    ];
-  };
-    home.stateVersion = "25.05";
+        ".local/share/Steam"
+        ".local/share/applications"
+      ];
+    };
   };
   services.greetd.settings = {
     default_session.user = lib.mkForce "tya";
@@ -107,6 +106,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "26.05"; # Did you read the comment?
 
 }

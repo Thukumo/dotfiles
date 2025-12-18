@@ -29,4 +29,10 @@
     check = "pushd ${config.users.users."tsukumo".home}/dotfiles/ && nix flake check && cd -";
     sl = "nix shell";
   };
+
+  home-manager.sharedModules = [
+    {
+      home.stateVersion = config.system.stateVersion;
+    }
+  ];
 }
