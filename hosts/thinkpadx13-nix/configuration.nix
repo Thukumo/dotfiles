@@ -46,15 +46,6 @@
     variant = "";
   };
 
-  virtualisation = {
-    containers.enable = true;
-    podman = {
-      enable = true;
-      # dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
-    };
-  };
-
   # Enable automatic login for the user.
   # services.getty.autologinUser = "tsukumo";
 

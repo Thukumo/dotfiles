@@ -8,13 +8,5 @@
   modules = [
     ./configuration.nix
     ./hardware-configuration.nix
-
-    {
-      home-manager.users."tsukumo" = {
-        imports = [
-          ./home-manager
-        ];
-      };
-    }
   ];
 }
