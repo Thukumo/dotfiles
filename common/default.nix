@@ -1,8 +1,7 @@
-{ ... }:
+{ lib, ... }:
+
 {
-  imports = [
-    ./fonts.nix
-    ./core
-    ./feats
-  ];
+  imports = map (name: ./. + "/${name}") (
+    builtins.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.))
+  );
 }

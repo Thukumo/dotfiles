@@ -8,8 +8,8 @@ let
   allKeys = builtins.attrValues keys;
 in
 {
-  "common/feats/secrets/secrets/passwd_tsukumo.age".publicKeys = allKeys;
-  "common/feats/secrets/secrets/home_manager_key.age".publicKeys = allKeys;
-  "common/feats/secrets/home-ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
-  "common/feats/secrets/home-ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
+  "common/secrets/secrets/passwd_tsukumo.age".publicKeys = allKeys;
+  "common/secrets/secrets/home_manager_key.age".publicKeys = allKeys;
+  "common/secrets/home-ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
+  "common/secrets/home-ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
 }
