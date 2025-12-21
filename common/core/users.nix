@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   options.users.users = lib.mkOption {
@@ -8,6 +8,18 @@
           type = lib.types.nullOr lib.types.str;
           default = null;
           description = "User's email address for git configuration and other uses";
+        };
+        persistence = {
+          directories = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [];
+            description = "Additional directories to persist for this user";
+          };
+          files = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [];
+            description = "Additional files to persist for this user";
+          };
         };
       };
     });
@@ -28,25 +40,22 @@
       # Custom User Configuration
       custom = {
         email = "contact@tsukumo.f5.si";
-        secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519"; 
+        secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
+        
+        persistence = {
+          directories = [
+            "Documents"
+            "dotfiles"
+            ".local/share/fish"
+            ".local/state/wireplumber"
+          ];
+        };
         
         desktop = {
           type = "niri";
           term.type = "foot";
           launcher.type = "fuzzel";
           ime.type = "skk";
-          apps = {
-            chromium.enable = true;
-            discord.enable = true;
-            google-chrome.enable = true;
-            mattermost-desktop.enable = true;
-            steam.enable = true;
-            libreoffice.enable = true;
-            zoom.enable = true;
-            gnome-disk-utility.enable = true;
-            rquickshare.enable = true;
-            thunar.enable = true;
-          };
         };
         
         dev.podman.enable = true;

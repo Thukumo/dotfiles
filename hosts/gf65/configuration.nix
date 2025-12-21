@@ -10,26 +10,20 @@
   users.users."tya" = {
     isNormalUser = true;
     password = "tya";
-    custom.desktop.apps = {
-      steam.enable = true;
-      chromium.enable = false;
-      discord.enable = false;
-      google-chrome.enable = false;
-      mattermost-desktop.enable = false;
-      libreoffice.enable = false;
-      zoom.enable = false;
-      gnome-disk-utility.enable = false;
-      rquickshare.enable = false;
-      thunar.enable = false;
-    };
-  };
-  home-manager.users."tya" = {
-    home.persistence."/persist/home/tya" = {
-      allowOther = true;
-      directories = [
-        ".local/share/Steam"
-        ".local/share/applications"
-      ];
+    custom = {
+      email = "guest@gf65";
+      desktop.apps = {
+        steam.enable = true;
+        chromium.enable = false;
+        discord.enable = false;
+        google-chrome.enable = false;
+        mattermost-desktop.enable = false;
+        libreoffice.enable = false;
+        zoom.enable = false;
+        gnome-disk-utility.enable = false;
+        rquickshare.enable = false;
+        thunar.enable = false;
+      };
     };
   };
   services.greetd.settings = {
