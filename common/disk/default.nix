@@ -56,6 +56,7 @@
               size = config.custom.disko.swapSize;
               content = {
                 type = "swap";
+                discardPolicy = "both";
                 resumeDevice = true;
               };
             };
