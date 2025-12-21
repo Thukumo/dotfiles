@@ -1,14 +1,24 @@
-{ config, lib, ... }:
+{ config, lib, mkForEachUsers, ... }:
 
 {
-  options.custom.desktop.apps.steam = {
-    enable = lib.mkEnableOption "Steam";
+  options.users.users = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options.custom.desktop.apps.steam = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
+      };
+    });
   };
-  config = lib.mkIf config.custom.desktop.apps.steam.enable {
+
+  config = {
     hardware.graphics.enable32Bit = true;
     programs.steam.enable = true;
-    home-manager.users."tsukumo".imports = [
-      ./home-persistence.nix
-    ];
+    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.steam.enable) (user: {
+      imports = [
+        ./home-persistence.nix
+      ];
+    });
   };
 }

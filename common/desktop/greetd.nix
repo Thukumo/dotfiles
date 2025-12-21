@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 {
-  config = lib.mkIf (config.custom.desktop.type != null) {
+  config = {
     services.greetd = {
       enable = true;
       settings = {

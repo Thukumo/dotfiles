@@ -1,12 +1,17 @@
-{ lib, config, ... }:
+{ lib, config, mkForEachUsers, ... }:
 
 {
-  options.custom.desktop = {
-    type = lib.mkOption {
-      type = lib.types.nullOr (lib.types.enum [ "niri" ]);
-      default = "niri";
-    };
+  options.users.users = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options.custom.desktop = {
+        type = lib.mkOption {
+          type = lib.types.nullOr (lib.types.enum [ "niri" ]);
+          default = "niri";
+        };
+      };
+    });
   };
+
   imports = [
     ./greetd.nix
     ./niri
@@ -16,7 +21,7 @@
     ./ime.nix
   ];
 
-  config = lib.mkIf (config.custom.desktop.type != null) {
+  config = {
 
     environment.pathsToLink = [
       "/share/xdg-desktop-portal"
@@ -30,13 +35,15 @@
 
     security.polkit.enable = true;
 
-    home-manager.users."tsukumo".services.mako = {
-      enable = true;
-      settings = {
-        ignore-timeout = 1;
-        default-timeout = 5000;
-        max-visible = 10;
+    home-manager.users = mkForEachUsers (user: user.custom.desktop.type != null) (user: {
+      services.mako = {
+        enable = true;
+        settings = {
+          ignore-timeout = 1;
+          default-timeout = 5000;
+          max-visible = 10;
+        };
       };
-    };
+    });
   };
 }

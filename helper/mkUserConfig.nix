@@ -1,15 +1,14 @@
 { config, lib, ... }:
 {
   _module.args = {
-    mkForEachUsers =
-      filterFunc: contentOrFunc:
+    mkForEachUsers = condition: content:
       lib.mkMerge (
         lib.mapAttrsToList (
-          name: userCfg:
-          lib.mkIf (userCfg.isNormalUser && filterFunc userCfg) {
-            "${name}" = if builtins.isFunction contentOrFunc then contentOrFunc userCfg else contentOrFunc;
+          name: user:
+          lib.mkIf (user.isNormalUser && (condition user)) {
+            "${name}" = if builtins.isFunction content then content user else content;
           }
-        ) config.custom.users
+        ) config.users.users
       );
   };
 }

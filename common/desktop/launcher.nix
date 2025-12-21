@@ -1,26 +1,29 @@
-{ lib, config, ... }:
+{ lib, config, mkForEachUsers, pkgs, ... }:
 
 {
-  # この値に関わらずniriでfuzzel使ってる
-  options.custom.desktop.launcher = {
-    type = lib.mkOption {
-      type = lib.types.nullOr (lib.types.enum [ "fuzzel" ]);
-      default = lib.mapNullable (_: "fuzzel") config.custom.desktop.type;
-    };
+  options.users.users = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options.custom.desktop.launcher = {
+        type = lib.mkOption {
+          type = lib.types.nullOr (lib.types.enum [ "fuzzel" ]);
+          default = "fuzzel";
+        };
+      };
+    });
   };
-  config = lib.mkMerge [
-    (lib.mkIf (config.custom.desktop.launcher.type == "fuzzel") {
-      home-manager.users."tsukumo".programs.fuzzel = {
+
+  # この値に関わらずniriでfuzzel使ってる
+  config = {
+    home-manager.users = mkForEachUsers (user: user.custom.desktop.launcher.type == "fuzzel") (user: {
+      programs.fuzzel = {
         enable = true;
         settings = {
           main = {
-            use-bold = "yes";
-            dpi-aware = "no";
-            font = "Adwaita Mono Nerd Font:size=18";
+            terminal = "${pkgs.foot}/bin/foot";
+            layer = "overlay";
           };
         };
       };
-    })
-    # (lib.mkIf (config.custom.desktop.launcher.type == "anyrun"))
-  ];
+    });
+  };
 }

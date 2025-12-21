@@ -17,9 +17,14 @@
     memoryPercent = 200;
   };
 
-  # agenix key
+  # agenix system key (for secrets not tied to a specific user)
+  custom.secrets.extraIdentityPaths = [ "/persist/etc/age/key.txt" ];
+  environment.persistence."/persist".directories = [ 
+    "/etc/age"
+    "/home/tsukumo/.ssh"  # persist tsukumo's secret key
+  ];
+
   custom = {
-    secrets.secretKey = "/etc/age/key.txt";
     disko = {
       # enable = true; # 後で再インストールするときに有効にする
       diskName = "/dev/disk/by-id/nvme-SKHynix_HFS256GD9TNI-L2B0B_NY06N11541090762N";

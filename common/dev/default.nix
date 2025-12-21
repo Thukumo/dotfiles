@@ -1,10 +1,15 @@
-{ lib, config, ... }:
+{ lib, config, mkForEachUsers, ... }:
 
 {
-  options.custom.dev.podman = {
-    enable = lib.mkEnableOption "podman";
+  options.users.users = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options.custom.dev.podman = {
+        enable = lib.mkEnableOption "podman";
+      };
+    });
   };
-  config = lib.mkIf config.custom.dev.podman.enable {
+
+  config = {
     virtualisation = {
       containers.enable = true;
       podman = {
@@ -14,8 +19,10 @@
       };
     };
 
-    home-manager.users."tsukumo".imports = [
-      ./podman.nix
-    ];
+    home-manager.users = mkForEachUsers (user: user.custom.dev.podman.enable) (user: {
+      imports = [
+        ./podman.nix
+      ];
+    });
   };
 }

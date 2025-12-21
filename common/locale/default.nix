@@ -1,4 +1,4 @@
-{ ... }:
+{ mkForEachUsers, ... }:
 
 {
   time.timeZone = "Asia/Tokyo";
@@ -16,11 +16,9 @@
     LC_TELEPHONE = "ja_JP.UTF-8";
     LC_TIME = "ja_JP.UTF-8";
   };
-  home-manager.users."tsukumo" =
-    { ... }:
-    {
-      xdg.configFile."user-dirs.locale" = {
-        text = "en_US";
-      };
+  home-manager.users = mkForEachUsers (u: true) (u: {
+    xdg.configFile."user-dirs.locale" = {
+      text = "en_US";
     };
+  });
 }

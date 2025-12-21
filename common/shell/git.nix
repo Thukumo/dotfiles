@@ -1,12 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, osConfig, config, ... }:
 
 {
   programs.git = {
     enable = true;
     settings = {
       user = {
-        name = "Tsukumo";
-        email = "contact@tsukumo.f5.si";
+        name = config.home.username; # or osConfig.users.users.${config.home.username}.name (which is redundant)
+        email = osConfig.users.users.${config.home.username}.custom.email;
       };
     };
   };

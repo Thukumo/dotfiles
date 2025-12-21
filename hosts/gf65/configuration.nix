@@ -6,7 +6,7 @@
 
 {
 
-  custom.desktop.apps = {
+  users.users."tsukumo".custom.desktop.apps = lib.mkForce {
     steam.enable = true;
     chromium.enable = false;
     discord.enable = false;
@@ -23,6 +23,19 @@
   users.users."tya" = {
     isNormalUser = true;
     password = "tya";
+    custom.email = "guest@gf65";
+    custom.desktop.apps = {
+      steam.enable = true;
+      chromium.enable = false;
+      discord.enable = false;
+      google-chrome.enable = false;
+      mattermost-desktop.enable = false;
+      libreoffice.enable = false;
+      zoom.enable = false;
+      gnome-disk-utility.enable = false;
+      rquickshare.enable = false;
+      thunar.enable = false;
+    };
   };
   home-manager.users."tya" = {
     home.persistence."/persist/home/tya" = {
@@ -46,9 +59,14 @@
     memoryPercent = 100;
   };
 
-  # agenix key
+  # agenix system key (for secrets not tied to a specific user)
+  custom.secrets.extraIdentityPaths = [ "/persist/etc/age/key.txt" ];
+  environment.persistence."/persist".directories = [ 
+    "/etc/age"
+    "/home/tsukumo/.ssh"  # persist tsukumo's secret key
+  ];
+
   custom = {
-    secrets.secretKey = "/etc/age/key.txt";
     disko = {
       enable = true;
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";

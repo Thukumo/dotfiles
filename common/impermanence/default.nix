@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, config, mkForEachUsers, ... }:
 
 {
   environment.persistence."/persist" = {
@@ -15,9 +15,12 @@
   };
   # for "home-manager" impermanence
   programs.fuse.userAllowOther = true;
-  home-manager.users."tsukumo".imports = [
-    ./home-impermanence.nix
-  ];
+  home-manager.users = mkForEachUsers (u: u.isNormalUser) (u: {
+    imports = [
+      ./home-impermanence.nix
+    ];
+  });
+  
   boot.initrd.postDeviceCommands = lib.mkIf config.custom.disko.enable (
     lib.mkAfter ''
       mkdir -p /mnt

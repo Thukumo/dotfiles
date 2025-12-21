@@ -10,7 +10,7 @@
 
   nixpkgs.config.allowUnfree = true;
   home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
+  home-manager.useUserPackages = false;
 
   nix.gc = {
     automatic = true;

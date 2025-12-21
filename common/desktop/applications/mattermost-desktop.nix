@@ -1,23 +1,26 @@
-{ lib, config, ... }:
+{ lib, config, mkForEachUsers, pkgs, ... }:
 {
-  options.custom.desktop.apps.mattermost-desktop = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = config.custom.desktop.type != null;
-    };
-  };
-  config = lib.mkIf config.custom.desktop.apps.mattermost-desktop.enable {
-    home-manager.users."tsukumo" =
-      { pkgs, config, ... }:
-      {
-        home.packages = [ pkgs.mattermost-desktop ];
-        # Mattermost Desktopが~/.config/autostart/electron.desktopを作ってきて困るので、
-        # 先に/dev/nullへのシンボリックリンクにしておく
-        xdg.configFile."autostart/electron.desktop".source =
-          config.lib.file.mkOutOfStoreSymlink "/dev/null";
-        home.persistence."/persist${config.home.homeDirectory}".directories = [
-          ".config/Mattermost"
-        ];
+  options.users.users = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options.custom.desktop.apps.mattermost-desktop = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
       };
+    });
+  };
+
+  config = {
+    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.mattermost-desktop.enable) (user: { config, ... }: {
+      home.packages = [ pkgs.mattermost-desktop ];
+      # Mattermost Desktopが~/.config/autostart/electron.desktopを作ってきて困るので、
+      # 先に/dev/nullへのシンボリックリンクにしておく
+      xdg.configFile."autostart/electron.desktop".source =
+        config.lib.file.mkOutOfStoreSymlink "/dev/null";
+      home.persistence."/persist${config.home.homeDirectory}".directories = [
+        ".config/Mattermost"
+      ];
+    });
   };
 }
