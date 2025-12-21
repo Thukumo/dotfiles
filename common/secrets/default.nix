@@ -62,7 +62,7 @@
       };
     };
 
-    home-manager.users = mkForEachUsers (_: true) (u: {
+    home-manager.users = mkForEachUsers (u: u.name == "tsukumo") (u: {
       imports = [
         ./home-ragenix
       ];
