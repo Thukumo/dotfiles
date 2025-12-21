@@ -11,11 +11,7 @@
 
   boot.kernelParams = [
     "resume=/dev/mapper/vg-swap"
-    "amd_pstate=disable"
   ];
-
-  # for Btrfs
-  # boot.initrd.systemd.enable = true;
 
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     mkdir -p /mnt

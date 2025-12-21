@@ -2,28 +2,14 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ lib, pkgs, ... }:
+{ lib, ... }:
 
 {
-
-  users.users."tsukumo".custom.desktop.apps = lib.mkForce {
-    steam.enable = true;
-    chromium.enable = false;
-    discord.enable = false;
-    google-chrome.enable = false;
-    mattermost-desktop.enable = false;
-    libreoffice.enable = false;
-    zoom.enable = false;
-    gnome-disk-utility.enable = false;
-    rquickshare.enable = false;
-    thunar.enable = false;
-  };
 
   # 一時的に人に貸すので、ゲストアカウント的なものを作成
   users.users."tya" = {
     isNormalUser = true;
     password = "tya";
-    custom.email = "guest@gf65";
     custom.desktop.apps = {
       steam.enable = true;
       chromium.enable = false;

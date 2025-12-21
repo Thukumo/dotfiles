@@ -5,7 +5,9 @@
     type = lib.types.attrsOf (lib.types.submodule {
       options.custom = {
         email = lib.mkOption {
-          type = lib.types.str;
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "User's email address for git configuration and other uses";
         };
       };
     });

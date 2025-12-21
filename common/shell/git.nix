@@ -1,12 +1,15 @@
-{ pkgs, osConfig, config, ... }:
+{ pkgs, osConfig, config, lib, ... }:
 
 {
   programs.git = {
     enable = true;
     settings = {
       user = {
-        name = config.home.username; # or osConfig.users.users.${config.home.username}.name (which is redundant)
-        email = osConfig.users.users.${config.home.username}.custom.email;
+        name = config.home.username;
+        email = lib.mkDefault (
+          osConfig.users.users.${config.home.username}.custom.email 
+          or "${config.home.username}@localhost"
+        );
       };
     };
   };
