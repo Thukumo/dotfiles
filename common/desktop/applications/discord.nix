@@ -1,14 +1,14 @@
 { lib, config, mkForEachUsers, pkgs, ... }:
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
+    type = lib.types.attrsOf (lib.types.submodule ({config, ...}: {
       options.custom.desktop.apps.discord = {
         enable = lib.mkOption {
           type = lib.types.bool;
-          default = false;
+          default = config.custom.desktop.type != null;
         };
       };
-    });
+    }));
   };
 
   config = {

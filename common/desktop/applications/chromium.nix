@@ -1,4 +1,4 @@
-{ lib, config, mkForEachUsers, ... }:
+{ lib, mkForEachUsers, ... }:
 {
   options.users.users = lib.mkOption {
     type = lib.types.attrsOf (lib.types.submodule ({ config, ... }: {
