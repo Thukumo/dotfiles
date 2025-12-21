@@ -21,7 +21,6 @@
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
   environment.persistence."/persist".directories = [ 
     "/etc/age"
-    "/home/tsukumo/.ssh"  # persist tsukumo's secret key
   ];
 
   custom = {

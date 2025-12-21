@@ -41,9 +41,8 @@
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
-  environment.persistence."/persist".directories = [ 
-    "/etc/age"
-    "/home/tsukumo/.ssh"  # persist tsukumo's secret key
+  environment.persistence."/persist".files = [
+    "/etc/age/key.txt"
   ];
 
   custom = {

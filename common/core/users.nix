@@ -48,6 +48,7 @@
             "dotfiles"
             ".local/share/fish"
             ".local/state/wireplumber"
+            ".ssh" # for known_hosts
           ];
         };
         

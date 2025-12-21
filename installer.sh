@@ -1,6 +1,6 @@
 set -e
 
-rm -r tmp
+rm -rf tmp
 mkdir -p tmp/mnt/persist/etc/age
 , rage-keygen -o tmp/mnt/persist/etc/age/key.txt
 chmod 600 tmp/mnt/persist/etc/age/key.txt
