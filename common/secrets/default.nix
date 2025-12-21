@@ -28,13 +28,6 @@
   };
 
   config = let
-    userIdentityPaths = lib.flatten (
-      lib.mapAttrsToList (_: u:
-        lib.optional (u.custom.secrets.secretKey or null != null)
-          ("/persist" + u.custom.secrets.secretKey)
-      ) config.users.users
-    );
-    
     userRekeyAliases = lib.mkMerge (
       lib.mapAttrsToList (name: u:
         lib.optionalAttrs (u.custom.secrets.secretKey or null != null) {
@@ -42,6 +35,17 @@
         }
       ) config.users.users
     );
+
+    isPersisted = path: let
+      persistence = config.environment.persistence or {};
+      mounts = lib.attrValues persistence;
+      getPath = x: if builtins.isString x then x else (x.file or x.directory);
+      persistedFiles = lib.flatten (map (m: map getPath (m.files or [])) mounts);
+      persistedDirs = lib.flatten (map (m: map getPath (m.directories or [])) mounts);
+      
+      inFile = lib.elem path persistedFiles;
+      inDir = lib.any (dir: dir == path || lib.hasPrefix (dir + "/") path) persistedDirs;
+    in inFile || inDir;
   in {
     environment.systemPackages = [
       inputs.ragenix.packages."${config.nixpkgs.system}".default
@@ -50,8 +54,13 @@
     # Note: Secret key directories must be added to environment.persistence
     # in each host configuration to avoid infinite recursion
 
+    assertions = map (path: {
+      assertion = isPersisted path;
+      message = "age identity key '${path}' is not configured in environment.persistence. It must be listed in persistence directories or files.";
+    }) config.custom.secrets.extraIdentityPaths;
+
     age = {
-      identityPaths = userIdentityPaths ++ config.custom.secrets.extraIdentityPaths;
+      identityPaths = map (p: "/persist" + p) config.custom.secrets.extraIdentityPaths;
       secrets = {
         "passwd_tsukumo".file = ./secrets/passwd_tsukumo.age;
         "home-manager_key" = {
