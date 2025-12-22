@@ -1,12 +1,15 @@
 set -e
 
+# known_hostsからinstaller.localを削除
+ssh-keygen -R installer.local 2>/dev/null || true
+
 rm -rf tmp
-mkdir -p tmp/mnt/persist/etc/age
-, rage-keygen -o tmp/mnt/persist/etc/age/key.txt
-chmod 600 tmp/mnt/persist/etc/age/key.txt
+mkdir -p tmp/persist/etc/age
+, rage-keygen -o tmp/persist/etc/age/key.txt
+chmod 600 tmp/persist/etc/age/key.txt
 
 # 公開鍵を抽出
-PUBLIC_KEY=$(grep '# public key:' tmp/mnt/persist/etc/age/key.txt | awk '{print $4}')
+PUBLIC_KEY=$(grep '# public key:' tmp/persist/etc/age/key.txt | awk '{print $4}')
 echo "生成された公開鍵: $PUBLIC_KEY"
 
 # secrets.nixに自動追加（既存のキーがあれば削除してから追加）
