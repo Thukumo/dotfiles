@@ -1,15 +1,22 @@
-{ lib, config, mkForEachUsers, ... }:
+{
+  lib,
+  config,
+  mkForEachUsers,
+  ...
+}:
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options.custom.desktop = {
-        type = lib.mkOption {
-          type = lib.types.nullOr (lib.types.enum [ "niri" ]);
-          default = "niri";
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.custom.desktop = {
+          type = lib.mkOption {
+            type = lib.types.nullOr (lib.types.enum [ "niri" ]);
+            default = "niri";
+          };
         };
-      };
-    });
+      }
+    );
   };
 
   imports = [

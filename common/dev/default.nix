@@ -1,12 +1,19 @@
-{ lib, config, mkForEachUsers, ... }:
+{
+  lib,
+  config,
+  mkForEachUsers,
+  ...
+}:
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options.custom.dev.podman = {
-        enable = lib.mkEnableOption "podman";
-      };
-    });
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.custom.dev.podman = {
+          enable = lib.mkEnableOption "podman";
+        };
+      }
+    );
   };
 
   config = {

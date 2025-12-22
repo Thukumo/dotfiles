@@ -19,7 +19,7 @@
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
-  environment.persistence."/persist".directories = [ 
+  environment.persistence."/persist".directories = [
     "/etc/age"
   ];
 

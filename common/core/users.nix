@@ -2,27 +2,29 @@
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options.custom = {
-        email = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          description = "User's email address for git configuration and other uses";
-        };
-        persistence = {
-          directories = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [];
-            description = "Additional directories to persist for this user";
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.custom = {
+          email = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "User's email address for git configuration and other uses";
           };
-          files = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [];
-            description = "Additional files to persist for this user";
+          persistence = {
+            directories = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [ ];
+              description = "Additional directories to persist for this user";
+            };
+            files = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [ ];
+              description = "Additional files to persist for this user";
+            };
           };
         };
-      };
-    });
+      }
+    );
   };
 
   config = {
@@ -36,12 +38,12 @@
         "wheel"
       ];
       shell = pkgs.fish;
-      
+
       # Custom User Configuration
       custom = {
         email = "contact@tsukumo.f5.si";
         secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
-        
+
         persistence = {
           directories = [
             "Documents"
@@ -51,14 +53,14 @@
             ".ssh" # for known_hosts
           ];
         };
-        
+
         desktop = {
           type = "niri";
           term.type = "foot";
           launcher.type = "fuzzel";
           ime.type = "skk";
         };
-        
+
         dev.podman.enable = true;
       };
     };

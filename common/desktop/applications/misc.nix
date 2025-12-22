@@ -8,30 +8,35 @@
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule ({ config, ... }: {
-      options.custom.desktop.apps = {
-        libreoffice.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = config.custom.desktop.type != null;
-        };
-        zoom.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = config.custom.desktop.type != null;
-        };
-        gnome-disk-utility.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = config.custom.desktop.type != null;
-        };
-        rquickshare.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = config.custom.desktop.type != null;
-        };
-        thunar.enable = lib.mkOption {
-          type = lib.types.bool;
-          default = config.custom.desktop.type != null;
-        };
-      };
-    }));
+    type = lib.types.attrsOf (
+      lib.types.submodule (
+        { config, ... }:
+        {
+          options.custom.desktop.apps = {
+            libreoffice.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = config.custom.desktop.type != null;
+            };
+            zoom.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = config.custom.desktop.type != null;
+            };
+            gnome-disk-utility.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = config.custom.desktop.type != null;
+            };
+            rquickshare.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = config.custom.desktop.type != null;
+            };
+            thunar.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = config.custom.desktop.type != null;
+            };
+          };
+        }
+      )
+    );
   };
 
   config = lib.mkMerge [

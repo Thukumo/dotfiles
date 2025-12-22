@@ -1,15 +1,23 @@
-{ lib, config, mkForEachUsers, pkgs, ... }:
+{
+  lib,
+  config,
+  mkForEachUsers,
+  pkgs,
+  ...
+}:
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options.custom.desktop.term = {
-        type = lib.mkOption {
-          type = lib.types.nullOr (lib.types.enum [ "foot" ]);
-          default = "foot";
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.custom.desktop.term = {
+          type = lib.mkOption {
+            type = lib.types.nullOr (lib.types.enum [ "foot" ]);
+            default = "foot";
+          };
         };
-      };
-    });
+      }
+    );
   };
 
   config = {

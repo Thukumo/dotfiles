@@ -1,4 +1,10 @@
-{ pkgs, osConfig, config, lib, ... }:
+{
+  pkgs,
+  osConfig,
+  config,
+  lib,
+  ...
+}:
 
 {
   programs.git = {
@@ -7,8 +13,7 @@
       user = {
         name = config.home.username;
         email = lib.mkDefault (
-          osConfig.users.users.${config.home.username}.custom.email 
-          or "${config.home.username}@localhost"
+          osConfig.users.users.${config.home.username}.custom.email or "${config.home.username}@localhost"
         );
       };
     };

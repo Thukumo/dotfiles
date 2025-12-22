@@ -1,4 +1,9 @@
-{ lib, config, mkForEachUsers, ... }:
+{
+  lib,
+  config,
+  mkForEachUsers,
+  ...
+}:
 
 {
   config = {

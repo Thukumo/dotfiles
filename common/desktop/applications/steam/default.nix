@@ -1,15 +1,22 @@
-{ config, lib, mkForEachUsers, ... }:
+{
+  config,
+  lib,
+  mkForEachUsers,
+  ...
+}:
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options.custom.desktop.apps.steam = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.custom.desktop.apps.steam = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
         };
-      };
-    });
+      }
+    );
   };
 
   config = {

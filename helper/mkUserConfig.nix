@@ -1,7 +1,8 @@
 { config, lib, ... }:
 {
   _module.args = {
-    mkForEachUsers = condition: content:
+    mkForEachUsers =
+      condition: content:
       lib.mkMerge (
         lib.mapAttrsToList (
           name: user:

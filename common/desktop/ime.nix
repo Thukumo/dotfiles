@@ -1,15 +1,23 @@
-{ lib, config, mkForEachUsers, pkgs, ... }:
+{
+  lib,
+  config,
+  mkForEachUsers,
+  pkgs,
+  ...
+}:
 
 {
   options.users.users = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options.custom.desktop.ime = {
-        type = lib.mkOption {
-          type = lib.types.nullOr (lib.types.enum [ "skk" ]);
-          default = null;
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.custom.desktop.ime = {
+          type = lib.mkOption {
+            type = lib.types.nullOr (lib.types.enum [ "skk" ]);
+            default = null;
+          };
         };
-      };
-    });
+      }
+    );
   };
 
   config = {
