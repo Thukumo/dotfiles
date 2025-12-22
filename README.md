@@ -8,15 +8,7 @@
 `nix build .#nixosConfigurations.installer.config.system.build.isoImage`\
 でインストーラのイメージを生成しておく。
 
-`mkdir -p tmp/mnt/persist/etc/age`\
-`, rage-keygen -o tmp/mnt/persist/etc/age/key.txt`\
-`chmod 600 tmp/mnt/persist/etc/age/key.txt`
-(公開鍵をsecrets.nixに登録)\
-`rekey`\
-`ssh nixos@installer.local "nixos-generate-config --no-filesystems --show-hardware-config" > hosts/<構成名>/hardware-configuration.nix`\
-`git add hosts`\
-`, nixos-anywhere -- --extra-files tmp --flake .#<構成名> nixos@installer.local`\
-`rm -r tmp && rm result`
+`bash installer.sh`
 
 ## 暗号化されたデータの追加
 
