@@ -1,8 +1,8 @@
 {
-lib,
-config,
-mkForEachUsers,
-...
+  lib,
+  config,
+  mkForEachUsers,
+  ...
 }:
 
 {
@@ -33,15 +33,14 @@ mkForEachUsers,
       };
     });
 
-
-
     systemd.tmpfiles.rules = [
       "d /persist/home 0755 root root -"
-    ] ++ lib.flatten (
-        lib.mapAttrsToList (
-          name: user: lib.optional user.isNormalUser "d /persist${user.home} 0700 ${name} users - -"
-        ) config.users.users
-      );
+    ]
+    ++ lib.flatten (
+      lib.mapAttrsToList (
+        name: user: lib.optional user.isNormalUser "d /persist${user.home} 0700 ${name} users - -"
+      ) config.users.users
+    );
 
     boot.initrd.postDeviceCommands = lib.mkIf config.custom.disko.enable (
       lib.mkAfter ''

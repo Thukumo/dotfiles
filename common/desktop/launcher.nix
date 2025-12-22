@@ -1,8 +1,6 @@
 {
   lib,
-  config,
   mkForEachUsers,
-  pkgs,
   ...
 }:
 
@@ -27,8 +25,9 @@
         enable = true;
         settings = {
           main = {
-            terminal = "${pkgs.foot}/bin/foot";
-            layer = "overlay";
+            use-bold = "yes";
+            dpi-aware = "no";
+            font = "Adwaita Mono Nerd Font:size=18";
           };
         };
       };
