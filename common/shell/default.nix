@@ -8,7 +8,7 @@
       ./chat.nix
       ./fish.nix
       ./nixvim.nix
-      ./pres
+      # ./pres
       ./what
       ./convd-md2pdf
     ];
