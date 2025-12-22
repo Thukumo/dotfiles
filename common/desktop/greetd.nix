@@ -1,6 +1,11 @@
 { config, lib, ... }:
 
 {
+  # options.custom.desktop = {
+  #   defaultUser = lib.mkOption {
+  #     type = lib.types.str;
+  #   };
+  # };
   config = {
     services.greetd = {
       enable = true;

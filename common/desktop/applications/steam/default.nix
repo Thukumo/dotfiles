@@ -19,13 +19,18 @@
     );
   };
 
-  config = {
-    hardware.graphics.enable32Bit = true;
-    programs.steam.enable = true;
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.steam.enable) (user: {
-      imports = [
-        ./home-persistence.nix
-      ];
-    });
-  };
+  config =
+    lib.mkIf
+      (builtins.any (user: user.custom.desktop.apps.steam.enable) (
+        builtins.attrValues config.users.users
+      ))
+      {
+        hardware.graphics.enable32Bit = true;
+        programs.steam.enable = true;
+        home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.steam.enable) (user: {
+          imports = [
+            ./home-persistence.nix
+          ];
+        });
+      };
 }
