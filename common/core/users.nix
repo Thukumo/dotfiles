@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 {
   options.users.users = lib.mkOption {
@@ -32,7 +32,7 @@
 
     users.users."tsukumo" = {
       isNormalUser = true;
-      hashedPasswordFile = "/run/agenix/passwd_tsukumo";
+      hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
       extraGroups = [
         "networkmanager"
         "wheel"

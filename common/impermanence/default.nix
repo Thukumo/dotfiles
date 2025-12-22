@@ -1,8 +1,8 @@
 {
-  lib,
-  config,
-  mkForEachUsers,
-  ...
+lib,
+config,
+mkForEachUsers,
+...
 }:
 
 {
@@ -25,10 +25,7 @@
 
     home-manager.users = mkForEachUsers (_: true) (user: {
       home.persistence."/persist${user.home}" = {
-        directories = [
-          ".ssh" # for known_hosts
-        ]
-        ++ user.custom.persistence.directories;
+        directories = user.custom.persistence.directories;
 
         files = user.custom.persistence.files;
 
@@ -36,11 +33,15 @@
       };
     });
 
-    systemd.tmpfiles.rules = lib.flatten (
-      lib.mapAttrsToList (
-        name: user: lib.optional user.isNormalUser "d /persist${user.home} 0700 ${name} users - -"
-      ) config.users.users
-    );
+
+
+    systemd.tmpfiles.rules = [
+      "d /persist/home 0755 root root -"
+    ] ++ lib.flatten (
+        lib.mapAttrsToList (
+          name: user: lib.optional user.isNormalUser "d /persist${user.home} 0700 ${name} users - -"
+        ) config.users.users
+      );
 
     boot.initrd.postDeviceCommands = lib.mkIf config.custom.disko.enable (
       lib.mkAfter ''
