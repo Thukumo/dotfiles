@@ -26,7 +26,7 @@
         server.enable = true;
         settings = {
           main = {
-            font = "Adwaita Mono Nerd Font:size=12";
+            font = "Adwaita Mono Nerd Font:size=10";
             include = toString (
               pkgs.fetchurl {
                 url = "https://codeberg.org/dnkl/foot/raw/commit/6e533231b016684a32a1975ce2e33ae3ae38b4c6/themes/catppuccin-latte";

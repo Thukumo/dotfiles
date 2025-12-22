@@ -38,4 +38,6 @@
       programs.home-manager.enable = true;
     }
   ];
+
+  home-manager.backupCommand = "rm -rf";
 }
