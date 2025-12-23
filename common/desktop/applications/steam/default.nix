@@ -27,10 +27,15 @@
       {
         hardware.graphics.enable32Bit = true;
         programs.steam.enable = true;
-        home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.steam.enable) (user: {
-          imports = [
-            ./home-persistence.nix
-          ];
-        });
+        home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.steam.enable) (
+          user:
+          { config, ... }:
+          {
+            home.persistence."/persist${config.home.homeDirectory}".directories = [
+              ".local/share/Steam"
+              ".local/share/applications" # たぶんアプリランチャーにゲームを表示するために入れてる
+            ];
+          }
+        );
       };
 }
