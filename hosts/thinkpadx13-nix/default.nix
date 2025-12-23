@@ -1,4 +1,4 @@
-{ antigravity-nix, ... }:
+{ antigravity-nix, nixos-hardware, ... }:
 
 {
   system = "x86_64-linux";
@@ -21,5 +21,6 @@
           ];
         };
     }
+    nixos-hardware.nixosModules.lenovo-thinkpad-x13-amd
   ];
 }

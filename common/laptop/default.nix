@@ -3,7 +3,7 @@
 {
   options.custom.laptop.enable = lib.mkOption {
     type = lib.types.bool;
-    default = true;
+    default = false;
   };
   config = lib.mkIf config.custom.laptop.enable {
     powerManagement.enable = true;
