@@ -34,6 +34,9 @@
         home.persistence."/persist${config.home.homeDirectory}".directories = [
           ".config/Mattermost"
         ];
+        home.sessionVariables = {
+          ELECTRON_OZONE_PLATFORM_HINT = "auto";
+        };
       }
     );
   };

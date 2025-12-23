@@ -1,6 +1,5 @@
 {
   lib,
-  config,
   mkForEachUsers,
   pkgs,
   ...
@@ -31,6 +30,9 @@
         home.persistence."/persist${config.home.homeDirectory}".directories = [
           ".config/discord"
         ];
+        home.sessionVariables = {
+          ELECTRON_OZONE_PLATFORM_HINT = "auto";
+        };
       }
     );
   };
