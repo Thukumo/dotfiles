@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, ... }:
 
 {
   # options.custom.desktop = {
@@ -14,5 +14,6 @@
         initial_session.user = config.users.users."tsukumo".name;
       };
     };
+    security.pam.services.greetd.enableGnomeKeyring = true;
   };
 }

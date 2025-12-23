@@ -1,7 +1,6 @@
 {
   lib,
   mkForEachUsers,
-  config,
   ...
 }:
 
@@ -12,7 +11,7 @@
         options.custom.desktop.ime = {
           type = lib.mkOption {
             type = lib.types.nullOr (lib.types.enum [ "skk" ]);
-            default = lib.mapNullable (_: "skk") config.custom.desktop.type;
+            default = "skk";
           };
         };
       }
