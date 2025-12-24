@@ -112,13 +112,6 @@
           );
       spawn-at-startup = [
         # fcitx5は、autostartにファイルがあるから不要っぽい
-        {
-          argv = [
-            "${pkgs.brightnessctl}/bin/brightnessctl"
-            "set"
-            "100%"
-          ];
-        }
       ];
     };
   };
