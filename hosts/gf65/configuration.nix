@@ -6,6 +6,9 @@
 
 {
 
+  users.users."tsukumo".custom = {
+    desktop.apps.steam.enable = true;
+  };
   # 一時的に人に貸すので、ゲストアカウント的なものを作成
   users.users."tya" = {
     isNormalUser = true;
@@ -71,6 +74,8 @@
     layout = "jp106";
     variant = "";
   };
+
+  hardware.bluetooth.enable = true;
 
   # Enable automatic login for the user.
   # services.getty.autologinUser = "tsukumo";
