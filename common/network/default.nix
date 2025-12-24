@@ -1,6 +1,9 @@
 { ... }:
 
 {
+  imports = [
+    ./ntp.nix
+  ];
   networking = {
     networkmanager = {
       enable = true;
