@@ -28,6 +28,8 @@
     p7zip
 
     wiremix
+
+    wl-clipboard-rs
   ];
   programs.yazi = {
     enable = true;
