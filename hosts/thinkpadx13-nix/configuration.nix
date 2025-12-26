@@ -2,11 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ ... }:
 
 {
 
-  # custom.desktop.steam.enable = true;
+  users.users."tsukumo".custom.desktop.apps = {
+    steam.enable = true;
+    bottles.enable = true;
+  };
+  users.users."tsukumo".custom.util.flatpak.enable = true;
 
   imports = [
     ./hardware.nix # 再インストール時に消す
