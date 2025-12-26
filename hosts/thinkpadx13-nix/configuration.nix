@@ -10,7 +10,6 @@
     steam.enable = true;
     bottles.enable = true;
   };
-  users.users."tsukumo".custom.util.flatpak.enable = true;
 
   imports = [
     ./hardware.nix # 再インストール時に消す

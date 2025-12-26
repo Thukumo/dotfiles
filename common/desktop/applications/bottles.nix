@@ -10,6 +10,9 @@
         { config, ... }:
         {
           options.custom.desktop.apps.bottles.enable = lib.mkEnableOption "Bottles";
+          config = lib.mkIf config.custom.desktop.apps.bottles.enable {
+            custom.util.flatpak.enable = lib.mkDefault true;
+          };
         }
       )
     );
