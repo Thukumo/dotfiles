@@ -37,8 +37,6 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
   outputs =
@@ -52,7 +50,6 @@
       nix-index-database,
       disko,
       nixos-generators,
-      nix-flatpak,
       ...
     }@inputs:
     let
@@ -73,7 +70,6 @@
             nixvim.homeModules.nixvim
             niri.homeModules.niri
             ragenix.homeManagerModules.default
-            nix-flatpak.homeManagerModules.nix-flatpak
           ];
         }
 

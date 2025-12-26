@@ -10,9 +10,6 @@
         { config, ... }:
         {
           options.custom.desktop.apps.bottles.enable = lib.mkEnableOption "Bottles";
-          config = lib.mkIf config.custom.desktop.apps.bottles.enable {
-            custom.util.flatpak.enable = lib.mkDefault true;
-          };
         }
       )
     );
@@ -21,13 +18,9 @@
   config = {
     home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.bottles.enable) (
       user:
-      { config, ... }:
+      { pkgs, config, ... }:
       {
-        services.flatpak = {
-          packages = [
-            "com.usebottles.bottles"
-          ];
-        };
+        home.packages = [ (pkgs.bottles.override { removeWarningPopup = true; }) ];
         home.persistence."/persist${config.home.homeDirectory}".directories = [
           ".local/share/bottles"
         ];
