@@ -227,7 +227,6 @@
 
       # 診断/ブラウジング
       trouble.enable = true;
-      treesitter-context.enable = true;
 
       # Copilot
       copilot-vim.enable = true;
