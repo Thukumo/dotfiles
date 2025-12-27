@@ -3,6 +3,7 @@
 {
   imports = [
     ./ntp.nix
+    ./zapret.nix
   ];
   networking = {
     networkmanager = {
