@@ -194,6 +194,37 @@
           desc = "Set loclist";
         };
       }
+      # dial.nvim キーマップ
+      {
+        mode = "n";
+        key = "<C-a>";
+        action = "<Plug>(dial-increment)";
+      }
+      {
+        mode = "n";
+        key = "<C-x>";
+        action = "<Plug>(dial-decrement)";
+      }
+      {
+        mode = "v";
+        key = "<C-a>";
+        action = "<Plug>(dial-increment)";
+      }
+      {
+        mode = "v";
+        key = "<C-x>";
+        action = "<Plug>(dial-decrement)";
+      }
+      {
+        mode = "v";
+        key = "g<C-a>";
+        action = "<Plug>(dial-increment-additional)";
+      }
+      {
+        mode = "v";
+        key = "g<C-x>";
+        action = "<Plug>(dial-decrement-additional)";
+      }
     ];
 
     # プラグイン設定
@@ -378,6 +409,9 @@
 
       # マークダウン
       markdown-preview.enable = true;
+
+      # dial.nvim
+      dial.enable = true;
     };
 
     # カスタムプラグイン（NixVimモジュール化されていないもの）
@@ -436,6 +470,17 @@
         japaneseMergeThreshold = 4,
       }
 
+      -- dial.nvim設定
+      local augend = require("dial.augend")
+      require("dial.config").augends:register_group{
+        default = {
+          augend.integer.alias.decimal,
+          augend.integer.alias.hex,
+          augend.date.alias["%Y/%m/%d"],
+          augend.constant.alias.bool,
+        },
+      }
+
       -- コマンドライン補完設定
       local cmp = require('cmp')
       cmp.setup.cmdline('/', {
@@ -449,10 +494,10 @@
         sources = cmp.config.sources({
           { name = 'path' }
         }, {
-          { name = 'cmdline' }
-        })
+            { name = 'cmdline' }
+          })
       })
-    '';
+      '';
 
     # 追加パッケージ（LSP/ツール）
     extraPackages = with pkgs; [
