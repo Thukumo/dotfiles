@@ -13,6 +13,9 @@
       default = "2G";
     };
   };
+  imports = [
+    ./snapshot.nix
+  ];
   config = lib.mkIf config.custom.disko.enable {
     disko.devices = {
       disk = {
@@ -92,24 +95,5 @@
     };
     # set neededForBoot
     fileSystems."/persist".neededForBoot = true;
-    # btrbk for /persist
-    systemd.tmpfiles.rules = [
-      "d /persist/.snapshots 0700 root root -"
-    ];
-    services.btrbk = {
-      instances = {
-        "persist-snapshots" = {
-          onCalendar = "hourly";
-          settings = {
-            snapshot_preserve_min = "2d";
-            snapshot_preserve = "48h 7d 2w";
-            volume."/persist" = {
-              subvolume = ".";
-              snapshot_dir = ".snapshots";
-            };
-          };
-        };
-      };
-    };
-  };
+ };
 }
