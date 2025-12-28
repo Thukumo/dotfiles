@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   boot.loader = {
@@ -9,5 +9,5 @@
 
   boot.kernel.sysctl."kernel.sysrq" = 242;
 
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_zen;
 }
