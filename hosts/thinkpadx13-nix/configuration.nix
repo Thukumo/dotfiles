@@ -17,7 +17,7 @@
 
   zramSwap = {
     enable = true;
-    memoryPercent = 200;
+    memoryPercent = 100;
   };
 
   # agenix system key (for secrets not tied to a specific user)
@@ -58,34 +58,6 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-
-  services.keyd = {
-    enable = true;
-    keyboards.default = {
-      ids = [ "*" ];
-      settings = {
-        main = {
-          capslock = "overload(meta, tab)";
-          shift = "overload(shift, esc)";
-          muhenkan = "home";
-          henkan = "end";
-          katakanahiragana = "end";
-          space = "overload(nav, space)";
-          tab = "/";
-        };
-        nav = {
-          h = "left";
-          k = "up";
-          j = "down";
-          l = "right";
-        };
-        "nav+meta" = {
-          h = "home";
-          l = "end";
-        };
-      };
-    };
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
