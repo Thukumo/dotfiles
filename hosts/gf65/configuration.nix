@@ -50,7 +50,6 @@
 
   custom = {
     disko = {
-      enable = true;
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
     };

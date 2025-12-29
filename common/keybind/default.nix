@@ -1,10 +1,12 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  mkEnabledOption,
+  ...
+}:
 {
   options.custom.keybind = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-    };
+    enable = mkEnabledOption;
   };
   config = lib.mkIf config.custom.keybind.enable {
     services.keyd = {

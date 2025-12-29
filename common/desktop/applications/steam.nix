@@ -10,10 +10,7 @@
     type = lib.types.attrsOf (
       lib.types.submodule {
         options.custom.desktop.apps.steam = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-          };
+          enable = lib.mkEnableOption "Steam";
         };
       }
     );

@@ -1,7 +1,12 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  mkEnabledOption,
+  ...
+}:
 {
   options.custom.disko = {
-    enable = lib.mkEnableOption "disko";
+    enable = mkEnabledOption;
     diskName = lib.mkOption {
       type = lib.types.str;
     };

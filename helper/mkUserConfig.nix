@@ -11,5 +11,9 @@
           }
         ) config.users.users
       );
+    mkEnabledOption = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+    };
   };
 }
