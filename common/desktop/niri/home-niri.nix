@@ -47,6 +47,10 @@
           # tap = true;
         };
       };
+      cursor = {
+        hide-when-typing = true;
+        hide-after-inactive-ms = 1000;
+      };
       layout = {
         default-column-width.proportion = 0.5;
         gaps = 8;
