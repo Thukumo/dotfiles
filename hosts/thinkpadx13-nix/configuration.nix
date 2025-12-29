@@ -19,6 +19,7 @@
     enable = true;
     memoryPercent = 100;
   };
+  custom.tune.earlyoom.enable = true;
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
