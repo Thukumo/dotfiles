@@ -1,10 +1,7 @@
 { lib, ... }:
 
 {
-  imports = [
-    ../helper
-  ]
-  ++ map (name: ./. + "/${name}") (
+  imports = map (name: ./. + "/${name}") (
     builtins.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.))
   );
 }

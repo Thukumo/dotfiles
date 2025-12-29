@@ -59,6 +59,7 @@
 
       commonModules = name: [
         ./common
+        ./helper
         {
           networking.hostName = name;
         }
