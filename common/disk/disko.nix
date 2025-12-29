@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.custom.disko = {
+  options.custom.disk.disko = {
     enable = mkEnabledOption;
     diskName = lib.mkOption {
       type = lib.types.str;
@@ -18,7 +18,7 @@
       default = "2G";
     };
   };
-  config = lib.mkIf config.custom.disko.enable {
+  config = lib.mkIf config.custom.disk.disko.enable {
     disko.devices = {
       disk = {
         "main" = {

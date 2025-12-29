@@ -27,10 +27,13 @@
   ];
 
   custom = {
-    disko = {
-      enable = false; # 後で再インストールするときに有効にする
-      diskName = "/dev/disk/by-id/nvme-SKHynix_HFS256GD9TNI-L2B0B_NY06N11541090762N";
-      swapSize = "10G";
+    disk = {
+      disko = {
+        enable = false; # 後で再インストールするときに有効にする
+        diskName = "/dev/disk/by-id/nvme-SKHynix_HFS256GD9TNI-L2B0B_NY06N11541090762N";
+        swapSize = "10G";
+      };
+      snapshot.enable = true;
     };
   };
 

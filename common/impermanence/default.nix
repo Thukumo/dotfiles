@@ -43,7 +43,7 @@
       ) config.users.users
     );
 
-    boot.initrd.postDeviceCommands = lib.mkIf config.custom.disko.enable (
+    boot.initrd.postDeviceCommands = lib.mkIf config.custom.disk.disko.enable (
       lib.mkAfter ''
         mkdir -p /mnt
         mount -o subvolid=5 /dev/vg/root /mnt
