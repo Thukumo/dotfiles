@@ -260,7 +260,7 @@
       trouble.enable = true;
 
       # Copilot
-      copilot-vim.enable = true;
+      copilot-vim.enable = false;
 
       # Cargo依存管理
       crates = {
