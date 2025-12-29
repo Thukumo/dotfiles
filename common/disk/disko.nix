@@ -92,5 +92,5 @@
     };
     # set neededForBoot
     fileSystems."/persist".neededForBoot = true;
- };
+  };
 }

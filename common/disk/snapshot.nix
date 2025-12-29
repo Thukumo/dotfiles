@@ -1,7 +1,7 @@
 { config, lib, ... }:
 {
   config = lib.mkIf config.custom.disko.enable {
-   # btrbk for /persist
+    # btrbk for /persist
     systemd.tmpfiles.rules = [
       "d /persist/.snapshots 0700 root root -"
     ];

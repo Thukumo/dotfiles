@@ -497,7 +497,7 @@
             { name = 'cmdline' }
           })
       })
-      '';
+    '';
 
     # 追加パッケージ（LSP/ツール）
     extraPackages = with pkgs; [
