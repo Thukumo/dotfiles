@@ -6,8 +6,6 @@
     default = false;
   };
   config = lib.mkIf config.custom.laptop.enable {
-    powerManagement.enable = true;
-
     services.tlp = {
       enable = true;
       settings = {
