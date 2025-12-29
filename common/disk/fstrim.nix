@@ -1,4 +1,9 @@
-{ lib, config, mkEnabledOption, ... }:
+{
+  lib,
+  config,
+  mkEnabledOption,
+  ...
+}:
 {
   options.custom.disk.fstrim = {
     enable = mkEnabledOption;
