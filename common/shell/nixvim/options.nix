@@ -12,4 +12,9 @@
     autoread = true;
     wrap = false;
   };
+
+  # 診断設定
+  programs.nixvim.diagnostics = {
+    virtual_text = false;
+  };
 }
