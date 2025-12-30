@@ -98,7 +98,7 @@
     # dial.nvim
     dial = {
       enable = true;
-      luaConfig.post = builtins.readFile ./dial.luaconfig;
+      luaConfig.post = builtins.readFile ./luaconfig/dial.luaconfig;
     };
   };
 }

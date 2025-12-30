@@ -12,7 +12,7 @@
             rev = "294a171e2fd8259d71c6fcc2e448979747a85cca";
           };
         };
-        config = builtins.readFile ./hellshake-yano.luaconfig;
+        config = builtins.readFile ./luaconfig/hellshake-yano.luaconfig;
       }
       {
         plugin = pkgs.vimUtils.buildVimPlugin {
@@ -22,7 +22,7 @@
             rev = "8fb5dad4ccc1811766cebf16b544038aeeb7806f";
           };
         };
-        config = builtins.readFile ./accelerated-jk.luaconfig;
+        config = builtins.readFile ./luaconfig/accelerated-jk.luaconfig;
       }
     ];
   };
