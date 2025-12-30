@@ -1,0 +1,2 @@
+-- accelerated-jk初期化
+require('accelerated-jk').setup()

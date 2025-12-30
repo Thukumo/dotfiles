@@ -43,6 +43,20 @@
         "<Down>" = "cmp.mapping.scroll_docs(4)";
         "<Up>" = "cmp.mapping.scroll_docs(-4)";
       };
+      # コマンドライン補完設定
+      cmdline = {
+        "/" = {
+          mapping.__raw = "cmp.mapping.preset.cmdline()";
+          sources = [{ name = "buffer"; }];
+        };
+        ":" = {
+          mapping.__raw = "cmp.mapping.preset.cmdline()";
+          sources = [
+            { name = "path"; }
+            { name = "cmdline"; }
+          ];
+        };
+      };
     };
   };
 }

@@ -20,53 +20,12 @@
       })
     ];
 
-    # 追加Lua設定
-    extraConfigLua = ''
-      -- accelerated-jk初期化
-      require('accelerated-jk').setup()
-
-      -- 診断設定
-      vim.diagnostic.config({ virtual_text = false })
-
-      -- hellshake-yano設定
-      vim.g.hellshake_yano = {
-        useJapanese = true,
-        useHintGroups = true,
-        highlightSelected = true,
-        useNumericMultiCharHints = true,
-        enableTinySegmenter = true,
-        singleCharKeys = "ASDFGNM@;,.",
-        multiCharKeys = "BCEIOPQRTUVWXYZ",
-        highlightHintMarker = {bg = "yellow", fg = "Blue"},
-        highlightHintMarkerCurrent = {bg = "Red", fg = "White"},
-        perKeyMinLength = { w = 3, b = 3, e = 3 },
-        defaultMinWordLength = 3,
-        perKeyMotionCount = { w = 1, b = 1, e = 1, h = 2, j = 2, k = 2, l = 2 },
-        motionCount = 3,
-        japaneseMinWordLength = 3,
-        segmenterThreshold = 4,
-        japaneseMergeThreshold = 4,
-      }
-
-      -- コマンドライン補完設定
-      local cmp = require('cmp')
-      cmp.setup.cmdline('/', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = 'buffer' }
-        }
-      })
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-            { name = 'cmdline' }
-          })
-      })
-    '';
-
     # 各プラグインのLua設定を追加で読み込み
-    extraConfigLuaPost = builtins.readFile ./dial.luaconfig;
+    extraConfigLuaPost = ''
+      ${builtins.readFile ./accelerated-jk.luaconfig}
+      ${builtins.readFile ./hellshake-yano.luaconfig}
+      ${builtins.readFile ./diagnostics.luaconfig}
+      ${builtins.readFile ./dial.luaconfig}
+    '';
   };
 }
