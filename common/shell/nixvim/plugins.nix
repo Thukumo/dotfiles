@@ -31,6 +31,28 @@
 
     # 診断/ブラウジング
     trouble.enable = true;
+    tiny-inline-diagnostic = {
+      enable = true;
+      settings = {
+        preset = "modern";
+      };
+    };
+
+    # インデント・チャンク表示
+    hlchunk = {
+      enable = true;
+      settings = {
+        chunk = {
+          enable = true;
+        };
+        indent = {
+          enable = true;
+        };
+        line_num = {
+          enable = true;
+        };
+      };
+    };
 
     # Copilot
     copilot-vim.enable = false;

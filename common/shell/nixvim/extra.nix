@@ -3,9 +3,7 @@
 {
   programs.nixvim = {
     # カスタムプラグイン(NixVimモジュール化されていないもの)
-    extraPlugins = with pkgs.vimPlugins; [
-      tiny-inline-diagnostic-nvim
-      hlchunk-nvim
+    extraPlugins = [
       (pkgs.vimUtils.buildVimPlugin {
         name = "hellshake-yano.vim";
         src = builtins.fetchGit {
@@ -29,14 +27,6 @@
 
       -- 診断設定
       vim.diagnostic.config({ virtual_text = false })
-      require('tiny-inline-diagnostic').setup()
-
-      -- hlchunk設定
-      require('hlchunk').setup({
-        chunk = { enable = true },
-        indent = { enable = true },
-        line_num = { enable = true },
-      })
 
       -- hellshake-yano設定
       vim.g.hellshake_yano = {
