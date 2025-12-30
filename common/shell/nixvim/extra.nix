@@ -48,17 +48,6 @@
         japaneseMergeThreshold = 4,
       }
 
-      -- dial.nvim設定
-      local augend = require("dial.augend")
-      require("dial.config").augends:register_group{
-        default = {
-          augend.integer.alias.decimal,
-          augend.integer.alias.hex,
-          augend.date.alias["%Y/%m/%d"],
-          augend.constant.alias.bool,
-        },
-      }
-
       -- コマンドライン補完設定
       local cmp = require('cmp')
       cmp.setup.cmdline('/', {
@@ -76,5 +65,8 @@
           })
       })
     '';
+
+    # 各プラグインのLua設定を追加で読み込み
+    extraConfigLuaPost = builtins.readFile ./dial.luaconfig;
   };
 }

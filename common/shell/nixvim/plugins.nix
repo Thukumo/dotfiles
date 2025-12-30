@@ -95,7 +95,7 @@
     # マークダウン
     markdown-preview.enable = true;
 
-    # dial.nvim
+    # dial.nvim (設定はdial.luaconfigを参照)
     dial.enable = true;
   };
 }
