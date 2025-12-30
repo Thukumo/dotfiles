@@ -6,10 +6,12 @@ let
     thinkpadx13-gen1 = "age1y3w68vz3g24mcaqu42vg76q0p9urnjekn42p60nlxnkh2zgdwqfsm4txkl";
   };
   allKeys = builtins.attrValues keys;
+  globalSecrets = "common/secrets/secrets";
+  tsukumoSecrets = "common/secrets/home-ragenix/secrets";
 in
 {
-  "common/secrets/secrets/passwd_tsukumo.age".publicKeys = allKeys;
-  "common/secrets/secrets/home_manager_key.age".publicKeys = allKeys;
-  "common/secrets/home-ragenix/secrets/ssh-key_tsukumo.age".publicKeys = allKeys;
-  "common/secrets/home-ragenix/secrets/gh_hosts_tsukumo.age".publicKeys = allKeys;
+  "${globalSecrets}/passwd_tsukumo.age".publicKeys = allKeys;
+  "${globalSecrets}/home_manager_key.age".publicKeys = allKeys;
+  "${tsukumoSecrets}/ssh-key_tsukumo.age".publicKeys = allKeys;
+  "${tsukumoSecrets}/gh_hosts_tsukumo.age".publicKeys = allKeys;
 }
