@@ -9,11 +9,6 @@
             name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
           ) (builtins.readDir ./.)
         )
-      )
-      ++ [
-        # ./pres
-        ./what
-        ./convd-md2pdf
-      ];
+      );
   });
 }
