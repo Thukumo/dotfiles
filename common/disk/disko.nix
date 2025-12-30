@@ -88,6 +88,13 @@
                       "noatime"
                     ];
                   };
+		  "backup" = {
+		    mountpoint = "/old";
+		    mountOptions = [
+		      "compress=zstd"
+		      "noatime"
+		    ];
+		  };
                 };
               };
             };
