@@ -4,12 +4,13 @@
   programs.nixvim = {
     # カスタムプラグイン(NixVimモジュール化されていないもの)
     extraPlugins = [
+      pkgs.vimPlugins.denops-vim # for hellshake-yano
       {
         plugin = pkgs.vimUtils.buildVimPlugin {
           name = "hellshake-yano.vim";
           src = builtins.fetchGit {
             url = "https://github.com/nekowasabi/hellshake-yano.vim";
-            rev = "294a171e2fd8259d71c6fcc2e448979747a85cca";
+            rev = "ce6285580dcd52a7dde54d2cf170fae452f3c024";
           };
         };
       }
