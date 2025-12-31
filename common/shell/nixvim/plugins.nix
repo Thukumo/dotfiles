@@ -4,7 +4,7 @@
   programs.nixvim.plugins = {
     # UI/UX
     lualine.enable = true;
-    # barbar.enable = true;
+    barbar.enable = true;
     web-devicons.enable = true;
     mini = {
       enable = true;
@@ -15,6 +15,7 @@
     zen-mode.enable = true;
     nvim-autopairs.enable = true;
     which-key.enable = true;
+    noice.enable = true;
 
     # コメント
     comment = {

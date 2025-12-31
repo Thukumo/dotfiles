@@ -18,5 +18,9 @@
     diagnostics = {
       virtual_text = false;
     };
+
+    performance = {
+      byteCompile = true;
+    };
   };
 }
