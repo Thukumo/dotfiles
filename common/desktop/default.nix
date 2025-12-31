@@ -13,7 +13,7 @@
           enable = lib.mkEnableOption "desktop environment";
           
           de = lib.mkOption {
-            type = lib.types.nullOr (lib.types.enum [ "niri" ]);
+            type = lib.types.nullOr (lib.types.enum [ "niri" "gnome" ]);
             default = null;
             description = "Desktop environment or window manager to use";
           };
@@ -43,6 +43,7 @@
   imports = [
     ./session-manager/greetd.nix
     ./de/niri
+    ./de/gnome
     ./applications
     ./terminal/foot.nix
     ./launcher/fuzzel.nix
