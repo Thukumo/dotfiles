@@ -64,6 +64,6 @@
         };
       };
     };
-    lazydev.enable = true;
+    lazydev.enable = false;
   };
 }
