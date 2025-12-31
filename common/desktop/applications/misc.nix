@@ -14,23 +14,23 @@
           options.custom.desktop.apps = {
             libreoffice.enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
             zoom.enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
             gnome-disk-utility.enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
             rquickshare.enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
             thunar.enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
           };
         }

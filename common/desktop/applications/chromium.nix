@@ -8,7 +8,7 @@
           options.custom.desktop.apps.chromium = {
             enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
           };
         }

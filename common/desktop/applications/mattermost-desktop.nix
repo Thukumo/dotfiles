@@ -13,7 +13,7 @@
           options.custom.desktop.apps.mattermost-desktop = {
             enable = lib.mkOption {
               type = lib.types.bool;
-              default = config.custom.desktop.type != null;
+              default = config.custom.desktop.enable;
             };
           };
         }

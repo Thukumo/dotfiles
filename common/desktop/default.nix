@@ -10,9 +10,30 @@
     type = lib.types.attrsOf (
       lib.types.submodule {
         options.custom.desktop = {
-          type = lib.mkOption {
+          enable = lib.mkEnableOption "desktop environment";
+          
+          de = lib.mkOption {
             type = lib.types.nullOr (lib.types.enum [ "niri" ]);
-            default = "niri";
+            default = null;
+            description = "Desktop environment or window manager to use";
+          };
+
+          launcher = lib.mkOption {
+            type = lib.types.nullOr (lib.types.enum [ "fuzzel" ]);
+            default = null;
+            description = "Application launcher to use";
+          };
+
+          terminal = lib.mkOption {
+            type = lib.types.nullOr (lib.types.enum [ "foot" ]);
+            default = null;
+            description = "Terminal emulator to use";
+          };
+
+          ime = lib.mkOption {
+            type = lib.types.nullOr (lib.types.enum [ "skk" ]);
+            default = null;
+            description = "Input method engine to use";
           };
         };
       }
@@ -20,16 +41,15 @@
   };
 
   imports = [
-    ./greetd.nix
-    ./niri
+    ./session-manager/greetd.nix
+    ./de/niri
     ./applications
-    ./term.nix
-    ./launcher.nix
-    ./ime.nix
+    ./terminal/foot.nix
+    ./launcher/fuzzel.nix
+    ./ime/fcitx5.nix
   ];
 
   config = {
-
     environment.pathsToLink = [
       "/share/xdg-desktop-portal"
       "/share/applications"
@@ -39,10 +59,9 @@
     services.gvfs.enable = true;
 
     security.rtkit.enable = true;
-
     security.polkit.enable = true;
 
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.type != null) (user: {
+    home-manager.users = mkForEachUsers (user: user.custom.desktop.enable) (user: {
       services.mako = {
         enable = true;
         settings = {

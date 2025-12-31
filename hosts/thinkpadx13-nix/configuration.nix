@@ -6,9 +6,16 @@
 
 {
 
-  users.users."tsukumo".custom.desktop.apps = {
-    steam.enable = true;
-    bottles.enable = true;
+  users.users."tsukumo".custom.desktop = {
+    enable = true;
+    de = "niri";
+    launcher = "fuzzel";
+    terminal = "foot";
+    ime = "skk";
+    apps = {
+      steam.enable = true;
+      bottles.enable = true;
+    };
   };
 
   imports = [

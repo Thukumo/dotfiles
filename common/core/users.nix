@@ -60,10 +60,11 @@
         };
 
         desktop = {
-          type = "niri";
-          term.type = "foot";
-          launcher.type = "fuzzel";
-          ime.type = "skk";
+          enable = true;
+          de = "niri";
+          terminal = "foot";
+          launcher = "fuzzel";
+          ime = "skk";
         };
 
         dev.podman.enable = true;
