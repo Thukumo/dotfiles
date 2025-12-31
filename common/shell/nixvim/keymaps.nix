@@ -205,5 +205,26 @@
       key = "g<C-x>";
       action = "<Plug>(dial-decrement-additional)";
     }
-  ];
+  ]
+  ++ (map
+    (key: {
+      mode = [
+        "n"
+        "x"
+        "o"
+      ];
+      inherit key;
+      action = "<Plug>(hellshake-yano-${key})";
+    })
+    [
+      "w"
+      "b"
+      "e"
+      "ge"
+      "h"
+      "j"
+      "k"
+      "l"
+    ]
+  );
 }
