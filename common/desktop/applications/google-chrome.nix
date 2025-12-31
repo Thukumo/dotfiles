@@ -10,12 +10,7 @@
       lib.types.submodule (
         { config, ... }:
         {
-          options.custom.desktop.apps.google-chrome = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-          };
+          options.custom.desktop.apps.google-chrome.enable = lib.mkEnableOption "Google Chrome";
         }
       )
     );

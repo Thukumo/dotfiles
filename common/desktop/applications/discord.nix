@@ -10,12 +10,7 @@
       lib.types.submodule (
         { config, ... }:
         {
-          options.custom.desktop.apps.discord = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-          };
+          options.custom.desktop.apps.discord.enable = lib.mkEnableOption "Discord";
         }
       )
     );

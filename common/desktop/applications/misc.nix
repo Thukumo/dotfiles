@@ -12,26 +12,11 @@
         { config, ... }:
         {
           options.custom.desktop.apps = {
-            libreoffice.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-            zoom.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-            gnome-disk-utility.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-            rquickshare.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-            thunar.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
+            libreoffice.enable = lib.mkEnableOption "LibreOffice";
+            zoom.enable = lib.mkEnableOption "Zoom";
+            gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
+            rquickshare.enable = lib.mkEnableOption "RQuickShare";
+            thunar.enable = lib.mkEnableOption "Thunar";
           };
         }
       )

@@ -12,7 +12,18 @@
     launcher = "fuzzel";
     terminal = "foot";
     ime = "skk";
-    apps.steam.enable = true;
+    apps = {
+      chromium.enable = true;
+      discord.enable = true;
+      google-chrome.enable = true;
+      mattermost-desktop.enable = true;
+      libreoffice.enable = true;
+      zoom.enable = true;
+      gnome-disk-utility.enable = true;
+      rquickshare.enable = true;
+      thunar.enable = true;
+      steam.enable = true;
+    };
   };
   # 一時的に人に貸すので、ゲストアカウント的なものを作成
   users.users."tya" = {
@@ -26,18 +37,7 @@
         launcher = "fuzzel";
         terminal = "foot";
         ime = "skk";
-        apps = {
-          steam.enable = true;
-          chromium.enable = false;
-          discord.enable = false;
-          google-chrome.enable = false;
-          mattermost-desktop.enable = false;
-          libreoffice.enable = false;
-          zoom.enable = false;
-          gnome-disk-utility.enable = false;
-          rquickshare.enable = false;
-          thunar.enable = false;
-        };
+        apps.steam.enable = true;
       };
     };
   };

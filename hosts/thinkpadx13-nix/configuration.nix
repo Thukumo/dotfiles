@@ -13,6 +13,15 @@
     terminal = "foot";
     ime = "skk";
     apps = {
+      chromium.enable = true;
+      discord.enable = true;
+      google-chrome.enable = true;
+      mattermost-desktop.enable = true;
+      libreoffice.enable = true;
+      zoom.enable = true;
+      gnome-disk-utility.enable = true;
+      rquickshare.enable = true;
+      thunar.enable = true;
       steam.enable = true;
       bottles.enable = true;
     };

@@ -5,12 +5,7 @@
       lib.types.submodule (
         { config, ... }:
         {
-          options.custom.desktop.apps.chromium = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-          };
+          options.custom.desktop.apps.chromium.enable = lib.mkEnableOption "Chromium";
         }
       )
     );

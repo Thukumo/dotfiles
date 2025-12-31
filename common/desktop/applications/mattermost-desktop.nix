@@ -10,12 +10,7 @@
       lib.types.submodule (
         { config, ... }:
         {
-          options.custom.desktop.apps.mattermost-desktop = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = config.custom.desktop.enable;
-            };
-          };
+          options.custom.desktop.apps.mattermost-desktop.enable = lib.mkEnableOption "Mattermost Desktop";
         }
       )
     );
