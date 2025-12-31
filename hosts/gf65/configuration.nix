@@ -6,8 +6,13 @@
 
 {
 
-  users.users."tsukumo".custom = {
-    desktop.apps.steam.enable = true;
+  users.users."tsukumo".custom.desktop = {
+    enable = true;
+    de = "niri";
+    launcher = "fuzzel";
+    terminal = "foot";
+    ime = "skk";
+    apps.steam.enable = true;
   };
   # 一時的に人に貸すので、ゲストアカウント的なものを作成
   users.users."tya" = {
@@ -15,17 +20,24 @@
     password = "tya";
     custom = {
       email = "guest@gf65";
-      desktop.apps = {
-        steam.enable = true;
-        chromium.enable = false;
-        discord.enable = false;
-        google-chrome.enable = false;
-        mattermost-desktop.enable = false;
-        libreoffice.enable = false;
-        zoom.enable = false;
-        gnome-disk-utility.enable = false;
-        rquickshare.enable = false;
-        thunar.enable = false;
+      desktop = {
+        enable = true;
+        de = "niri";
+        launcher = "fuzzel";
+        terminal = "foot";
+        ime = "skk";
+        apps = {
+          steam.enable = true;
+          chromium.enable = false;
+          discord.enable = false;
+          google-chrome.enable = false;
+          mattermost-desktop.enable = false;
+          libreoffice.enable = false;
+          zoom.enable = false;
+          gnome-disk-utility.enable = false;
+          rquickshare.enable = false;
+          thunar.enable = false;
+        };
       };
     };
   };
