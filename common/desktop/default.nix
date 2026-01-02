@@ -40,15 +40,18 @@
     );
   };
 
-  imports = [
-    ./session-manager/greetd.nix
-    ./de/niri
-    # ./de/gnome
-    ./applications
-    ./terminal/foot.nix
-    ./launcher/fuzzel.nix
-    ./ime/fcitx5.nix
-  ];
+  imports =
+    let
+      # Import all subdirectories
+      dirs = lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.));
+      # Import all .nix files except default.nix
+      files = lib.attrNames (
+        lib.filterAttrs (
+          name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
+        ) (builtins.readDir ./.)
+      );
+    in
+    (map (name: ./. + "/${name}") dirs) ++ (map (name: ./. + "/${name}") files);
 
   config = {
     environment.pathsToLink = [
