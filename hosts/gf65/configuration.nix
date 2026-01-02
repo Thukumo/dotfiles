@@ -6,23 +6,29 @@
 
 {
 
-  users.users."tsukumo".custom.desktop = {
-    enable = true;
-    de = "niri";
-    launcher = "fuzzel";
-    terminal = "foot";
-    ime = "skk";
-    apps = {
-      chromium.enable = true;
-      discord.enable = true;
-      google-chrome.enable = true;
-      mattermost-desktop.enable = true;
-      libreoffice.enable = true;
-      zoom.enable = true;
-      gnome-disk-utility.enable = true;
-      rquickshare.enable = true;
-      thunar.enable = true;
-      steam.enable = true;
+  users.users."tsukumo".custom = {
+    desktop = {
+      enable = true;
+      de = "niri";
+      launcher = "fuzzel";
+      terminal = "foot";
+      ime = "skk";
+      apps = {
+        chromium.enable = true;
+        discord.enable = true;
+        google-chrome.enable = true;
+        mattermost-desktop.enable = true;
+        libreoffice.enable = true;
+        zoom.enable = true;
+        gnome-disk-utility.enable = true;
+        rquickshare.enable = true;
+        thunar.enable = true;
+        steam.enable = true;
+      };
+    };
+    dev.ollama = {
+      enable = true;
+      package = pkgs.ollama-cuda;
     };
   };
   # 一時的に人に貸すので、ゲストアカウント的なものを作成
@@ -65,11 +71,6 @@
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
     };
-  };
-
-  services.ollama = {
-    enable = true;
-    package = pkgs.ollama-cuda;
   };
 
   # GPU設定
