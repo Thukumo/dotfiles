@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   mkForEachUsers,
   ...
 }:
@@ -36,8 +37,10 @@
       });
     }
     {
-      # enable mDNS
-      services.avahi = {
+      # enable mDNS for rquickshare
+      services.avahi = lib.mkIf (builtins.any (user: user.custom.desktop.apps.rquickshare.enable) (
+        builtins.attrValues config.users.users
+      )) {
         enable = true;
         nssmdns4 = true;
         openFirewall = true;
