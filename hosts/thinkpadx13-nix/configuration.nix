@@ -23,7 +23,6 @@
       rquickshare.enable = true;
       thunar.enable = true;
       steam.enable = true;
-      bottles.enable = true;
     };
   };
 

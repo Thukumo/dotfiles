@@ -43,7 +43,7 @@
   imports = [
     ./session-manager/greetd.nix
     ./de/niri
-    ./de/gnome
+    # ./de/gnome
     ./applications
     ./terminal/foot.nix
     ./launcher/fuzzel.nix
