@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 {
 
@@ -64,6 +64,31 @@
     disk.disko = {
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
+    };
+  };
+
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-cuda;
+  };
+
+  # GPU設定
+  hardware.graphics.enable = true;
+  services.xserver.videoDriver = [ "nvidia" ];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement = {
+      enable = true;
+      finegrained = true;
+    };
+    open = false;
+    prime = {
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;
+      };
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
     };
   };
 
