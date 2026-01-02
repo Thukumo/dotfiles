@@ -35,6 +35,8 @@
             default = null;
             description = "Input method engine to use";
           };
+
+          activate-linux.enable = lib.mkEnableOption "activate-linux watermark";
         };
       }
     );
@@ -64,16 +66,5 @@
 
     security.rtkit.enable = true;
     security.polkit.enable = true;
-
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.enable) (user: {
-      services.mako = {
-        enable = true;
-        settings = {
-          ignore-timeout = 1;
-          default-timeout = 5000;
-          max-visible = 10;
-        };
-      };
-    });
   };
 }

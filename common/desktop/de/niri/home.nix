@@ -17,6 +17,15 @@
     ./home-activate-linux.nix
   ];
 
+  services.mako = {
+    enable = true;
+    settings = {
+      ignore-timeout = 1;
+      default-timeout = 5000;
+      max-visible = 10;
+    };
+  };
+
   programs.niri = {
     enable = true;
     package = pkgs.niri.overrideAttrs (old: {

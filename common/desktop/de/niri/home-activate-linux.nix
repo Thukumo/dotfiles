@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, config, osConfig, lib, ... }:
 
 {
-  programs.niri.settings.spawn-at-startup = [
+  programs.niri.settings.spawn-at-startup = lib.mkIf osConfig.users.users.${config.home.username}.custom.desktop.activate-linux.enable [
     {
       argv = [
         "bash"
