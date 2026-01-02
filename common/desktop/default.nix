@@ -11,9 +11,14 @@
       lib.types.submodule {
         options.custom.desktop = {
           enable = lib.mkEnableOption "desktop environment";
-          
+
           de = lib.mkOption {
-            type = lib.types.nullOr (lib.types.enum [ "niri" "gnome" ]);
+            type = lib.types.nullOr (
+              lib.types.enum [
+                "niri"
+                "gnome"
+              ]
+            );
             default = null;
             description = "Desktop environment or window manager to use";
           };

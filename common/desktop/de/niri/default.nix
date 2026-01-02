@@ -8,7 +8,7 @@
 {
   config = {
     programs.niri.enable = true;
-    
+
     services.greetd.settings = {
       default_session.command = "niri-session";
       initial_session.command = "niri-session";
