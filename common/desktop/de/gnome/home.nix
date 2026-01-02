@@ -1,5 +1,0 @@
-{ ... }:
-
-{
-  # Minimal GNOME home configuration
-}
