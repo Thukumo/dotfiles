@@ -51,9 +51,8 @@
           xkb.layout = "jp";
         };
         touchpad = {
-          enable = false;
-          # dwt = true;
-          # tap = true;
+          dwt = true;
+          tap = true;
         };
       };
       cursor = {
