@@ -91,6 +91,7 @@
       nvidiaBusId = "PCI:1:0:0";
     };
   };
+  boot.kernelParams = [ "nvidia_drm.modeset=1" ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
