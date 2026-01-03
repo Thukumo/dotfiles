@@ -26,9 +26,18 @@
         steam.enable = true;
       };
     };
-    dev.ollama = {
-      enable = true;
-      package = pkgs.ollama-cuda;
+    dev = {
+      ollama = {
+        enable = true;
+        package = pkgs.ollama-cuda;
+      };
+      opencode = {
+        enable = true;
+        models = [
+          "qwen3-coder:latest"
+          "gpt-oss:20b"
+        ];
+      };
     };
   };
   # 一時的に人に貸すので、ゲストアカウント的なものを作成
