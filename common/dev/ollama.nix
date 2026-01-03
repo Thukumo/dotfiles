@@ -44,6 +44,9 @@
           home.persistence."/persist${config.home.homeDirectory}".directories = [
             ".ollama/models"
           ];
+          home.sessionVariables = {
+            OLLAMA_CONTEXT_LENGTH = "131072";
+          };
         }
       );
     };
