@@ -11,6 +11,7 @@
     rustc
     rustfmt
     rust-analyzer
+    clippy
 
     # その他言語サーバー
     nil

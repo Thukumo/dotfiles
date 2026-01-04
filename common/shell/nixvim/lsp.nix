@@ -65,5 +65,6 @@
       };
     };
     lazydev.enable = false;
+    lsp-format.enable = true;
   };
 }
