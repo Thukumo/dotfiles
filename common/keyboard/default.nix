@@ -5,12 +5,15 @@
   ...
 }:
 {
+  imports = [
+    ./vial.nix
+  ];
   options.custom.keybind = {
     enable = mkEnabledOption;
   };
   config = lib.mkIf config.custom.keybind.enable {
     services.keyd = {
-      enable = true;
+      enable = false;
       keyboards.default = {
         ids = [ "*" ];
         settings = {
