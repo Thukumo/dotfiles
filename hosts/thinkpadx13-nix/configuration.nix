@@ -2,9 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ ... }:
+{ mkForEachUsers, ... }:
 
 {
+
+  home-manager.users = mkForEachUsers (_: true) (_: {
+    programs.niri.settings.input.touchpad.enable = false;
+  });
 
   users.users."tsukumo".custom.desktop = {
     enable = true;
