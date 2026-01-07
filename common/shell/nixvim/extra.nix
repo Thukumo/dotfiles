@@ -4,7 +4,7 @@
   programs.nixvim = {
     # カスタムプラグイン(NixVimモジュール化されていないもの)
     extraPlugins = [
-     {
+      {
         plugin = pkgs.vimUtils.buildVimPlugin {
           name = "accelerated-jk.nvim";
           src = builtins.fetchGit {
@@ -17,5 +17,5 @@
     extraConfigLua = ''
       ${builtins.readFile ./luaconfig/accelerated-jk.luaconfig}
     '';
- };
+  };
 }

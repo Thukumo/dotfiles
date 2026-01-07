@@ -26,28 +26,29 @@
     );
   };
 
-  config = lib.mkIf
-    (builtins.any (user: user.custom.dev.ollama.enable) (builtins.attrValues config.users.users))
-    {
-      home-manager.users = mkForEachUsers (user: user.custom.dev.ollama.enable) (
-        user:
-        { config, ... }:
-        let
-          cfg = user.custom.dev.ollama;
-        in
+  config =
+    lib.mkIf
+      (builtins.any (user: user.custom.dev.ollama.enable) (builtins.attrValues config.users.users))
+      {
+        home-manager.users = mkForEachUsers (user: user.custom.dev.ollama.enable) (
+          user:
+          { config, ... }:
+          let
+            cfg = user.custom.dev.ollama;
+          in
           {
-          services.ollama = {
-            enable = true;
-            package = cfg.package;
-            host = cfg.host;
-          };
-          home.persistence."/persist${config.home.homeDirectory}".directories = [
-            ".ollama/models"
-          ];
-          home.sessionVariables = {
-            OLLAMA_CONTEXT_LENGTH = "131072";
-          };
-        }
-      );
-    };
+            services.ollama = {
+              enable = true;
+              package = cfg.package;
+              host = cfg.host;
+            };
+            home.persistence."/persist${config.home.homeDirectory}".directories = [
+              ".ollama/models"
+            ];
+            home.sessionVariables = {
+              OLLAMA_CONTEXT_LENGTH = "131072";
+            };
+          }
+        );
+      };
 }
