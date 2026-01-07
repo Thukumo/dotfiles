@@ -4,7 +4,7 @@
   programs.nixvim.plugins = {
     # UI/UX
     lualine.enable = true;
-    barbar.enable = true;
+    barbar.enable = false;
     web-devicons.enable = true;
     mini = {
       enable = true;
