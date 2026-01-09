@@ -13,7 +13,7 @@
   };
   config = lib.mkIf config.custom.keybind.enable {
     services.keyd = {
-      enable = false;
+      enable = true;
       keyboards.default = {
         ids = [ "*" ];
         settings = {
