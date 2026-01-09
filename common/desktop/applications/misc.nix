@@ -32,7 +32,7 @@
           (lib.mkIf user.custom.desktop.apps.zoom.enable [ pkgs.zoom-us ])
           (lib.mkIf user.custom.desktop.apps.gnome-disk-utility.enable [ pkgs.gnome-disk-utility ])
           (lib.mkIf user.custom.desktop.apps.rquickshare.enable [ pkgs.rquickshare ])
-          (lib.mkIf user.custom.desktop.apps.thunar.enable [ pkgs.xfce.thunar ])
+          (lib.mkIf user.custom.desktop.apps.thunar.enable [ pkgs.thunar ])
         ];
       });
     }
