@@ -22,7 +22,7 @@
       { config, ... }:
       {
         home.packages = [ pkgs.google-chrome ];
-        home.persistence."/persist${config.home.homeDirectory}".directories = [
+        home.persistence."/persist".directories = [
           ".config/google-chrome"
         ];
       }

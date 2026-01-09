@@ -67,7 +67,6 @@
         home-manager.nixosModules.home-manager
         {
           home-manager.sharedModules = [
-            impermanence.homeManagerModules.impermanence
             nixvim.homeModules.nixvim
             niri.homeModules.niri
             ragenix.homeManagerModules.default

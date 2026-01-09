@@ -21,16 +21,10 @@
       files = [ "/etc/machine-id" ];
     };
 
-    # for "home-manager" impermanence
-    programs.fuse.userAllowOther = true;
-
     home-manager.users = mkForEachUsers (_: true) (user: {
-      home.persistence."/persist${user.home}" = {
+      home.persistence."/persist" = {
         directories = user.custom.persistence.directories;
-
         files = user.custom.persistence.files;
-
-        allowOther = true;
       };
     });
 

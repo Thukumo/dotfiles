@@ -68,7 +68,7 @@
                     "$HOST"
               '')
             ];
-            home.persistence."/persist${config.home.homeDirectory}".directories = [
+            home.persistence."/persist".directories = [
               ".local/share/.gp-saml-gui-wrapped"
               ".cache/.gp-saml-gui-wrapped"
             ];

@@ -16,7 +16,7 @@
     };
     security.pam.services.greetd.enableGnomeKeyring = true;
     home-manager.users = mkForEachUsers (_: true) (user: {
-      home.persistence."/persist${user.home}".directories = [
+      home.persistence."/persist".directories = [
         ".local/share/keyrings"
       ];
     });

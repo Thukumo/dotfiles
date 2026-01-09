@@ -42,7 +42,7 @@
               package = cfg.package;
               host = cfg.host;
             };
-            home.persistence."/persist${config.home.homeDirectory}".directories = [
+            home.persistence."/persist".directories = [
               ".ollama/models"
             ];
             home.sessionVariables = {

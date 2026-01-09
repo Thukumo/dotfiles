@@ -22,7 +22,7 @@
       { config, ... }:
       {
         home.packages = [ pkgs.discord ];
-        home.persistence."/persist${config.home.homeDirectory}".directories = [
+        home.persistence."/persist".directories = [
           ".config/discord"
         ];
         home.sessionVariables = {

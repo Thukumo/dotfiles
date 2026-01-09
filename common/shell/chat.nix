@@ -5,7 +5,7 @@
     gemini-cli
     github-copilot-cli
   ];
-  home.persistence."/persist${config.home.homeDirectory}".directories = [
+  home.persistence."/persist".directories = [
     ".gemini"
   ];
 }

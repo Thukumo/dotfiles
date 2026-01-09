@@ -21,7 +21,7 @@
       { pkgs, config, ... }:
       {
         home.packages = [ (pkgs.bottles.override { removeWarningPopup = true; }) ];
-        home.persistence."/persist${config.home.homeDirectory}".directories = [
+        home.persistence."/persist".directories = [
           ".local/share/bottles"
         ];
       }

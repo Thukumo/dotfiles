@@ -15,7 +15,7 @@
           home.packages = [
             antigravity-nix.packages.x86_64-linux.default
           ];
-          home.persistence."/persist${config.home.homeDirectory}".directories = [
+          home.persistence."/persist".directories = [
             ".antigravity"
             ".config/Antigravity"
           ];
