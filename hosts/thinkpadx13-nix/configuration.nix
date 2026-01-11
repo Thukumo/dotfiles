@@ -33,6 +33,8 @@
     };
   };
 
+  custom.keybind.deviceIds = [ "0001:0001" ]; # Internal keyboard only
+
   imports = [
     ./hardware.nix # 再インストール時に消す
   ];
