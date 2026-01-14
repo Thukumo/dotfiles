@@ -1,7 +1,5 @@
 {
   lib,
-  config,
-  mkForEachUsers,
   ...
 }:
 
@@ -46,6 +44,8 @@
       }
     );
   };
+
+  options.custom.desktop.sunshine.enable = lib.mkEnableOption "";
 
   imports =
     let

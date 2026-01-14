@@ -32,6 +32,7 @@
       };
     };
   };
+  custom.desktop.sunshine.enable = false;
 
   custom.keybind.deviceIds = [ "0001:0001" ]; # Internal keyboard only
 
