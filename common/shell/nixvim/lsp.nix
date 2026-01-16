@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.nixvim.plugins = {
@@ -21,6 +21,7 @@
             cargo = {
               allFeatures = true;
               loadOutDirsFromCheck = true;
+              sysrootSrc = "${pkgs.rustPlatform.rustLibSrc}";
             };
             procMacro = {
               enable = true;
