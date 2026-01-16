@@ -35,6 +35,18 @@
       lib.mapAttrsToList (
         name: user: lib.optional user.isNormalUser "d /persist${user.home} 0700 ${name} users - -"
       ) config.users.users
+    )
+    # Trashの削除
+    ++ lib.flatten (
+      lib.mapAttrsToList (
+        name: user:
+        let
+          dirPaths = builtins.map (dir: if builtins.isString dir then dir else dir.directory) (
+            config.home-manager.users."${name}".home.persistence."/persist".directories or [ ]
+          );
+        in
+        builtins.map (dir: "R! /persist${user.home}/${dir}/.Trash-* - - - -") dirPaths
+      ) (lib.filterAttrs (_: user: user.isNormalUser) config.users.users)
     );
 
     boot.initrd.postDeviceCommands = lib.mkIf config.custom.disk.disko.enable (
