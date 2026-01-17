@@ -40,10 +40,6 @@
     ./hardware.nix # 再インストール時に消す
   ];
 
-  zramSwap = {
-    enable = true;
-    memoryPercent = 100;
-  };
   custom.tune.earlyoom.enable = true;
 
   # agenix system key (for secrets not tied to a specific user)

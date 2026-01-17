@@ -64,11 +64,6 @@
   imports = [
   ];
 
-  zramSwap = {
-    enable = true;
-    memoryPercent = 100;
-  };
-
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
   environment.persistence."/persist".files = [
