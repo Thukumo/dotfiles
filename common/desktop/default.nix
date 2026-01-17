@@ -1,5 +1,6 @@
 {
   lib,
+  mkEnabledOption,
   ...
 }:
 
@@ -45,7 +46,10 @@
     );
   };
 
-  options.custom.desktop.sunshine.enable = lib.mkEnableOption "";
+  options.custom.desktop = {
+    sunshine.enable = lib.mkEnableOption "";
+    pipewire.enable = mkEnabledOption;
+  };
 
   imports =
     let
@@ -69,7 +73,6 @@
     services.udisks2.enable = true;
     services.gvfs.enable = true;
 
-    security.rtkit.enable = true;
     security.polkit.enable = true;
   };
 }
