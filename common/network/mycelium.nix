@@ -12,5 +12,11 @@
       enable = true;
       openFirewall = true;
     };
+    environment.persistence."/persist".directories = [
+      "/var/lib/private/mycelium"
+    ];
+    environment.shellAliases = {
+      my-addr = "sudo mycelium -k /var/lib/mycelium/key.bin inspect";
+    };
   };
 }
