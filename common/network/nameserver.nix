@@ -18,9 +18,13 @@
 
   services.resolved = {
     enable = true;
-    dnssec = "allow-downgrade";
-    dnsovertls = "opportunistic";
-    domains = [ "~." ];
-    fallbackDns = [ ];
+    settings = {
+      Resolve = {
+        DNSSEC = "allow-downgrade";
+        DNSOverTLS = "opportunistic";
+        Domains = [ "~." ];
+        FallbackDNS = [ ];
+      };
+    };
   };
 }
