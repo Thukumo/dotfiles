@@ -1,4 +1,3 @@
-FUSE+Chromeとスリープの相性がわるわるなのでなんとかしたい
 Neovim+SKK
 
 nixos-anywhereだと/etc/nixosに配置するだろうからImpermanenceで構成が飛びそう
