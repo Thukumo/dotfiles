@@ -29,6 +29,7 @@
         rquickshare.enable = true;
         thunar.enable = true;
         steam.enable = true;
+        qutebrowser.enable = true;
       };
     };
   };
