@@ -59,4 +59,10 @@
       color_theme = "adwaita";
     };
   };
+  programs.zoxide = {
+    enable = true;
+    options = [
+      "--cmd cd"
+    ];
+  };
 }
