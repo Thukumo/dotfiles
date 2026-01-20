@@ -8,7 +8,7 @@
   config = lib.mkIf config.custom.desktop.pipewire.enable {
     security.rtkit.enable = true;
     services.pipewire = {
-      enable = true;
+      enable = false;
       extraConfig.pipewire."99-buffer-fix" = {
         "context.properties" = {
           "default.clock.quantum" = 1024;
