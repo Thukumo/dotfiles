@@ -23,10 +23,16 @@
       home.packages = with pkgs; [
         zoom-us
       ];
-      home.persistence."/persist".files = [
-        ".config/zoom.conf"
-        ".config/zoomus.conf"
-      ];
+      home.persistence."/persist" = {
+        directories = [
+          ".zoom"
+          ".cache/zoom"
+        ];
+        files = [
+          ".config/zoom.conf"
+          ".config/zoomus.conf"
+        ];
+      };
     }
   );
 }
