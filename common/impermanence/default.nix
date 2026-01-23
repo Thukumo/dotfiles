@@ -28,16 +28,8 @@
       };
     });
 
-    systemd.tmpfiles.rules = [
-      "d /persist/home 0755 root root -"
-    ]
-    ++ lib.flatten (
-      lib.mapAttrsToList (
-        name: user: lib.optional user.isNormalUser "d /persist${user.home} 0700 ${name} users - -"
-      ) config.users.users
-    )
     # Trashの削除
-    ++ lib.flatten (
+    systemd.tmpfiles.rules = lib.flatten (
       lib.mapAttrsToList (
         name: user:
         let
