@@ -54,16 +54,9 @@
     };
   };
 
-  # GPU設定
-  hardware.graphics.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
+  custom.gpu.nvidia.enable = true;
   hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement = {
-      enable = true;
-      finegrained = true;
-    };
-    open = false;
+    powerManagement.finegrained = true;
     prime = {
       offload = {
         enable = true;
@@ -73,7 +66,6 @@
       nvidiaBusId = "PCI:1:0:0";
     };
   };
-  boot.kernelParams = [ "nvidia_drm.modeset=1" ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
