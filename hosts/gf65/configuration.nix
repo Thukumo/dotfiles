@@ -40,29 +40,6 @@
       };
     };
   };
-  # 一時的に人に貸すので、ゲストアカウント的なものを作成
-  users.users."tya" = {
-    isNormalUser = true;
-    password = "tya";
-    custom = {
-      email = "guest@gf65";
-      desktop = {
-        enable = true;
-        de = "niri";
-        launcher = "fuzzel";
-        terminal = "foot";
-        ime = "skk";
-        apps.steam.enable = true;
-      };
-    };
-  };
-  services.greetd.settings = {
-    default_session.user = lib.mkForce "tya";
-    initial_session.user = lib.mkForce "tya";
-  };
-
-  imports = [
-  ];
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
