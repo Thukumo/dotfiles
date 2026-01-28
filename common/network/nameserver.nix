@@ -23,7 +23,7 @@
         DNSSEC = "allow-downgrade";
         DNSOverTLS = "opportunistic";
         Domains = [ "~." ];
-        FallbackDNS = [ ];
+        FallbackDNS = null;
       };
     };
   };
