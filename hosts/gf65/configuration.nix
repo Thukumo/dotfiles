@@ -24,6 +24,7 @@
         rquickshare.enable = true;
         thunar.enable = true;
         steam.enable = true;
+        prismLauncher.enable = true;
       };
     };
     dev = {
