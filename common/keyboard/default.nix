@@ -12,7 +12,7 @@
     enable = mkEnabledOption;
     deviceIds = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "*" ];
+      default = [ ];
       description = "List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.";
       example = [ "0001:0001" ];
     };
