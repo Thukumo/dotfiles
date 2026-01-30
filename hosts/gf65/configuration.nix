@@ -2,10 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
-
   users.users."tsukumo".custom = {
     desktop = {
       enable = true;
@@ -41,6 +40,7 @@
       };
     };
   };
+  services.open-webui.enable = true;
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
