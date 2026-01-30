@@ -68,4 +68,7 @@
     lazydev.enable = false;
     lsp-format.enable = true;
   };
+  home.persistence."/persist".directories = [
+    ".cache/nix"
+  ];
 }
