@@ -29,17 +29,21 @@
     });
 
     # Trashの削除
-    systemd.tmpfiles.rules = lib.flatten (
-      lib.mapAttrsToList (
-        name: user:
-        let
-          dirPaths = builtins.map (dir: if builtins.isString dir then dir else dir.directory) (
-            config.home-manager.users."${name}".home.persistence."/persist".directories or [ ]
-          );
-        in
-        builtins.map (dir: "R! /persist${user.home}/${dir}/.Trash-* - - - -") dirPaths
-      ) (lib.filterAttrs (_: user: user.isNormalUser) config.users.users)
-    );
+    systemd.tmpfiles.rules =
+      lib.flatten (
+        lib.mapAttrsToList (
+          name: user:
+          let
+            dirPaths = builtins.map (dir: if builtins.isString dir then dir else dir.directory) (
+              config.home-manager.users."${name}".home.persistence."/persist".directories or [ ]
+            );
+          in
+          builtins.map (dir: "R! /persist${user.home}/${dir}/.Trash-* - - - -") dirPaths
+        ) (lib.filterAttrs (_: user: user.isNormalUser) config.users.users)
+      )
+      ++ [
+        "d /var/lib/private 0700 root root -"
+      ];
 
     boot.initrd.postDeviceCommands = lib.mkIf config.custom.disk.disko.enable (
       lib.mkAfter ''
