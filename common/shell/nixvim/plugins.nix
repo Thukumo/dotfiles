@@ -83,14 +83,6 @@
         indent.enable = true;
         auto_install = false;
       };
-      grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-        rust
-        nix
-        markdown
-        c
-        lua
-        go
-      ];
     };
 
     # マークダウン
