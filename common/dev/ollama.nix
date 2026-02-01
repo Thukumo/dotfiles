@@ -41,13 +41,13 @@
               enable = true;
               package = cfg.package;
               host = cfg.host;
+              environmentVariables = {
+                OLLAMA_CONTEXT_LENGTH = "131072";
+              };
             };
             home.persistence."/persist".directories = [
               ".ollama/models"
             ];
-            home.sessionVariables = {
-              OLLAMA_CONTEXT_LENGTH = "131072";
-            };
           }
         );
       };
