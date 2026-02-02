@@ -34,8 +34,9 @@
       opencode = {
         enable = true;
         models = [
-          "qwen3-coder:latest"
-          "gpt-oss:20b"
+          "llama4:scout"
+          "qwen3-next:80b"
+          "ministral-3:14b"
         ];
       };
     };
