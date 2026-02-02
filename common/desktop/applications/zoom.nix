@@ -7,12 +7,9 @@
 {
   options.users.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule (
-        { config, ... }:
-        {
-          options.custom.desktop.apps.zoom.enable = lib.mkEnableOption "Zoom";
-        }
-      )
+      lib.types.submodule {
+        options.custom.desktop.apps.zoom.enable = lib.mkEnableOption "Zoom";
+      }
     );
   };
 

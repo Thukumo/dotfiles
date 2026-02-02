@@ -1,25 +1,21 @@
 {
   lib,
   mkForEachUsers,
-  pkgs,
   ...
 }:
 {
   options.users.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule (
-        { config, ... }:
-        {
-          options.custom.desktop.apps.mattermost-desktop.enable = lib.mkEnableOption "Mattermost Desktop";
-        }
-      )
+      lib.types.submodule {
+        options.custom.desktop.apps.mattermost-desktop.enable = lib.mkEnableOption "Mattermost Desktop";
+      }
     );
   };
 
   config = {
     home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.mattermost-desktop.enable) (
-      user:
-      { config, ... }:
+      _:
+      { config, pkgs, ... }:
       {
         home.packages = [ pkgs.mattermost-desktop ];
         # Mattermost Desktopが~/.config/autostart/electron.desktopを作ってきて困るので、

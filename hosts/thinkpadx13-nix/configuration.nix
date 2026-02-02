@@ -30,6 +30,7 @@
         thunar.enable = true;
         steam.enable = true;
         qutebrowser.enable = true;
+        prismLauncher.enable = true;
       };
     };
   };

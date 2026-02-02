@@ -2,20 +2,15 @@
 {
   options.users.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule (
-        { config, ... }:
-        {
-          options.custom.desktop.apps.chromium.enable = lib.mkEnableOption "Chromium";
-        }
-      )
+      lib.types.submodule {
+        options.custom.desktop.apps.chromium.enable = lib.mkEnableOption "Chromium";
+      }
     );
   };
 
   config = {
     home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.chromium.enable) (
-      user:
-      { ... }:
-      {
+      _: _: {
         programs.chromium = {
           enable = true;
           extensions = [
