@@ -7,9 +7,9 @@
 {
   options.users.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule (_: {
+      lib.types.submodule {
         options.custom.desktop.apps.rquickshare.enable = lib.mkEnableOption "RQuickShare";
-      })
+      }
     );
   };
 
@@ -17,7 +17,7 @@
     # lib.mkIf (builtins.any (user: user.custom.desktop.apps.rquickshare.enable) config.users.users)
     {
       home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.rquickshare.enable) (
-        user:
+        _:
         { pkgs, ... }:
         {
           home.packages = [ pkgs.rquickshare ];

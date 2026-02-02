@@ -7,13 +7,13 @@
 {
   options.users.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule (_: {
+      lib.types.submodule {
         options.custom.desktop.apps = {
           libreoffice.enable = lib.mkEnableOption "LibreOffice";
           gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
           thunar.enable = lib.mkEnableOption "Thunar";
         };
-      })
+      }
     );
   };
 
