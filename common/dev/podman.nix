@@ -29,7 +29,7 @@
           };
         };
 
-        home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.dev.podman.enable or false) (
+        home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.podman.enable or false) (
           user:
           { pkgs, ... }:
           {

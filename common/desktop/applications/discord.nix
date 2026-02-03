@@ -14,7 +14,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.discord.enable or false) (
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.discord.enable or false) (
       _:
       { pkgs, ... }:
       {

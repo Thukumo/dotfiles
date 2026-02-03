@@ -14,7 +14,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.mattermost-desktop.enable) (
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.mattermost-desktop.enable) (
       _:
       { config, pkgs, ... }:
       {

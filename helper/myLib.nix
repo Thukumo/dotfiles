@@ -6,8 +6,11 @@
       lib.mkMerge (
         lib.mapAttrsToList (
           name: user:
-          lib.mkIf (user.isNormalUser && (condition user)) {
-            "${name}" = if builtins.isFunction content then content user else content;
+          let
+            user' = user // { custom = config.custom.users.${name} or {}; };
+          in
+          lib.mkIf (user.isNormalUser && (condition user')) {
+            "${name}" = if builtins.isFunction content then content user' else content;
           }
         ) config.users.users
       );

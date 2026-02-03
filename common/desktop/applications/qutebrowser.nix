@@ -14,7 +14,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.qutebrowser.enable) (_: {
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.qutebrowser.enable) (_: {
       programs.qutebrowser = {
         enable = true;
         settings.tabs.position = "left";

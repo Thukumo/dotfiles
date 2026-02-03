@@ -14,9 +14,9 @@
   };
 
   config =
-    # lib.mkIf (builtins.any (user: config.custom.users.${user.name}.desktop.apps.rquickshare.enable) config.users.users)
+    # lib.mkIf (builtins.any (user: user.custom.desktop.apps.rquickshare.enable) config.users.users)
     {
-      home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.rquickshare.enable) (
+      home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.rquickshare.enable) (
         _:
         { pkgs, ... }:
         {

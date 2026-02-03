@@ -14,7 +14,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.bottles.enable) (
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.bottles.enable) (
       _:
       { pkgs, ... }:
       {

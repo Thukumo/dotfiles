@@ -7,7 +7,7 @@
 
 {
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.ime or null == "skk") (
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.ime or null == "skk") (
       user:
       { pkgs, ... }:
       {

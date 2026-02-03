@@ -9,7 +9,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.chromium.enable or false) (
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.chromium.enable or false) (
       _: _: {
         programs.chromium = {
           enable = true;

@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   documentation.nixos.enable = false;
@@ -13,11 +13,15 @@
   home-manager.useUserPackages = false;
 
   # Inject each user's custom config into their home-manager module
-  home-manager.users = builtins.mapAttrs (
-    name: userConfig: {
-      _module.args.myConfig = userConfig;
-    }
-  ) config.custom.users;
+  # Covers all normalUsers, providing empty {} for those not in custom.users
+  home-manager.users = lib.mkMerge (
+    lib.mapAttrsToList (
+      name: user:
+      lib.mkIf user.isNormalUser {
+        ${name}._module.args.myConfig = config.custom.users.${name} or {};
+      }
+    ) config.users.users
+  );
 
   nix.gc = {
     automatic = true;

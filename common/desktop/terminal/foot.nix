@@ -8,7 +8,7 @@
 
 {
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.terminal or null == "foot") (user: {
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.terminal or null == "foot") (user: {
       programs.foot = {
         enable = true;
         server.enable = true;
