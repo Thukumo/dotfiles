@@ -39,6 +39,7 @@
           "ministral-3:14b"
         ];
       };
+      antigravity.enable = true;
     };
   };
   services.open-webui.enable = true;
@@ -74,7 +75,6 @@
     wayvr
     opencomposite
   ];
-
   services.wivrn = {
     enable = true;
     autoStart = true;
@@ -87,7 +87,6 @@
       userServices = true;
     };
   };
-
   home-manager.users."tsukumo".home.persistence."/persist".directories = [
     ".config/wivrn"
     ".config/wayvr"

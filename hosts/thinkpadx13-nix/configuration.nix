@@ -33,6 +33,7 @@
         prismLauncher.enable = true;
       };
     };
+    dev.antigravity.enable = true;
   };
   custom.desktop.sunshine.enable = false;
 

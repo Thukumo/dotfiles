@@ -50,6 +50,7 @@
       nix-index-database,
       disko,
       nixos-generators,
+      antigravity-nix,
       ...
     }@inputs:
     let
@@ -63,6 +64,9 @@
         ./const
         {
           networking.hostName = name;
+          nixpkgs.overlays = [
+            antigravity-nix.overlays.default
+          ];
         }
 
         home-manager.nixosModules.home-manager
