@@ -13,22 +13,26 @@
     );
   };
 
-  config =
-    # lib.mkIf (builtins.any (user: user.custom.desktop.apps.rquickshare.enable) config.users.users)
-    {
-      home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.rquickshare.enable) (
-        _:
-        { pkgs, ... }:
-        {
-          home.packages = [ pkgs.rquickshare ];
-        }
-      );
-      # enable mDNS
-      services.avahi = {
-        enable = true;
-        nssmdns4 = true;
-        openFirewall = true;
-      };
-      networking.firewall.allowedTCPPorts = [ 42100 ];
-    };
+  config = {
+    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.rquickshare.enable) (
+      _:
+      { pkgs, ... }:
+      {
+        home.packages = [ pkgs.rquickshare ];
+      }
+    );
+    
+    # enable mDNS
+    # Use mkDefault to allow conditional override without causing infinite recursion
+    # (avahi creates system users which would affect config.users.users evaluation)
+    services.avahi.enable = lib.mkDefault (
+      builtins.any (userConfig: userConfig.desktop.apps.rquickshare.enable or false) (
+        builtins.attrValues config.custom.users
+      )
+    );
+    services.avahi.nssmdns4 = lib.mkDefault true;
+    services.avahi.openFirewall = lib.mkDefault true;
+    
+    networking.firewall.allowedTCPPorts = lib.mkIf config.services.avahi.enable [ 42100 ];
+  };
 }
