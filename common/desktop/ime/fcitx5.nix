@@ -1,12 +1,13 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 
 {
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.ime == "skk") (
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.ime or null == "skk") (
       user:
       { pkgs, ... }:
       {

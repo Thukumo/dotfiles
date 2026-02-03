@@ -10,7 +10,7 @@
     programs.niri.settings.input.touchpad.enable = false;
   });
 
-  users.users."tsukumo".custom = {
+  custom.users."tsukumo" = {
     network.globalProtect.enable = true;
     desktop = {
       enable = true;

@@ -6,10 +6,10 @@
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.dev.podman = {
+        options.dev.podman = {
           enable = lib.mkEnableOption "podman";
         };
       }
@@ -18,7 +18,7 @@
 
   config =
     lib.mkIf
-      (builtins.any (user: user.custom.dev.podman.enable) (builtins.attrValues config.users.users))
+      (builtins.any (userConfig: userConfig.dev.podman.enable or false) (builtins.attrValues config.custom.users))
       {
         virtualisation = {
           containers.enable = true;
@@ -29,7 +29,7 @@
           };
         };
 
-        home-manager.users = mkForEachUsers (user: user.custom.dev.podman.enable) (
+        home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.dev.podman.enable or false) (
           user:
           { pkgs, ... }:
           {

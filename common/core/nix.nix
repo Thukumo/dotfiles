@@ -12,6 +12,13 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
 
+  # Inject each user's custom config into their home-manager module
+  home-manager.users = builtins.mapAttrs (
+    name: userConfig: {
+      _module.args.myConfig = userConfig;
+    }
+  ) config.custom.users;
+
   nix.gc = {
     automatic = true;
     dates = "00:00";

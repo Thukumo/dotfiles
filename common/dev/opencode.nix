@@ -1,13 +1,14 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.dev.opencode = {
+        options.dev.opencode = {
           enable = lib.mkEnableOption "opencode";
           models = lib.mkOption {
             type = lib.types.listOf lib.types.str;
@@ -19,9 +20,9 @@
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.dev.opencode.enable) (
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.dev.opencode.enable or false) (
       user:
-      { config, ... }:
+      { config, myConfig, ... }:
       {
         programs.opencode = {
           enable = true;
@@ -40,7 +41,7 @@
                     value = {
                       name = model;
                     };
-                  }) user.custom.dev.opencode.models
+                  }) myConfig.dev.opencode.models
                 );
               };
             };

@@ -1,19 +1,20 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.mattermost-desktop.enable = lib.mkEnableOption "Mattermost Desktop";
+        options.desktop.apps.mattermost-desktop.enable = lib.mkEnableOption "Mattermost Desktop";
       }
     );
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.mattermost-desktop.enable) (
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.mattermost-desktop.enable) (
       _:
       { config, pkgs, ... }:
       {

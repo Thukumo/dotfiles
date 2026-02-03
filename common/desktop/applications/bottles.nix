@@ -1,19 +1,20 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.bottles.enable = lib.mkEnableOption "Bottles";
+        options.desktop.apps.bottles.enable = lib.mkEnableOption "Bottles";
       }
     );
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.bottles.enable) (
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.bottles.enable) (
       _:
       { pkgs, ... }:
       {

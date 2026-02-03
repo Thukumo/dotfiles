@@ -8,10 +8,10 @@
 
 {
   options = {
-    users.users = lib.mkOption {
+    custom.users = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule {
-          options.custom.secrets.secretKey = lib.mkOption {
+          options.secrets.secretKey = lib.mkOption {
             type = lib.types.nullOr lib.types.str;
             default = null;
             description = "Path to user's secret key for age encryption (relative to /persist)";
@@ -33,12 +33,12 @@
     let
       userRekeyAliases = lib.mkMerge (
         lib.mapAttrsToList (
-          name: u:
-          lib.optionalAttrs (u.custom.secrets.secretKey or null != null) {
+          name: userConfig:
+          lib.optionalAttrs (userConfig.secrets.secretKey or null != null) {
             "rekey-${name}" =
-              "pushd ${u.home}/dotfiles/ && sudo ragenix -r -i /persist${u.custom.secrets.secretKey} && popd";
+              "pushd ${config.users.users.${name}.home}/dotfiles/ && sudo ragenix -r -i /persist${userConfig.secrets.secretKey} && popd";
           }
-        ) config.users.users
+        ) config.custom.users
       );
 
       isPersisted =

@@ -6,23 +6,23 @@
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.steam.enable = lib.mkEnableOption "Steam";
+        options.desktop.apps.steam.enable = lib.mkEnableOption "Steam";
       }
     );
   };
 
   config =
     lib.mkIf
-      (builtins.any (user: user.custom.desktop.apps.steam.enable) (
-        builtins.attrValues config.users.users
+      (builtins.any (userConfig: userConfig.desktop.apps.steam.enable or false) (
+        builtins.attrValues config.custom.users
       ))
       {
         hardware.graphics.enable32Bit = true;
         programs.steam.enable = true;
-        home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.steam.enable) (_: {
+        home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.steam.enable or false) (_: {
           home.persistence."/persist".directories = [
             ".local/share/Steam"
             ".local/share/applications" # たぶんアプリランチャーにゲームを表示するために入れてる

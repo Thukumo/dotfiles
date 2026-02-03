@@ -5,12 +5,12 @@
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule (
         { ... }:
         {
-          options.custom.network.globalProtect.enable = lib.mkEnableOption "GlobalProtect VPN";
+          options.network.globalProtect.enable = lib.mkEnableOption "GlobalProtect VPN";
         }
       )
     );
@@ -21,8 +21,8 @@
       vpnPortal = "gpvpn.sic.shibaura-it.ac.jp";
     in
     lib.mkIf
-      (builtins.any (user: user.custom.network.globalProtect.enable) (
-        builtins.attrValues config.users.users
+      (builtins.any (userConfig: userConfig.network.globalProtect.enable or false) (
+        builtins.attrValues config.custom.users
       ))
       {
         systemd.network.networks."50-sras-vpn" = {
@@ -47,7 +47,7 @@
           };
           linkConfig.RequiredForOnline = "no";
         };
-        home-manager.users = mkForEachUsers (user: user.custom.network.globalProtect.enable) (
+        home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.network.globalProtect.enable or false) (
           user:
           { config, pkgs, ... }:
           {

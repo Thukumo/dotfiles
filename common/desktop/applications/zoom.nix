@@ -1,19 +1,20 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.zoom.enable = lib.mkEnableOption "Zoom";
+        options.desktop.apps.zoom.enable = lib.mkEnableOption "Zoom";
       }
     );
   };
 
-  config.home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.zoom.enable) (
+  config.home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.zoom.enable or false) (
     _:
     { pkgs, ... }:
     {

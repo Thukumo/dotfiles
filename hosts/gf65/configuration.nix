@@ -5,7 +5,7 @@
 { pkgs, ... }:
 
 {
-  users.users."tsukumo".custom = {
+  custom.users."tsukumo" = {
     desktop = {
       enable = true;
       de = "niri";

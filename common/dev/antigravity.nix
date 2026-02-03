@@ -1,20 +1,21 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.dev.antigravity = {
+        options.dev.antigravity = {
           enable = lib.mkEnableOption "Google Antigravity";
         };
       }
     );
   };
-  config.home-manager.users = mkForEachUsers (user: user.custom.dev.antigravity.enable) (
+  config.home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.dev.antigravity.enable or false) (
     _:
     { pkgs, ... }:
     {

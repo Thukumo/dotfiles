@@ -1,6 +1,6 @@
 {
   pkgs,
-  osConfig,
+  myConfig,
   config,
   lib,
   ...
@@ -13,7 +13,7 @@
       user = {
         name = config.home.username;
         email = lib.mkDefault (
-          osConfig.users.users.${config.home.username}.custom.email or "${config.home.username}@localhost"
+          myConfig.email or "${config.home.username}@localhost"
         );
       };
     };

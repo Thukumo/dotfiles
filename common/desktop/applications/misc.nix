@@ -1,14 +1,15 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps = {
+        options.desktop.apps = {
           libreoffice.enable = lib.mkEnableOption "LibreOffice";
           gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
           thunar.enable = lib.mkEnableOption "Thunar";
@@ -19,12 +20,12 @@
 
   config.home-manager.users = mkForEachUsers (user: true) (
     user:
-    { pkgs, ... }:
+    { pkgs, myConfig, ... }:
     {
       home.packages = lib.mkMerge [
-        (lib.mkIf user.custom.desktop.apps.libreoffice.enable [ pkgs.libreoffice-still ])
-        (lib.mkIf user.custom.desktop.apps.gnome-disk-utility.enable [ pkgs.gnome-disk-utility ])
-        (lib.mkIf user.custom.desktop.apps.thunar.enable [ pkgs.thunar ])
+        (lib.mkIf (myConfig.desktop.apps.libreoffice.enable or false) [ pkgs.libreoffice-still ])
+        (lib.mkIf (myConfig.desktop.apps.gnome-disk-utility.enable or false) [ pkgs.gnome-disk-utility ])
+        (lib.mkIf (myConfig.desktop.apps.thunar.enable or false) [ pkgs.thunar ])
       ];
     }
   );

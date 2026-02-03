@@ -1,19 +1,20 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.discord.enable = lib.mkEnableOption "Discord";
+        options.desktop.apps.discord.enable = lib.mkEnableOption "Discord";
       }
     );
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.discord.enable) (
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.discord.enable or false) (
       _:
       { pkgs, ... }:
       {

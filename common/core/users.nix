@@ -6,10 +6,10 @@
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom = {
+        options = {
           email = lib.mkOption {
             type = lib.types.nullOr lib.types.str;
             default = null;
@@ -30,6 +30,8 @@
         };
       }
     );
+    default = { };
+    description = "Custom per-user configuration options";
   };
 
   config = {
@@ -43,33 +45,34 @@
         "wheel"
       ];
       shell = pkgs.fish;
-
-      # Custom User Configuration
-      custom = {
-        email = "contact@tsukumo.f5.si";
-        secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
-
-        persistence = {
-          directories = [
-            "Documents"
-            "dotfiles"
-            ".local/share/fish"
-            ".local/state/wireplumber"
-            ".ssh" # for known_hosts
-          ];
-        };
-
-        desktop = {
-          enable = true;
-          de = "niri";
-          terminal = "foot";
-          launcher = "fuzzel";
-          ime = "skk";
-        };
-
-        dev.podman.enable = true;
-      };
     };
+
+    # Custom User Configuration
+    custom.users."tsukumo" = {
+      email = "contact@tsukumo.f5.si";
+      secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
+
+      persistence = {
+        directories = [
+          "Documents"
+          "dotfiles"
+          ".local/share/fish"
+          ".local/state/wireplumber"
+          ".ssh" # for known_hosts
+        ];
+      };
+
+      desktop = {
+        enable = true;
+        de = "niri";
+        terminal = "foot";
+        launcher = "fuzzel";
+        ime = "skk";
+      };
+
+      dev.podman.enable = true;
+    };
+
     # for shell
     programs.fish.enable = true;
 

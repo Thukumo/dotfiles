@@ -6,10 +6,10 @@
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.dev.ollama = {
+        options.dev.ollama = {
           enable = lib.mkEnableOption "ollama";
           host = lib.mkOption {
             type = lib.types.str;
@@ -28,13 +28,13 @@
 
   config =
     lib.mkIf
-      (builtins.any (user: user.custom.dev.ollama.enable) (builtins.attrValues config.users.users))
+      (builtins.any (userConfig: userConfig.dev.ollama.enable or false) (builtins.attrValues config.custom.users))
       {
-        home-manager.users = mkForEachUsers (user: user.custom.dev.ollama.enable) (
+        home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.dev.ollama.enable or false) (
           user:
-          { config, ... }:
+          { config, myConfig, ... }:
           let
-            cfg = user.custom.dev.ollama;
+            cfg = myConfig.dev.ollama;
           in
           {
             services.ollama = {

@@ -23,8 +23,8 @@
 
     home-manager.users = mkForEachUsers (_: true) (user: {
       home.persistence."/persist" = {
-        directories = user.custom.persistence.directories;
-        files = user.custom.persistence.files;
+        directories = config.custom.users.${user.name}.persistence.directories or [ ];
+        files = config.custom.users.${user.name}.persistence.files or [ ];
       };
     });
 

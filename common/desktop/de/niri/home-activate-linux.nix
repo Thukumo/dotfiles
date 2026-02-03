@@ -1,14 +1,14 @@
 {
   pkgs,
   config,
-  osConfig,
+  myConfig,
   lib,
   ...
 }:
 
 {
   programs.niri.settings.spawn-at-startup =
-    lib.mkIf osConfig.users.users.${config.home.username}.custom.desktop.activate-linux.enable
+    lib.mkIf (myConfig.desktop.activate-linux.enable or false)
       [
         {
           argv = [

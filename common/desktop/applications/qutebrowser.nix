@@ -1,19 +1,20 @@
 {
   lib,
   mkForEachUsers,
+  config,
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.qutebrowser.enable = lib.mkEnableOption "qutebrowser";
+        options.desktop.apps.qutebrowser.enable = lib.mkEnableOption "qutebrowser";
       }
     );
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.qutebrowser.enable) (_: {
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.qutebrowser.enable) (_: {
       programs.qutebrowser = {
         enable = true;
         settings.tabs.position = "left";

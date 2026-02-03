@@ -5,18 +5,18 @@
   ...
 }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.rquickshare.enable = lib.mkEnableOption "RQuickShare";
+        options.desktop.apps.rquickshare.enable = lib.mkEnableOption "RQuickShare";
       }
     );
   };
 
   config =
-    # lib.mkIf (builtins.any (user: user.custom.desktop.apps.rquickshare.enable) config.users.users)
+    # lib.mkIf (builtins.any (user: config.custom.users.${user.name}.desktop.apps.rquickshare.enable) config.users.users)
     {
-      home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.rquickshare.enable) (
+      home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.rquickshare.enable) (
         _:
         { pkgs, ... }:
         {

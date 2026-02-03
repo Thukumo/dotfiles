@@ -1,15 +1,15 @@
-{ lib, mkForEachUsers, ... }:
+{ lib, mkForEachUsers, config, ... }:
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop.apps.chromium.enable = lib.mkEnableOption "Chromium";
+        options.desktop.apps.chromium.enable = lib.mkEnableOption "Chromium";
       }
     );
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: user.custom.desktop.apps.chromium.enable) (
+    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.chromium.enable or false) (
       _: _: {
         programs.chromium = {
           enable = true;

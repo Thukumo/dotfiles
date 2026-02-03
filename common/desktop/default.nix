@@ -5,10 +5,10 @@
 }:
 
 {
-  options.users.users = lib.mkOption {
+  options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.custom.desktop = {
+        options.desktop = {
           enable = lib.mkEnableOption "desktop environment";
 
           de = lib.mkOption {
