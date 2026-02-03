@@ -47,31 +47,47 @@
       shell = pkgs.fish;
     };
 
-    # Custom User Configuration
-    custom.users."tsukumo" = {
-      email = "contact@tsukumo.f5.si";
-      secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
+    # Ensure all normalUsers have an entry in custom.users
+    # This applies submodule defaults even for users without explicit config
+    custom.users = lib.mkMerge [
+      # Auto-generate entries for all normalUsers with defaults
+      (lib.mkMerge (
+        lib.mapAttrsToList (
+          name: user:
+          lib.mkIf user.isNormalUser {
+            ${name} = lib.mkDefault {};
+          }
+        ) config.users.users
+      ))
+      
+      # Explicit user configurations override defaults
+      {
+        "tsukumo" = {
+          email = "contact@tsukumo.f5.si";
+          secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
 
-      persistence = {
-        directories = [
-          "Documents"
-          "dotfiles"
-          ".local/share/fish"
-          ".local/state/wireplumber"
-          ".ssh" # for known_hosts
-        ];
-      };
+          persistence = {
+            directories = [
+              "Documents"
+              "dotfiles"
+              ".local/share/fish"
+              ".local/state/wireplumber"
+              ".ssh" # for known_hosts
+            ];
+          };
 
-      desktop = {
-        enable = true;
-        de = "niri";
-        terminal = "foot";
-        launcher = "fuzzel";
-        ime = "skk";
-      };
+          desktop = {
+            enable = true;
+            de = "niri";
+            terminal = "foot";
+            launcher = "fuzzel";
+            ime = "skk";
+          };
 
-      dev.podman.enable = true;
-    };
+          dev.podman.enable = true;
+        };
+      }
+    ];
 
     # for shell
     programs.fish.enable = true;
