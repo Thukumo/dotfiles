@@ -37,6 +37,8 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+
+    nixpkgs-xr.url = "github:nix-community/nixpkgs-xr";
   };
 
   outputs =
@@ -50,6 +52,7 @@
       nix-index-database,
       disko,
       nixos-generators,
+      nixpkgs-xr,
       ...
     }@inputs:
     let
@@ -81,6 +84,7 @@
 
         ragenix.nixosModules.default
         disko.nixosModules.disko
+        nixpkgs-xr.nixosModules.nixpkgs-xr
       ];
 
       mkHost =
