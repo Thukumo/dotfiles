@@ -1,4 +1,4 @@
-{ lib, mkForEachUsers, config, ... }:
+{ lib, myLib, config, ... }:
 {
   options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
@@ -9,7 +9,7 @@
   };
 
   config = {
-    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.chromium.enable or false) (
+    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.apps.chromium.enable or false) (
       _: _: {
         programs.chromium = {
           enable = true;

@@ -1,12 +1,12 @@
 {
   lib,
   config,
-  mkEnabledOption,
+  myLib,
   pkgs,
   ...
 }:
 {
-  options.custom.tune.ananicy.enable = mkEnabledOption;
+  options.custom.tune.ananicy.enable = myLib.mkEnabledOption;
 
   config = lib.mkIf config.custom.tune.ananicy.enable {
     services.ananicy = {

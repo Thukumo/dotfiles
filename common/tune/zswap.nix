@@ -1,11 +1,11 @@
 {
   lib,
   config,
-  mkEnabledOption,
+  myLib,
   ...
 }:
 {
-  options.custom.tune.zswap.enable = mkEnabledOption;
+  options.custom.tune.zswap.enable = myLib.mkEnabledOption;
 
   config = lib.mkIf config.custom.tune.zswap.enable {
     boot.kernelParams = [

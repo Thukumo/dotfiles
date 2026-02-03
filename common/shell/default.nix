@@ -1,7 +1,7 @@
-{ lib, mkForEachUsers, ... }:
+{ lib, myLib, ... }:
 
 {
-  home-manager.users = mkForEachUsers (user: true) (user: {
+  home-manager.users = myLib.mkForEachUsers (user: true) (user: {
     imports = map (name: ./. + "/${name}") (
       builtins.attrNames (
         lib.filterAttrs (

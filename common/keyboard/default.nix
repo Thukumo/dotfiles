@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  mkEnabledOption,
+  myLib,
   ...
 }:
 {
@@ -9,7 +9,7 @@
     ./vial.nix
   ];
   options.custom.keybind = {
-    enable = mkEnabledOption;
+    enable = myLib.mkEnabledOption;
     deviceIds = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];

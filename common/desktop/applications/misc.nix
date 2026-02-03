@@ -1,6 +1,6 @@
 {
   lib,
-  mkForEachUsers,
+  myLib,
   config,
   ...
 }:
@@ -18,7 +18,7 @@
     );
   };
 
-  config.home-manager.users = mkForEachUsers (user: true) (
+  config.home-manager.users = myLib.mkForEachUsers (user: true) (
     user:
     { pkgs, myConfig, ... }:
     {

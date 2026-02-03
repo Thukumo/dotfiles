@@ -1,12 +1,12 @@
 {
   config,
   lib,
-  mkEnabledOption,
+  myLib,
   ...
 }:
 {
   options.custom.disk.disko = {
-    enable = mkEnabledOption;
+    enable = myLib.mkEnabledOption;
     diskName = lib.mkOption {
       type = lib.types.str;
     };

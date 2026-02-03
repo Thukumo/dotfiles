@@ -1,11 +1,11 @@
 {
   lib,
-  mkEnabledOption,
+  myLib,
   config,
   ...
 }:
 {
-  options.custom.network.mycelium.enable = mkEnabledOption;
+  options.custom.network.mycelium.enable = myLib.mkEnabledOption;
 
   config = lib.mkIf config.custom.network.mycelium.enable {
     services.mycelium = {

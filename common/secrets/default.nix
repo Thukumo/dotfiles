@@ -2,7 +2,7 @@
   config,
   inputs,
   lib,
-  mkForEachUsers,
+  myLib,
   ...
 }:
 
@@ -80,7 +80,7 @@
         };
       };
 
-      home-manager.users = mkForEachUsers (u: u.name == "tsukumo") (u: {
+      home-manager.users = myLib.mkForEachUsers (u: u.name == "tsukumo") (u: {
         imports = [
           ./home-ragenix
         ];

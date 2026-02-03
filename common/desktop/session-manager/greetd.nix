@@ -1,4 +1,4 @@
-{ config, mkForEachUsers, ... }:
+{ config, myLib, ... }:
 
 {
   # options.custom.desktop = {
@@ -15,7 +15,7 @@
       };
     };
     security.pam.services.greetd.enableGnomeKeyring = true;
-    home-manager.users = mkForEachUsers (_: true) (user: {
+    home-manager.users = myLib.mkForEachUsers (_: true) (user: {
       home.persistence."/persist".directories = [
         ".local/share/keyrings"
       ];

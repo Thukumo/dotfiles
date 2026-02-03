@@ -1,4 +1,4 @@
-{ mkForEachUsers, ... }:
+{ myLib, ... }:
 
 {
   time.timeZone = "Asia/Tokyo";
@@ -16,7 +16,7 @@
     LC_TELEPHONE = "ja_JP.UTF-8";
     LC_TIME = "ja_JP.UTF-8";
   };
-  home-manager.users = mkForEachUsers (u: true) (u: {
+  home-manager.users = myLib.mkForEachUsers (u: true) (u: {
     xdg.configFile."user-dirs.locale" = {
       text = "en_US";
     };

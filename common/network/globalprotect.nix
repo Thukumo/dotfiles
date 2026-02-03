@@ -1,6 +1,6 @@
 {
   lib,
-  mkForEachUsers,
+  myLib,
   config,
   ...
 }:
@@ -47,7 +47,7 @@
           };
           linkConfig.RequiredForOnline = "no";
         };
-        home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.network.globalProtect.enable or false) (
+        home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.network.globalProtect.enable or false) (
           user:
           { config, pkgs, ... }:
           {

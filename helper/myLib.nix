@@ -1,6 +1,6 @@
 { config, lib, ... }:
 {
-  _module.args = {
+  _module.args.myLib = {
     mkForEachUsers =
       condition: content:
       lib.mkMerge (
@@ -11,5 +11,10 @@
           }
         ) config.users.users
       );
+    
+    mkEnabledOption = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+    };
   };
 }

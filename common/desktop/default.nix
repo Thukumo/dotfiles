@@ -1,6 +1,6 @@
 {
   lib,
-  mkEnabledOption,
+  myLib,
   ...
 }:
 
@@ -48,7 +48,7 @@
 
   options.custom.desktop = {
     sunshine.enable = lib.mkEnableOption "";
-    pipewire.enable = mkEnabledOption;
+    pipewire.enable = myLib.mkEnabledOption;
   };
 
   imports =

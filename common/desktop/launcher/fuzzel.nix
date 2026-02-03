@@ -1,13 +1,13 @@
 {
   lib,
-  mkForEachUsers,
+  myLib,
   config,
   ...
 }:
 
 {
   config = {
-    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.launcher or null == "fuzzel") (user: {
+    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.launcher or null == "fuzzel") (user: {
       programs.fuzzel = {
         enable = true;
         settings = {

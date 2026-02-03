@@ -1,5 +1,5 @@
 {
-  mkForEachUsers,
+  myLib,
   config,
   ...
 }:
@@ -13,7 +13,7 @@
       initial_session.command = "niri-session";
     };
 
-    home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.desktop.de or null == "niri") (_: {
+    home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.desktop.de or null == "niri") (_: {
       imports = [
         ./home.nix
       ];

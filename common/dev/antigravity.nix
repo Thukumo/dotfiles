@@ -1,6 +1,6 @@
 {
   lib,
-  mkForEachUsers,
+  myLib,
   config,
   ...
 }:
@@ -15,7 +15,7 @@
       }
     );
   };
-  config.home-manager.users = mkForEachUsers (user: config.custom.users.${user.name}.dev.antigravity.enable or false) (
+  config.home-manager.users = myLib.mkForEachUsers (user: config.custom.users.${user.name}.dev.antigravity.enable or false) (
     _:
     { pkgs, ... }:
     {
