@@ -1,4 +1,5 @@
 {
+  lib,
   myLib,
   config,
   ...
@@ -6,6 +7,9 @@
 
 {
   config = {
+    # Note: programs.niri.enable is always enabled to avoid infinite recursion
+    # when checking custom.users (similar issue to avahi creating system users)
+    # The actual niri usage is controlled by home-manager imports below
     programs.niri.enable = true;
 
     services.greetd.settings = {
