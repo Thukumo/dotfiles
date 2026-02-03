@@ -69,6 +69,30 @@
     };
   };
 
+  # VR
+  environment.systemPackages = with pkgs; [
+    wayvr
+    opencomposite
+  ];
+
+  services.wivrn = {
+    enable = true;
+    autoStart = true;
+    defaultRuntime = true;
+    openFirewall = true;
+  };
+  services.avahi = {
+    publish = {
+      enable = true;
+      userServices = true;
+    };
+  };
+
+  home-manager.users."tsukumo".home.persistence."/persist".directories = [
+    ".config/wivrn"
+    ".config/wayvr"
+  ];
+
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
