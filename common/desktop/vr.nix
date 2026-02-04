@@ -33,18 +33,14 @@
         config = {
           enable = true;
           json = {
-            scale = 0.6;
+            scale = 1.0;
             framerate = 72;
-            video = {
-              encoder = "nvenc";
-              codec = "hevc";
-              bitrate = 40000000;
-            };
-            foveated = {
-              enable = true;
-              center_size = 0.5;
-              strength = 2.0;
-            };
+            encoders = [
+              {
+                encoder = "nvenc";
+                codec = "hevc";
+              }
+            ];
           };
         };
       };
