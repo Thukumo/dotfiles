@@ -15,17 +15,19 @@
       }
     );
   };
-  config.home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.antigravity.enable or false) (
-    _:
-    { pkgs, ... }:
-    {
-      home.packages = [
-        pkgs.google-antigravity
-      ];
-      home.persistence."/persist".directories = [
-        ".antigravity"
-        ".config/Antigravity"
-      ];
-    }
-  );
+  config.home-manager.users =
+    myLib.mkForEachUsers (user: user.custom.dev.antigravity.enable or false)
+      (
+        _:
+        { pkgs, ... }:
+        {
+          home.packages = [
+            pkgs.google-antigravity
+          ];
+          home.persistence."/persist".directories = [
+            ".antigravity"
+            ".config/Antigravity"
+          ];
+        }
+      );
 }

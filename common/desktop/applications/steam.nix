@@ -22,11 +22,13 @@
       {
         hardware.graphics.enable32Bit = true;
         programs.steam.enable = true;
-        home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.steam.enable or false) (_: {
-          home.persistence."/persist".directories = [
-            ".local/share/Steam"
-            ".local/share/applications" # たぶんアプリランチャーにゲームを表示するために入れてる
-          ];
-        });
+        home-manager.users =
+          myLib.mkForEachUsers (user: user.custom.desktop.apps.steam.enable or false)
+            (_: {
+              home.persistence."/persist".directories = [
+                ".local/share/Steam"
+                ".local/share/applications" # たぶんアプリランチャーにゲームを表示するために入れてる
+              ];
+            });
       };
 }

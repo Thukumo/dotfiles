@@ -12,9 +12,7 @@
     settings = {
       user = {
         name = config.home.username;
-        email = lib.mkDefault (
-          myConfig.email or "${config.home.username}@localhost"
-        );
+        email = lib.mkDefault (myConfig.email or "${config.home.username}@localhost");
       };
     };
   };

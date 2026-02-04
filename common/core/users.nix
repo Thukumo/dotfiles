@@ -53,8 +53,7 @@
         missingInCustom = lib.filter (n: !(builtins.hasAttr n config.custom.users)) normalNames;
         missingInUsers = lib.filter (n: !(builtins.hasAttr n config.users.users)) customNames;
         customNotNormal = lib.filter (
-          n:
-          (builtins.hasAttr n config.users.users) && !((config.users.users.${n}.isNormalUser or false))
+          n: (builtins.hasAttr n config.users.users) && !((config.users.users.${n}.isNormalUser or false))
         ) customNames;
       in
       [
@@ -73,12 +72,12 @@
       ];
 
     users.users = lib.mkMerge (
-      lib.mapAttrsToList (
-        name: userCfg:
-        {
-          ${name} = { isNormalUser = lib.mkDefault true; } // userCfg.account.userConfig;
+      lib.mapAttrsToList (name: userCfg: {
+        ${name} = {
+          isNormalUser = lib.mkDefault true;
         }
-      ) config.custom.users
+        // userCfg.account.userConfig;
+      }) config.custom.users
     );
 
     # NOTE: Avoid deriving `custom.users` from `config.users.users`.

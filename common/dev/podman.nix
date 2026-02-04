@@ -18,7 +18,9 @@
 
   config =
     lib.mkIf
-      (builtins.any (userConfig: userConfig.dev.podman.enable or false) (builtins.attrValues config.custom.users))
+      (builtins.any (userConfig: userConfig.dev.podman.enable or false) (
+        builtins.attrValues config.custom.users
+      ))
       {
         virtualisation = {
           containers.enable = true;

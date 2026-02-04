@@ -15,12 +15,9 @@
   # Inject each user's custom config into their home-manager module
   # Single source of truth: iterate custom.users only (asserted in common/core/users.nix)
   home-manager.users = lib.mkMerge (
-    lib.mapAttrsToList (
-      name: _:
-      {
-        ${name}._module.args.myConfig = config.custom.users.${name};
-      }
-    ) config.custom.users
+    lib.mapAttrsToList (name: _: {
+      ${name}._module.args.myConfig = config.custom.users.${name};
+    }) config.custom.users
   );
 
   nix.gc = {

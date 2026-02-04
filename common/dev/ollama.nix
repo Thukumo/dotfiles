@@ -28,7 +28,9 @@
 
   config =
     lib.mkIf
-      (builtins.any (userConfig: userConfig.dev.ollama.enable or false) (builtins.attrValues config.custom.users))
+      (builtins.any (userConfig: userConfig.dev.ollama.enable or false) (
+        builtins.attrValues config.custom.users
+      ))
       {
         home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.ollama.enable or false) (
           user:
