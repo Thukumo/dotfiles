@@ -16,12 +16,13 @@
 
   config =
     let
-      vrEnabled = builtins.any (user: user.desktop.vr.enable or false) (builtins.attrValues config.custom.users);
+      vrEnabled = builtins.any (user: user.desktop.vr.enable or false) (
+        builtins.attrValues config.custom.users
+      );
     in
     {
-      environment.systemPackages = lib.mkIf vrEnabled (with pkgs; [
-        wayvr
-        opencomposite
+      environment.systemPackages = lib.mkIf vrEnabled ([
+        pkgs.wayvr
       ]);
 
       services.wivrn = lib.mkIf vrEnabled {
@@ -43,6 +44,9 @@
           ".config/wivrn"
           ".config/wayvr"
         ];
+        home.sessionVariables = {
+          PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES = "1";
+        };
       });
     };
 }
