@@ -51,15 +51,12 @@
       services.avahi.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.userServices = lib.mkIf vrEnabled (lib.mkDefault true);
-      environment.sessionVariables = {
-        PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES = "1";
-      };
-
       home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.vr.enable or false) (_: {
         home.persistence."/persist".directories = [
           ".config/wivrn"
           ".config/wayvr"
         ];
+        # Steamから利用する際には、起動オプションをPRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES=1 %command%のように設定すること
       });
     };
 }
