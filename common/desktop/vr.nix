@@ -30,17 +30,21 @@
         autoStart = true;
         defaultRuntime = true;
         openFirewall = true;
-        config.json = {
-          scale = 1.0;
-          framerate = 72;
-          video = {
-            encoder = "nvenc";
-            codec = "h264";
-          };
-          foveated = {
-            enable = true;
-            center_size = 0.5;
-            strength = 2.0;
+        config = {
+          enable = true;
+          json = {
+            scale = 0.6;
+            framerate = 72;
+            video = {
+              encoder = "nvenc";
+              codec = "hevc";
+              bitrate = 40000000;
+            };
+            foveated = {
+              enable = true;
+              center_size = 0.5;
+              strength = 2.0;
+            };
           };
         };
       };
