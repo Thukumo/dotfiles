@@ -6,5 +6,3 @@ KSM→UKSMD 自前で色々書く必要が
 
 secretsをconst以下に移す
 
-users.users."name".customをcustom.users."name".に移したい
-

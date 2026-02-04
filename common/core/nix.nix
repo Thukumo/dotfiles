@@ -13,14 +13,14 @@
   home-manager.useUserPackages = false;
 
   # Inject each user's custom config into their home-manager module
-  # Covers all normalUsers, providing empty {} for those not in custom.users
+  # Single source of truth: iterate custom.users only (asserted in common/core/users.nix)
   home-manager.users = lib.mkMerge (
     lib.mapAttrsToList (
-      name: user:
-      lib.mkIf user.isNormalUser {
-        ${name}._module.args.myConfig = config.custom.users.${name} or {};
+      name: _:
+      {
+        ${name}._module.args.myConfig = config.custom.users.${name};
       }
-    ) config.users.users
+    ) config.custom.users
   );
 
   nix.gc = {
