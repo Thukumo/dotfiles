@@ -30,6 +30,19 @@
         autoStart = true;
         defaultRuntime = true;
         openFirewall = true;
+        config.json = {
+          scale = 1.0;
+          framerate = 72;
+          video = {
+            encoder = "nvenc";
+            codec = "h264";
+          };
+          foveated = {
+            enable = true;
+            center_size = 0.5;
+            strength = 2.0;
+          };
+        };
       };
 
       # Enable Avahi daemon for service discovery, required by wivrn.
@@ -38,15 +51,15 @@
       services.avahi.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.userServices = lib.mkIf vrEnabled (lib.mkDefault true);
+      environment.sessionVariables = {
+        PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES = "1";
+      };
 
       home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.vr.enable or false) (_: {
         home.persistence."/persist".directories = [
           ".config/wivrn"
           ".config/wayvr"
         ];
-        home.sessionVariables = {
-          PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES = "1";
-        };
       });
     };
 }
