@@ -5,6 +5,7 @@
 { pkgs, ... }:
 
 {
+  networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
     desktop = {
       enable = true;
@@ -41,6 +42,7 @@
         ];
       };
       antigravity.enable = true;
+      unityhub.enable = true;
     };
   };
   services.open-webui.enable = true;
