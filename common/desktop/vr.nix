@@ -56,7 +56,9 @@
           ".config/wivrn"
           ".config/wayvr"
         ];
-        # Steamから利用する際には、起動オプションをPRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES=1 %command%のように設定すること
+        home.sessionVariables = {
+          PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES = "1";
+        };
       });
     };
 }
