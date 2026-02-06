@@ -1,7 +1,5 @@
 {
-  lib,
   myLib,
-  config,
   ...
 }:
 

@@ -5,9 +5,6 @@
   ...
 }:
 {
-  imports = [
-    ./vial.nix
-  ];
   options.custom.keybind = {
     enable = myLib.mkEnabledOption;
     deviceIds = lib.mkOption {
@@ -18,6 +15,11 @@
     };
   };
   config = lib.mkIf config.custom.keybind.enable {
+    # for vial
+    services.udev.extraRules = ''
+      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0666", TAG+="uaccess", TAG+="udev-acl"
+    '';
+
     services.keyd = {
       enable = true;
       keyboards.default = {

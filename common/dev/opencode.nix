@@ -1,7 +1,6 @@
 {
   lib,
   myLib,
-  config,
   ...
 }:
 {
@@ -22,7 +21,7 @@
   config = {
     home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.opencode.enable or false) (
       user:
-      { config, myConfig, ... }:
+      { myConfig, ... }:
       {
         programs.opencode = {
           enable = true;

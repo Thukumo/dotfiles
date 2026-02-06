@@ -14,11 +14,12 @@
     hardware.ksm.enable = true;
     # https://github.com/cachyos/cachyos-pkgbuilds/tree/master/cachyos-ksm-settings
     environment.etc."systemd/system/service.d/10-ksm.conf" =
-      lib.mkIf config.custom.tune.ksm.enableForAll {
-        text = ''
-          [Service]
-          MemoryKSM=yes
-        '';
-      };
+      lib.mkIf config.custom.tune.ksm.enableForAll
+        {
+          text = ''
+            [Service]
+            MemoryKSM=yes
+          '';
+        };
   };
 }
