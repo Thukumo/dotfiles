@@ -42,6 +42,9 @@
           Service = {
             Type = "oneshot";
             ExecStart = "${pkgs.git}/bin/git -C %h/${u.custom.dotfilesPath} pull";
+            Restart = "on-failure";
+            RestartSec = "30s";
+            StartLimitBurst = "10";
             RemainAfterExit = false;
           };
           Install.WantedBy = [ "default.target" ];
