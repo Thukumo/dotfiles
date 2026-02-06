@@ -1,4 +1,9 @@
-{ config, lib, myLib, ... }:
+{
+  config,
+  lib,
+  myLib,
+  ...
+}:
 
 {
   documentation.nixos.enable = false;
@@ -20,13 +25,29 @@
         ${name}._module.args.myConfig = config.custom.users.${name};
       }) config.custom.users
     ))
-    (myLib.mkForEachUsers (u: u.custom.dotfilesPath != null) (u: {
-      home.shellAliases = {
-        rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
-        update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
-        check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
-      };
-    }))
+    (myLib.mkForEachUsers (u: u.custom.dotfilesPath != null) (
+      u:
+      { pkgs, ... }:
+      {
+        home.shellAliases = {
+          rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
+          update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
+          check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
+        };
+        systemd.user.services.git-pull-dotfiles = {
+          Unit = {
+            Description = "Pull dotfiles repository on login";
+            After = [ "network-online.target" ];
+          };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.git}/bin/git -C %h/${u.custom.dotfilesPath} pull";
+            RemainAfterExit = false;
+          };
+          Install.WantedBy = [ "default.target" ];
+        };
+      }
+    ))
   ];
 
   nix.gc = {
@@ -47,15 +68,6 @@
       home.stateVersion = config.system.stateVersion;
       programs.home-manager.enable = true;
     }
-    ({ lib, myConfig, ... }: {
-      home.shellAliases = lib.optionalAttrs (myConfig.dotfilesPath != null) {
-        # NixOS management aliases (only when dotfilesPath is set)
-        rebuild = "sudo nixos-rebuild switch --flake $HOME/${myConfig.dotfilesPath}/";
-        update = "pushd $HOME/${myConfig.dotfilesPath}/ && sudo nix flake update && popd";
-        check = "pushd $HOME/${myConfig.dotfilesPath}/ && nix flake check && popd";
-        sl = "nix shell";
-      };
-    })
   ];
 
   home-manager.backupCommand = "rm -rf";
