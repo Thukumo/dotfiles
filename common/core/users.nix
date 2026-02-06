@@ -22,6 +22,11 @@
             default = null;
             description = "User's email address for git configuration and other uses";
           };
+          dotfilesPath = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Path to dotfiles directory (relative to home). Enables NixOS management aliases when set.";
+          };
           persistence = {
             directories = lib.mkOption {
               type = lib.types.listOf lib.types.str;
@@ -96,6 +101,7 @@
         };
 
         email = "contact@tsukumo.f5.si";
+        dotfilesPath = "dotfiles";
         secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
 
         persistence = {

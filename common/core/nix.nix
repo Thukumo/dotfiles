@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, myLib, ... }:
 
 {
   documentation.nixos.enable = false;
@@ -14,11 +14,20 @@
 
   # Inject each user's custom config into their home-manager module
   # Single source of truth: iterate custom.users only (asserted in common/core/users.nix)
-  home-manager.users = lib.mkMerge (
-    lib.mapAttrsToList (name: _: {
-      ${name}._module.args.myConfig = config.custom.users.${name};
-    }) config.custom.users
-  );
+  home-manager.users = lib.mkMerge [
+    (lib.mkMerge (
+      lib.mapAttrsToList (name: _: {
+        ${name}._module.args.myConfig = config.custom.users.${name};
+      }) config.custom.users
+    ))
+    (myLib.mkForEachUsers (u: u.custom.dotfilesPath != null) (u: {
+      home.shellAliases = {
+        rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
+        update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
+        check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
+      };
+    }))
+  ];
 
   nix.gc = {
     automatic = true;
@@ -33,18 +42,20 @@
     randomizedDelaySec = "45min";
   };
 
-  environment.shellAliases = {
-    rebuild = "sudo nixos-rebuild switch --flake ${config.users.users."tsukumo".home}/dotfiles/";
-    update = "pushd ${config.users.users."tsukumo".home}/dotfiles/ && sudo nix flake update && popd";
-    check = "pushd ${config.users.users."tsukumo".home}/dotfiles/ && nix flake check && popd";
-    sl = "nix shell";
-  };
-
   home-manager.sharedModules = [
     {
       home.stateVersion = config.system.stateVersion;
       programs.home-manager.enable = true;
     }
+    ({ lib, myConfig, ... }: {
+      home.shellAliases = lib.optionalAttrs (myConfig.dotfilesPath != null) {
+        # NixOS management aliases (only when dotfilesPath is set)
+        rebuild = "sudo nixos-rebuild switch --flake $HOME/${myConfig.dotfilesPath}/";
+        update = "pushd $HOME/${myConfig.dotfilesPath}/ && sudo nix flake update && popd";
+        check = "pushd $HOME/${myConfig.dotfilesPath}/ && nix flake check && popd";
+        sl = "nix shell";
+      };
+    })
   ];
 
   home-manager.backupCommand = "rm -rf";

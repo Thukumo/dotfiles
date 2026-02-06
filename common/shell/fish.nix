@@ -13,5 +13,6 @@
     # cat = "${pkgs.bat}/bin/bat";
     # nano = "${pkgs.micro-full}/bin/micro";
     pres = "${pkgs.gnutar}/bin/tar -I 'zstd -T0'";
+    sl = "nix shell";
   };
 }
