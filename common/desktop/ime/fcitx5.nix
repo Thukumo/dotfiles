@@ -42,6 +42,13 @@
             };
           };
         };
+        home.file.".config/libskk/rules/default/keymap/default.json".text = builtins.toJSON {
+          define = {
+            keymap = {
+              "\\" = "direct";
+            };
+          };
+        };
       }
     );
   };
