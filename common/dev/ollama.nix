@@ -33,16 +33,11 @@
       ))
       {
         home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.ollama.enable or false) (
-          user:
-          { config, myConfig, ... }:
-          let
-            cfg = myConfig.dev.ollama;
-          in
+          _:
+          { myConfig, ... }:
           {
-            services.ollama = {
+            services.ollama = myConfig.dev.ollama // {
               enable = true;
-              package = cfg.package;
-              host = cfg.host;
               environmentVariables = {
                 OLLAMA_CONTEXT_LENGTH = "131072";
               };
