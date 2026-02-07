@@ -2,8 +2,6 @@ Neovim+SKK
 
 nixos-anywhereだと/etc/nixosに配置するだろうからImpermanenceで構成が飛びそう
 
-KSM→UKSMD 自前で色々書く必要が
-
 secretsをconst以下に移す
 
 globalProtectの設定
