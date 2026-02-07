@@ -21,7 +21,10 @@
       ))
       {
         hardware.graphics.enable32Bit = true;
-        programs.steam.enable = true;
+        programs.steam = {
+          enable = true;
+          extest.enable = true;
+        };
         home-manager.users =
           myLib.mkForEachUsers (user: user.custom.desktop.apps.steam.enable or false)
             (_: {
