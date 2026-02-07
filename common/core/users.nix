@@ -107,7 +107,6 @@
         persistence = {
           directories = [
             "Documents"
-            "dotfiles"
             ".local/share/fish"
             ".local/state/wireplumber"
           ];

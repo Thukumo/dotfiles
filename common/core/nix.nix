@@ -29,6 +29,8 @@
       u:
       { pkgs, ... }:
       {
+        home.persistence."/persist".directories = [ u.custom.dotfilesPath ];
+
         home.shellAliases = {
           rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
           update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
