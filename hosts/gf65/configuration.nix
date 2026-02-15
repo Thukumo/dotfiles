@@ -47,6 +47,8 @@
   };
   services.open-webui.enable = true;
 
+  custom.keybind.deviceIds = [ "0001:0001" ];
+
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
   environment.persistence."/persist".files = [
