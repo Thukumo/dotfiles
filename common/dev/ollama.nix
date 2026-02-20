@@ -21,6 +21,11 @@
             default = pkgs.ollama;
             description = "The ollama package to use.";
           };
+          loadModels = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "List of ollama models to pull on startup.";
+          };
         };
       }
     );
@@ -34,17 +39,42 @@
       {
         home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.ollama.enable or false) (
           _:
-          { myConfig, ... }:
+          { myConfig, config, ... }:
+          let
+            ollamaConfig = myConfig.dev.ollama;
+          in
           {
-            services.ollama = myConfig.dev.ollama // {
+            services.ollama = {
               enable = true;
-              environmentVariables = {
-                OLLAMA_CONTEXT_LENGTH = "131072";
-              };
+              package = ollamaConfig.package;
+              host = ollamaConfig.host;
             };
             home.persistence."/persist".directories = [
               ".ollama/models"
             ];
+            systemd.user.services = lib.mkIf (ollamaConfig.loadModels != [ ]) {
+              ollama-model-loader = {
+                Unit = {
+                  After = [ "ollama.service" ];
+                  Requires = [ "ollama.service" ];
+                };
+
+                Service = {
+                  Type = "simple";
+                  TimeoutStartSec = 0;
+                  ExecStart = pkgs.writeShellScript "ollama-pull-models" ''
+                    ${lib.concatMapStringsSep "\n" (
+                      model: "${config.services.ollama.package}/bin/ollama pull ${lib.escapeShellArg model}"
+                    ) ollamaConfig.loadModels}
+                  '';
+                  RemainAfterExit = true;
+                };
+
+                Install = {
+                  WantedBy = [ "default.target" ];
+                };
+              };
+            };
           }
         );
       };
