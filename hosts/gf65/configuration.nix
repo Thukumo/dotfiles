@@ -5,6 +5,22 @@
 { pkgs, ... }:
 
 {
+  # nanoKVM
+  services.udev.extraRules = ''
+    # nanoKVM (LicheeRV Nano) - USB General
+    SUBSYSTEM=="usb", ATTR{idVendor}=="345f", ATTR{idProduct}=="2131", MODE="0666", GROUP="plugdev"
+
+    # nanoKVM - HID Raw (Keyboard/Mouse emulation access)
+    KERNEL=="hidraw*", ATTRS{idVendor}=="345f", ATTRS{idProduct}=="2131", MODE="0666", GROUP="plugdev"
+
+    # nanoKVM - Serial/Console
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="345f", ATTRS{idProduct}=="2131", MODE="0666", GROUP="dialout"
+  '';
+  users.users.tsukumo.extraGroups = [
+    "dialout"
+    "plugdev"
+  ];
+
   networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
     desktop = {
