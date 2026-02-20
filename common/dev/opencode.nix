@@ -26,7 +26,7 @@
         programs.opencode = {
           enable = true;
           settings = {
-            "$schema" = "https=//opencode.ai/config.json";
+            "$schema" = "https://opencode.ai/config.json";
             "provider" = {
               "ollama" = {
                 "npm" = "@ai-sdk/openai-compatible";
