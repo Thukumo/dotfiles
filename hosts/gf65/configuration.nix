@@ -61,7 +61,7 @@
       unityhub.enable = true;
     };
   };
-  services.open-webui.enable = true;
+  services.open-webui.enable = false;
 
   custom.keybind.deviceIds = [ "0001:0001" ];
 
