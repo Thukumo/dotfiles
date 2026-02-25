@@ -2,9 +2,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
+  services.fwupd.enable = true;
   # nanoKVM
   services.udev.extraRules = ''
     # nanoKVM (LicheeRV Nano) - USB General
@@ -48,14 +49,12 @@
       ollama = {
         enable = true;
         package = pkgs.ollama-cuda;
+        loadModels = [
+        ];
       };
       opencode = {
         enable = true;
-        models = [
-          "llama4:scout"
-          "qwen3-next:80b"
-          "ministral-3:14b"
-        ];
+        models = config.custom.users."tsukumo".dev.ollama.loadModels;
       };
       antigravity.enable = true;
       unityhub.enable = true;
