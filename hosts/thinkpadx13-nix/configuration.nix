@@ -5,15 +5,15 @@
 { myLib, ... }:
 
 {
-  # nanoKVM
-  services.udev.extraRules = ''
-    SUBSYSTEM=="usb", ATTR{idVendor}=="345f", ATTR{idProduct}=="2131", MODE="0666", GROUP="plugdev"
-    SUBSYSTEM=="tty", ATTRS{idVendor}=="345f", ATTRS{idProduct}=="2131", MODE="0666", GROUP="dialout"
-  '';
-  users.users.tsukumo.extraGroups = [
-    "dialout"
-    "plugdev"
-  ];
+  # # nanoKVM
+  # services.udev.extraRules = ''
+  #   SUBSYSTEM=="usb", ATTR{idVendor}=="345f", ATTR{idProduct}=="2131", MODE="0666", GROUP="plugdev"
+  #   SUBSYSTEM=="tty", ATTRS{idVendor}=="345f", ATTRS{idProduct}=="2131", MODE="0666", GROUP="dialout"
+  # '';
+  # users.users.tsukumo.extraGroups = [
+  #   "dialout"
+  #   "plugdev"
+  # ];
 
   home-manager.users = myLib.mkForEachUsers (_: true) (_: {
     programs.niri.settings.input.touchpad.enable = false;
@@ -43,6 +43,7 @@
       };
     };
     dev.antigravity.enable = true;
+    dev.gns3.enable = true;
   };
   custom.desktop.sunshine.enable = false;
 
