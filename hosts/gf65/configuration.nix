@@ -50,12 +50,23 @@
         enable = true;
         package = pkgs.ollama-cuda;
         loadModels = [
+          "qwen2.5-coder:7b"
+          "qwen2.5-coder:14b"
+          "qwen3-coder:30b"
+          "deepseek-v2:16b"
+          "deepseek-coder-v2:16b"
+          "gpt-oss:20b"
+          "qwen3.5:0.8b"
+          "qwen3.5:4b"
+          "qwen3.5:9b"
+          "qwen3.5:35b"
         ];
       };
       opencode = {
         enable = true;
         models = config.custom.users."tsukumo".dev.ollama.loadModels;
       };
+      aider.enable = true;
       antigravity.enable = true;
       unityhub.enable = true;
     };
