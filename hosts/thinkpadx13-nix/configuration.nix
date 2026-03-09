@@ -40,6 +40,7 @@
         steam.enable = true;
         qutebrowser.enable = true;
         prismLauncher.enable = true;
+        localsend.enable = true;
       };
     };
     dev.antigravity.enable = true;
