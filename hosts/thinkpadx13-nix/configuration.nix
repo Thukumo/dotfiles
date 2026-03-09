@@ -41,6 +41,7 @@
         qutebrowser.enable = true;
         prismLauncher.enable = true;
         localsend.enable = true;
+        blender.enable = true;
       };
     };
     dev.antigravity.enable = true;

@@ -42,6 +42,7 @@
         thunar.enable = true;
         steam.enable = true;
         prismLauncher.enable = true;
+        blender.enable = true;
       };
       vr.enable = true;
     };
