@@ -16,6 +16,7 @@
         "/var/lib/systemd/backlight"
         "/var/lib/systemd/timers"
         "/var/lib/nixos"
+        "/var/lib/fwupd"
         "/var/log"
       ];
       files = [ "/etc/machine-id" ];
