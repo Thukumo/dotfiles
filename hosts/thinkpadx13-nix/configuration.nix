@@ -63,7 +63,7 @@
     "/etc/age"
   ];
 
-  custom = {
+  custom.hardware = {
     disk = {
       disko = {
         enable = false; # 後で再インストールするときに有効にする
