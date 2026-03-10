@@ -5,7 +5,6 @@
 { pkgs, config, ... }:
 
 {
-  services.fwupd.enable = true;
   # nanoKVM
   services.udev.extraRules = ''
     # nanoKVM (LicheeRV Nano) - USB General
@@ -74,7 +73,7 @@
   };
   services.open-webui.enable = false;
 
-  custom.keybind.deviceIds = [ "0001:0001" ];
+  custom.hardware.keybind.deviceIds = [ "0001:0001" ];
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
@@ -83,13 +82,13 @@
   ];
 
   custom = {
-    disk.disko = {
+    hardware.disk.disko = {
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
     };
   };
 
-  custom.gpu.nvidia.enable = true;
+  custom.hardware.gpu.nvidia.enable = true;
   hardware.nvidia = {
     powerManagement.finegrained = true;
     prime = {

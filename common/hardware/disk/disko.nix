@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.custom.disk.disko = {
+  options.custom.hardware.disk.disko = {
     enable = myLib.mkEnabledOption;
     diskName = lib.mkOption {
       type = lib.types.str;
@@ -18,17 +18,17 @@
       default = "2G";
     };
   };
-  config = lib.mkIf config.custom.disk.disko.enable {
+  config = lib.mkIf config.custom.hardware.disk.disko.enable {
     disko.devices = {
       disk = {
         "main" = {
           type = "disk";
-          device = config.custom.disko.diskName;
+          device = config.custom.hardware.disk.disko.diskName;
           content = {
             type = "gpt";
             partitions = {
               ESP = {
-                size = config.custom.disko.ESPSize;
+                size = config.custom.hardware.disk.disko.ESPSize;
                 type = "EF00";
                 content = {
                   type = "filesystem";
@@ -58,7 +58,7 @@
           type = "lvm_vg";
           lvs = {
             swap = {
-              size = config.custom.disko.swapSize;
+              size = config.custom.hardware.disk.disko.swapSize;
               content = {
                 type = "swap";
                 discardPolicy = "both";

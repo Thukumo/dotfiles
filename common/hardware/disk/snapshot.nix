@@ -1,13 +1,13 @@
 { config, lib, ... }:
 {
-  options.custom.disk.snapshot = {
+  options.custom.hardware.disk.snapshot = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = config.custom.disk.disko.enable;
+      default = config.custom.hardware.disk.disko.enable;
     };
     # directory = ?
   };
-  config = lib.mkIf config.custom.disk.snapshot.enable {
+  config = lib.mkIf config.custom.hardware.disk.snapshot.enable {
     # btrbk for /persist
     systemd.tmpfiles.rules = [
       "d /persist/.snapshots 0700 root root -"

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.custom.tune.zswap.enable = myLib.mkEnabledOption;
+  options.custom.hardware.tune.zswap.enable = myLib.mkEnabledOption;
 
-  config = lib.mkIf config.custom.tune.zswap.enable {
+  config = lib.mkIf config.custom.hardware.tune.zswap.enable {
     boot.kernelParams = [
       "zswap.enabled=1"
       "zswap.zpool=zsmalloc"

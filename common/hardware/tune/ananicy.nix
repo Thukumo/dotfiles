@@ -6,9 +6,9 @@
   ...
 }:
 {
-  options.custom.tune.ananicy.enable = myLib.mkEnabledOption;
+  options.custom.hardware.tune.ananicy.enable = myLib.mkEnabledOption;
 
-  config = lib.mkIf config.custom.tune.ananicy.enable {
+  config = lib.mkIf config.custom.hardware.tune.ananicy.enable {
     services.ananicy = {
       enable = true;
       package = pkgs.ananicy-cpp;

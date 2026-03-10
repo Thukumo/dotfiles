@@ -5,16 +5,16 @@
   ...
 }:
 {
-  options.custom.tune.ksm = {
+  options.custom.hardware.tune.ksm = {
     enable = myLib.mkEnabledOption;
     enableForAll = lib.mkEnableOption "Enable ksm for all";
   };
 
-  config = lib.mkIf config.custom.tune.ksm.enable {
+  config = lib.mkIf config.custom.hardware.tune.ksm.enable {
     hardware.ksm.enable = true;
     # https://github.com/cachyos/cachyos-pkgbuilds/tree/master/cachyos-ksm-settings
     environment.etc."systemd/system/service.d/10-ksm.conf" =
-      lib.mkIf config.custom.tune.ksm.enableForAll
+      lib.mkIf config.custom.hardware.tune.ksm.enableForAll
         {
           text = ''
             [Service]

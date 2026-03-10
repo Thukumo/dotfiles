@@ -49,13 +49,13 @@
   };
   custom.desktop.sunshine.enable = false;
 
-  custom.keybind.deviceIds = [ "0001:0001" ]; # Internal keyboard only
+  custom.hardware.keybind.deviceIds = [ "0001:0001" ]; # Internal keyboard only
 
   imports = [
     ./hardware.nix # 再インストール時に消す
   ];
 
-  custom.tune.earlyoom.enable = true;
+  custom.hardware.tune.earlyoom.enable = true;
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];

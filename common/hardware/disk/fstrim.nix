@@ -5,10 +5,10 @@
   ...
 }:
 {
-  options.custom.disk.fstrim = {
+  options.custom.hardware.disk.fstrim = {
     enable = myLib.mkEnabledOption;
   };
-  config = lib.mkIf config.custom.disk.fstrim.enable {
+  config = lib.mkIf config.custom.hardware.disk.fstrim.enable {
     services.fstrim.enable = true;
   };
 }

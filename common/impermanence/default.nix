@@ -45,7 +45,7 @@
         "d /var/lib/private 0700 root root -"
       ];
 
-    boot.initrd.postDeviceCommands = lib.mkIf config.custom.disk.disko.enable (
+    boot.initrd.postDeviceCommands = lib.mkIf config.custom.hardware.disk.disko.enable (
       lib.mkAfter ''
         mkdir -p /mnt
         mount -o subvolid=5 /dev/vg/root /mnt

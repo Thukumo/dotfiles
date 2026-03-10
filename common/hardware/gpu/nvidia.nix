@@ -1,7 +1,7 @@
 { lib, config, ... }:
 {
-  options.custom.gpu.nvidia.enable = lib.mkEnableOption "nvidia GPU";
-  config = lib.mkIf config.custom.gpu.nvidia.enable {
+  options.custom.hardware.gpu.nvidia.enable = lib.mkEnableOption "nvidia GPU";
+  config = lib.mkIf config.custom.hardware.gpu.nvidia.enable {
     hardware.graphics.enable = true;
     services.xserver.videoDrivers = [ "nvidia" ];
     hardware.nvidia = {
