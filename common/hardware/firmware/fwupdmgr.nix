@@ -10,5 +10,8 @@
 
   config = lib.mkIf config.custom.hardware.fwupdmgr.enable {
     services.fwupd.enable = true;
+    environment.persistence."/persist".directories = [
+      "/var/lib/fwupd"
+    ];
   };
 }
