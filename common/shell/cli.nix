@@ -31,6 +31,13 @@
 
     wl-clipboard-rs
   ];
+
+  home.shellAliases = {
+    ls = "${pkgs.lsd}/bin/lsd";
+    pres = "${pkgs.gnutar}/bin/tar -I 'zstd -T0'";
+    sl = "nix shell";
+  };
+
   programs.yazi = {
     enable = true;
     settings = {

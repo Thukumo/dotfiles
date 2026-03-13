@@ -97,7 +97,7 @@
             "networkmanager"
             "wheel"
           ];
-          shell = pkgs.fish;
+          shell = pkgs.zsh;
         };
 
         email = "contact@tsukumo.f5.si";
@@ -128,7 +128,8 @@
     };
 
     # for shell
-    programs.fish.enable = true;
+    programs.fish.enable = false;
+    programs.zsh.enable = true;
 
     security.sudo.wheelNeedsPassword = false;
   };
