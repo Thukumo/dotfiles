@@ -109,8 +109,12 @@
             "Documents"
             ".local/state/wireplumber"
           ]
-          ++ lib.optional (config.custom.users.tsukumo.account.userConfig.shell == pkgs.fish) ".local/share/fish"
-          ++ lib.optional (config.custom.users.tsukumo.account.userConfig.shell == pkgs.zsh) ".local/state/zsh";
+          ++ lib.optional (
+            config.custom.users.tsukumo.account.userConfig.shell == pkgs.fish
+          ) ".local/share/fish"
+          ++ lib.optional (
+            config.custom.users.tsukumo.account.userConfig.shell == pkgs.zsh
+          ) ".local/state/zsh";
           files = [
             ".ssh/known_hosts"
           ];
@@ -129,8 +133,12 @@
     };
 
     # for shell
-    programs.fish.enable = lib.any (u: u.account.userConfig.shell == pkgs.fish) (lib.attrValues config.custom.users);
-    programs.zsh.enable = lib.any (u: u.account.userConfig.shell == pkgs.zsh) (lib.attrValues config.custom.users);
+    programs.fish.enable = lib.any (u: u.account.userConfig.shell == pkgs.fish) (
+      lib.attrValues config.custom.users
+    );
+    programs.zsh.enable = lib.any (u: u.account.userConfig.shell == pkgs.zsh) (
+      lib.attrValues config.custom.users
+    );
 
     security.sudo.wheelNeedsPassword = false;
   };

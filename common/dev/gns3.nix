@@ -33,7 +33,7 @@ in
       group = "ubridge";
       permissions = "u+rx,g+x,o+x";
     };
-    users.groups.ubridge = {};
+    users.groups.ubridge = { };
 
     users.users = lib.mapAttrs (name: userConfig: {
       extraGroups = lib.optionals (userConfig.dev.gns3.enable or false) [
