@@ -16,8 +16,11 @@
   # ];
   boot.kernelParams = [
     "mem_encrypt=on"
+
     "amd_pstate=active"
-    "amdgpu.dcfeaturemask=0x8"
+    "pcie_aspm=force"
+    "pcie_aspm.policy=powersave"
+    "amdgpu.aspm=1"
   ];
   systemd.tmpfiles.rules = [
     "w /sys/class/power_supply/BAT0/charge_control_start_threshold - - - - 75"
