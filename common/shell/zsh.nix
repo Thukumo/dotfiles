@@ -24,12 +24,12 @@
       {
         name = "fast-syntax-highlighting";
         src = pkgs.zsh-fast-syntax-highlighting;
-        file = "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh";
+        file = "share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh";
       }
       {
         name = "zsh-history-substring-search";
         src = pkgs.zsh-history-substring-search;
-        file = "share/zsh-history-substring-search/zsh-history-substring-search.zsh";
+        file = "share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh";
       }
     ];
 
