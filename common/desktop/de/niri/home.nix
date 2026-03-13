@@ -74,7 +74,7 @@
             let
               normalBind = {
                 "Shift+P" = power-off-monitors;
-                "Escape" = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
+                "Escape" = spawn "${pkgs.hyprlock}/bin/hyprlock";
 
                 "Return" = spawn "footclient";
                 "Space" = spawn "fuzzel";

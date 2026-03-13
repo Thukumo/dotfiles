@@ -40,7 +40,7 @@
             description = "Input method engine to use";
           };
 
-          swaylock.enable = myLib.mkEnabledOption;
+          hyprlock.enable = myLib.mkEnabledOption;
 
           activate-linux.enable = lib.mkEnableOption "activate-linux watermark";
         };
