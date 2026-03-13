@@ -1,8 +1,14 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  osConfig,
+  config,
+  ...
+}:
 
 {
   programs.zsh = {
-    enable = true;
+    enable = osConfig.users.users.${config.home.username}.shell == pkgs.zsh;
+
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;

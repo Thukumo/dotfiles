@@ -1,7 +1,12 @@
-{ ... }:
+{
+  pkgs,
+  osConfig,
+  config,
+  ...
+}:
 
 {
   programs.fish = {
-    enable = false;
+    enable = osConfig.users.users.${config.home.username}.shell == pkgs.fish;
   };
 }

@@ -128,8 +128,8 @@
     };
 
     # for shell
-    programs.fish.enable = false;
-    programs.zsh.enable = true;
+    programs.fish.enable = lib.any (u: u.account.userConfig.shell == pkgs.fish) (lib.attrValues config.custom.users);
+    programs.zsh.enable = lib.any (u: u.account.userConfig.shell == pkgs.zsh) (lib.attrValues config.custom.users);
 
     security.sudo.wheelNeedsPassword = false;
   };
