@@ -14,6 +14,7 @@
   #   "dialout"
   #   "plugdev"
   # ];
+  boot.kernelParams = [ "mem_encrypt=on" ];
 
   home-manager.users = myLib.mkForEachUsers (_: true) (_: {
     programs.niri.settings.input.touchpad.enable = false;
