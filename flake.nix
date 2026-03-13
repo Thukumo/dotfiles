@@ -37,6 +37,11 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -51,6 +56,7 @@
       disko,
       nixos-generators,
       antigravity-nix,
+      lanzaboote,
       ...
     }@inputs:
     let
@@ -85,6 +91,7 @@
 
         ragenix.nixosModules.default
         disko.nixosModules.disko
+        lanzaboote.nixosModules.lanzaboote
       ];
 
       mkHost =
