@@ -14,7 +14,15 @@
   #   "dialout"
   #   "plugdev"
   # ];
-  boot.kernelParams = [ "mem_encrypt=on" ];
+  boot.kernelParams = [
+    "mem_encrypt=on"
+    "amd_pstate=active"
+    "amdgpu.dcfeaturemask=0x8"
+  ];
+  systemd.tmpfiles.rules = [
+    "w /sys/class/power_supply/BAT0/charge_control_start_threshold - - - - 75"
+    "w /sys/class/power_supply/BAT0/charge_control_end_threshold - - - - 80"
+  ];
 
   home-manager.users = myLib.mkForEachUsers (_: true) (_: {
     programs.niri.settings.input.touchpad.enable = false;
