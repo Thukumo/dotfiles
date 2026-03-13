@@ -7,7 +7,9 @@
 }:
 
 {
-  security.pam.services.hyprlock = lib.mkIf (lib.any (u: u.desktop.hyprlock.enable) (lib.attrValues config.custom.users)) { };
+  security.pam.services.hyprlock = lib.mkIf (lib.any (u: u.desktop.hyprlock.enable) (
+    lib.attrValues config.custom.users
+  )) { };
 
   home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.hyprlock.enable) (_: {
     programs.hyprlock = {
