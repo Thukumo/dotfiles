@@ -6,10 +6,6 @@
 }:
 
 {
-  home.packages = with pkgs; [
-    zsh-completions
-  ];
-
   programs.zsh = {
     enable = osConfig.users.users.${config.home.username}.shell == pkgs.zsh;
 
@@ -19,12 +15,15 @@
 
     history = {
       size = 10000;
-      path = "${config.home.homeDirectory}/.local/state/zsh/history";
+      path = "${config.xdg.stateHome}/zsh/history";
       share = true;
       ignoreDups = true;
     };
 
     initContent = ''
+      # Add zsh-completions to fpath before compinit
+      fpath+=( ${pkgs.zsh-completions}/share/zsh-completions )
+
       # fish-like behavior for up/down arrows
       bindkey '^[[A' up-line-or-search
       bindkey '^[[B' down-line-or-search
