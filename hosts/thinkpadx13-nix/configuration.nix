@@ -46,7 +46,7 @@
         libreoffice.enable = true;
         zoom.enable = true;
         gnome-disk-utility.enable = true;
-        rquickshare.enable = true;
+        rquickshare.enable = false;
         thunar.enable = true;
         steam.enable = true;
         qutebrowser.enable = true;
