@@ -17,7 +17,6 @@
   boot.kernelParams = [
     "mem_encrypt=on"
 
-    "amd_pstate=active"
     "pcie_aspm=force"
     "pcie_aspm.policy=powersave"
     "amdgpu.aspm=1"
