@@ -5,6 +5,7 @@
 { myLib, ... }:
 
 {
+  custom.hardware.secure-boot.enable = true;
   # # nanoKVM
   # services.udev.extraRules = ''
   #   SUBSYSTEM=="usb", ATTR{idVendor}=="345f", ATTR{idProduct}=="2131", MODE="0666", GROUP="plugdev"
