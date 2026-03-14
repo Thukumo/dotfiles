@@ -23,6 +23,7 @@
     wantedBy = [ "initrd.target" ];
     after = [ "dev-mapper-vg\\x2droot.device" ];
     before = [ "sysroot.mount" ];
+    conflicts = [ "initrd-switch-root.target" ];
     unitConfig.DefaultDependencies = "no";
     serviceConfig.Type = "oneshot";
     script = ''

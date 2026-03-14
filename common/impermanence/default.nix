@@ -50,6 +50,7 @@
       wantedBy = [ "initrd.target" ];
       after = [ "dev-vg-root.device" ];
       before = [ "sysroot.mount" ];
+      conflicts = [ "initrd-switch-root.target" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = ''
