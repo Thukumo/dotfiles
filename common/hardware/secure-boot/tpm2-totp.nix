@@ -33,11 +33,14 @@ in
         };
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.tpm2-totp}/bin/tpm2-totp calculate";
           StandardOutput = "tty";
           StandardError = "tty";
           TTYPath = "/dev/console";
         };
+        script = ''
+          ${pkgs.tpm2-totp}/bin/tpm2-totp calculate
+          echo
+        '';
       };
       extraBin.tpm2-totp = "${pkgs.tpm2-totp}/bin/tpm2-totp";
     };
