@@ -45,10 +45,16 @@
         "d /var/lib/private 0700 root root -"
       ];
 
-    boot.initrd.postDeviceCommands = lib.mkIf config.custom.hardware.disk.disko.enable (
-      lib.mkAfter ''
+    boot.initrd.systemd.services.rollback = lib.mkIf config.custom.hardware.disk.disko.enable {
+      description = "Rollback Btrfs root subvolume";
+      wantedBy = [ "initrd.target" ];
+      after = [ "dev-vg-root.device" ];
+      before = [ "sysroot.mount" ];
+      unitConfig.DefaultDependencies = "no";
+      serviceConfig.Type = "oneshot";
+      script = ''
         mkdir -p /mnt
-        mount -o subvolid=5 /dev/vg/root /mnt
+        mount -t btrfs -o subvolid=5 /dev/vg/root /mnt
 
         if [ -e /mnt/backup ]; then
           btrfs subvolume delete -R /mnt/backup
@@ -61,7 +67,7 @@
         btrfs subvolume create /mnt/root
 
         umount /mnt
-      ''
-    );
+      '';
+    };
   };
 }

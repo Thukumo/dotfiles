@@ -13,23 +13,31 @@
     "resume=/dev/mapper/vg-swap"
   ];
 
-  boot.initrd.postDeviceCommands = lib.mkAfter ''
-    mkdir -p /mnt
-    mount -o subvolid=5 /dev/mapper/vg-root /mnt
-    mkdir -p /mnt/old_roots
+  boot.initrd.systemd.services.rollback = {
+    description = "Rollback Btrfs root subvolume";
+    wantedBy = [ "initrd.target" ];
+    after = [ "dev-mapper-vg\\x2droot.device" ];
+    before = [ "sysroot.mount" ];
+    unitConfig.DefaultDependencies = "no";
+    serviceConfig.Type = "oneshot";
+    script = ''
+      mkdir -p /mnt
+      mount -t btrfs -o subvolid=5 /dev/mapper/vg-root /mnt
+      mkdir -p /mnt/old_roots
 
-    if [ -e /mnt/old_roots/backup ]; then
-      btrfs subvolume delete -R /mnt/old_roots/backup
-    fi
+      if [ -e /mnt/old_roots/backup ]; then
+        btrfs subvolume delete -R /mnt/old_roots/backup
+      fi
 
-    if [ -e /mnt/@root ]; then
-      mv /mnt/@root /mnt/old_roots/backup
-    fi
+      if [ -e /mnt/@root ]; then
+        mv /mnt/@root /mnt/old_roots/backup
+      fi
 
-    btrfs subvolume create /mnt/@root
+      btrfs subvolume create /mnt/@root
 
-    umount /mnt
-  '';
+      umount /mnt
+    '';
+  };
 
   # fileSystems."/" = {
   #   device = "none";

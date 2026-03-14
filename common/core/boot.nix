@@ -15,7 +15,7 @@
   ];
   boot.consoleLogLevel = 0;
 
-  # boot.initrd.systemd.enable = true;
+  boot.initrd.systemd.enable = true;
 
   boot.kernel.sysctl."kernel.sysrq" = 242;
 
