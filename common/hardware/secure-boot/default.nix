@@ -1,11 +1,12 @@
-{ lib, ... }:
+{ config, lib, ... }:
 
 {
-  imports = map (name: ./. + "/${name}") (
-    builtins.attrNames (
-      lib.filterAttrs (
-        name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
-      ) (builtins.readDir ./.)
-    )
-  );
+  imports = [
+    ./lanzaboote.nix
+    ./tpm2-totp.nix
+  ];
+
+  options.custom.hardware.secure-boot = {
+    enable = lib.mkEnableOption "Secure Boot support";
+  };
 }
