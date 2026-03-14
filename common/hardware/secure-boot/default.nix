@@ -1,29 +1,11 @@
+{ lib, ... }:
+
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.custom.hardware.secure-boot;
-in
-{
-  options.custom.hardware.secure-boot = {
-    enable = lib.mkEnableOption "Secure Boot with Lanzaboote";
-  };
-
-  config = lib.mkIf cfg.enable {
-    boot.loader.systemd-boot.enable = lib.mkForce false;
-
-    boot.lanzaboote = {
-      enable = true;
-      pkiBundle = "/var/lib/sbctl";
-    };
-
-    environment.systemPackages = [ pkgs.sbctl ];
-
-    environment.persistence."/persist".directories = [
-      "/var/lib/sbctl"
-    ];
-  };
+  imports = map (name: ./. + "/${name}") (
+    builtins.attrNames (
+      lib.filterAttrs (
+        name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
+      ) (builtins.readDir ./.)
+    )
+  );
 }
