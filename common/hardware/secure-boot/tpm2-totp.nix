@@ -38,15 +38,10 @@ in
           TTYPath = "/dev/console";
         };
         script = ''
-          echo -e "\033[1;32m"
-          echo "#################################################"
-          echo "#                                               #"
-          echo "#             TPM2 TOTP CALCULATE               #"
-          echo "#                                               #"
-          ${pkgs.tpm2-totp}/bin/tpm2-totp calculate
-          echo "#                                               #"
-          echo "#################################################"
-          echo -e "\033[0m"
+          totp=$(${pkgs.tpm2-totp}/bin/tpm2-totp calculate 2>&1) || totp="CALCULATION FAILED"
+          
+          # Single echo call for the entire box to minimize chance of interleaved logs
+          echo -e "\n\n\033[1;32m#################################################\n#                                               #\n#             TPM2 TOTP CALCULATE               #\n#                                               #\n#             $totp               #\n#                                               #\n#################################################\033[0m\n\n"
         '';
       };
       extraBin.tpm2-totp = "${pkgs.tpm2-totp}/bin/tpm2-totp";
