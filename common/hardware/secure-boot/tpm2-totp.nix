@@ -22,13 +22,14 @@ in
     boot.initrd.systemd = {
       services.tpm2-totp = {
         description = "Calculate and show TPM2 TOTP";
-        wantedBy = [ "cryptsetup-pre.target" ];
+        wantedBy = [ "cryptsetup.target" ];
         before = [ "cryptsetup-pre.target" ];
-        after = [ "tpm-devices.target" ];
+        wants = [ "cryptsetup-pre.target" ];
+        after = [ "tpm2.target" ];
         conflicts = [ "initrd-switch-root.target" ];
         unitConfig = {
           DefaultDependencies = "no";
-          ConditionPathExists = "/dev/tpmrm0";
+          ConditionPathExists = "/dev/tpm0";
         };
         serviceConfig = {
           Type = "oneshot";

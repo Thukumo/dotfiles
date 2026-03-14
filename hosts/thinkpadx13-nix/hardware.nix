@@ -9,7 +9,7 @@
     allowDiscards = true;
     crypttabExtraOpts = [
       "tpm2-device=auto"
-      "tpm2-pcrs=0,2,7"
+      "tpm2-pcrs=0+2+7"
       "tpm2-pin=yes"
     ];
   };
