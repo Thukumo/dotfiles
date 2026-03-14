@@ -41,7 +41,7 @@ in
           totp=$(${pkgs.tpm2-totp}/bin/tpm2-totp calculate 2>&1) || totp="CALCULATION FAILED"
           
           # Single echo call for the entire box to minimize chance of interleaved logs
-          echo -e "\n\n\033[1;32m#################################################\n#                                               #\n#             TPM2 TOTP CALCULATE               #\n#                                               #\n#             $totp               #\n#                                               #\n#################################################\033[0m\n\n"
+          echo -e "\n\n\033[1;32m#################################################\n#                                               #\n#              TPM2 TOTP CALCULATE              #\n#                                               #\n#                    $totp                     #\n#                                               #\n#################################################\033[0m\n\n"
         '';
       };
       extraBin.tpm2-totp = "${pkgs.tpm2-totp}/bin/tpm2-totp";

@@ -8,9 +8,9 @@
   };
 
   boot.kernelParams = [
+    "quiet"
     "loglevel=4"
-    "rd.udev.log_level=3"
-    "rd.systemd.show_status=auto"
+    "rd.udev.log_level=4"
   ];
   boot.consoleLogLevel = 4;
 
