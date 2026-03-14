@@ -7,12 +7,9 @@
   boot.initrd.luks.devices."cryptroot" = {
     device = "/dev/disk/by-uuid/d480d1df-a949-4d5a-8a3e-58214637b087";
     allowDiscards = true;
-    crypttabExtraOpts = [
-      "tpm2-device=auto"
-      "tpm2-pcrs=0+2+7"
-      "tpm2-pin=yes"
-    ];
   };
+
+  custom.hardware.secure-boot.tpm2-unlock.luksDevice = "cryptroot";
 
   boot.kernelParams = [
     "resume=/dev/mapper/vg-swap"
