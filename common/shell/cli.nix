@@ -24,7 +24,6 @@
     clang
     cargo
 
-    cloudflare-warp
     p7zip
 
     wiremix
