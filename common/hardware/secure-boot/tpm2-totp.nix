@@ -38,8 +38,15 @@ in
           TTYPath = "/dev/console";
         };
         script = ''
+          echo -e "\033[1;32m"
+          echo "#################################################"
+          echo "#                                               #"
+          echo "#             TPM2 TOTP CALCULATE               #"
+          echo "#                                               #"
           ${pkgs.tpm2-totp}/bin/tpm2-totp calculate
-          echo
+          echo "#                                               #"
+          echo "#################################################"
+          echo -e "\033[0m"
         '';
       };
       extraBin.tpm2-totp = "${pkgs.tpm2-totp}/bin/tpm2-totp";
