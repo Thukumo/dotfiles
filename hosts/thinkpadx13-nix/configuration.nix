@@ -31,7 +31,12 @@
     programs.niri.settings.input.touchpad.enable = false;
   });
 
+  custom.network.mycelium.enable = false;
   custom.users."tsukumo" = {
+    network.dlna = {
+      enable = true;
+      mediaDirs = [ "V,Documents/mov" ];
+    };
     network.globalProtect.enable = true;
     desktop = {
       enable = true;
