@@ -29,7 +29,8 @@
       enabledUsers = lib.filterAttrs (_: u: u.network.dlna.enable) config.custom.users;
       anyUserEnabled = enabledUsers != { };
 
-      userMediaDirs = lib.concatLists (
+      # 解析されたメディアディレクトリ情報
+      userMediaInfo = lib.flatten (
         lib.mapAttrsToList (
           name: u:
           let
@@ -39,18 +40,36 @@
             val:
             let
               parts = lib.splitString "," val;
-              # コンマが含まれていない場合はアサートでビルドを落とす
               _ = assert lib.assertMsg (lib.length parts >= 2) "DLNA mediaDir '${val}' must be in 'PREFIX,PATH' format (e.g. 'V,Documents/mov')"; parts;
 
               prefix = lib.head parts;
-              # パス自体にコンマが含まれるケースを考慮して再結合
               path = lib.concatStringsSep "," (lib.tail parts);
               resolvedPath = if lib.hasPrefix "/" path then path else "${homeDir}/${path}";
             in
-            "${prefix},${resolvedPath}"
+            {
+              inherit prefix resolvedPath;
+            }
           ) u.network.dlna.mediaDirs
         ) enabledUsers
       );
+
+      userMediaDirs = map (info: "${info.prefix},${info.resolvedPath}") userMediaInfo;
+
+      # ACLルールの生成: 親ディレクトリの実行権限(x)と、メディアディレクトリ自体の読み取り・実行権限(rx)
+      mkAclRules =
+        path:
+        let
+          parts = lib.filter (s: s != "") (lib.splitString "/" path);
+          # /home/user/Videos -> ["/", "/home", "/home/user"]
+          prefixes = lib.genList (i: "/" + (lib.concatStringsSep "/" (lib.take i parts))) (lib.length parts);
+          # ルートディレクトリなどは除外
+          validParents = lib.filter (p: p != "" && p != "/") prefixes;
+        in
+        # 親ディレクトリには非再帰的に 'x' (a+), メディアディレクトリには再帰的に 'rx' かつデフォルトACLも設定 (A+)
+        # maskを明示的に設定してACLを有効にする
+        (map (p: "a+ ${p} - - - - u:minidlna:x,m::x") validParents) ++ [ "A+ ${path} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx" ];
+
+      aclRules = lib.unique (lib.flatten (map (info: mkAclRules info.resolvedPath) userMediaInfo));
     in
     lib.mkIf anyUserEnabled {
       services.minidlna = {
@@ -64,14 +83,12 @@
         };
       };
 
-      # minidlna ユーザーが各ユーザーのホーム配下にアクセスできるように、該当ユーザーのグループに加入させる
-      users.users.minidlna.extraGroups = lib.attrNames enabledUsers;
-      users.groups = lib.mapAttrs (name: _: {
-        members = [ "minidlna" ];
-      }) enabledUsers;
+      # サービスが /home を読み取れるようにする
+      systemd.services.minidlna.serviceConfig.ProtectHome = "read-only";
 
-      # ホームディレクトリ自体の権限を 710 に設定して、グループメンバー (minidlna) が中に入れるようにする
-      systemd.tmpfiles.rules = lib.mapAttrsToList (name: _: "d /home/${name} 0710 ${name} users - -") enabledUsers;
+      # 権限設定の改善: ACLを使用して、minidlnaユーザーにのみ必要最小限のアクセス権を付与する
+      # これにより、ホームディレクトリの権限を0710に変更したり、ユーザーグループに加入させたりする必要がなくなる
+      systemd.tmpfiles.rules = aclRules;
 
       boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     };
