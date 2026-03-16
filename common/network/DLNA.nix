@@ -67,7 +67,7 @@
         in
         # 親ディレクトリには非再帰的に 'x' (a+), メディアディレクトリには再帰的に 'rx' かつデフォルトACLも設定 (A+)
         # maskを明示的に設定してACLを有効にする
-        (map (p: "a+ ${p} - - - - u:minidlna:x,m::x") validParents) ++ [ "A+ ${path} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx" ];
+        (map (p: "A+ ${p} - - - - u:minidlna:x,m::x") validParents) ++ [ "A+ ${path} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx" ];
 
       aclRules = lib.unique (lib.flatten (map (info: mkAclRules info.resolvedPath) userMediaInfo));
     in
@@ -82,9 +82,6 @@
           notify_interval = 30;
         };
       };
-
-      # サービスが /home を読み取れるようにする
-      systemd.services.minidlna.serviceConfig.ProtectHome = "read-only";
 
       # 権限設定の改善: ACLを使用して、minidlnaユーザーにのみ必要最小限のアクセス権を付与する
       # これにより、ホームディレクトリの権限を0710に変更したり、ユーザーグループに加入させたりする必要がなくなる
