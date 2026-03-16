@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 {
@@ -45,15 +46,18 @@
               prefix = lib.head parts;
               path = lib.concatStringsSep "," (lib.tail parts);
               resolvedPath = if lib.hasPrefix "/" path then path else "${homeDir}/${path}";
+              # サービス内部での中立なマウント先（親の 700 権限をバイパスするため）
+              warpPath = "/run/minidlna/warp_${lib.replaceStrings [ "/" ] [ "_" ] (lib.removePrefix "/" resolvedPath)}";
             in
             {
-              inherit prefix resolvedPath;
+              inherit prefix resolvedPath warpPath;
             }
           ) u.network.dlna.mediaDirs
         ) enabledUsers
       );
 
-      userMediaDirs = map (info: "${info.prefix},${info.resolvedPath}") userMediaInfo;
+      # minidlnaに教える実際のパス（ワープ先を使用）
+      userMediaDirs = map (info: "${info.prefix},${info.warpPath}") userMediaInfo;
 
       # ACLルールの生成: 親ディレクトリの実行権限(x)と、メディアディレクトリ自体の読み取り・実行権限(rx)
       mkAclRules =
@@ -81,6 +85,13 @@
           inotify = "yes";
           notify_interval = 30;
         };
+      };
+
+      systemd.services.minidlna.serviceConfig = {
+        # メディアディレクトリを直接サービスのファイルシステム名前空間にマウントする
+        # これにより、親ディレクトリの権限（0700など）を完全に無視してアクセス可能になる
+        # source:dest の形式で指定
+        BindReadOnlyPaths = map (info: "${info.resolvedPath}:${info.warpPath}") userMediaInfo;
       };
 
       # 権限設定の改善: ACLを使用して、minidlnaユーザーにのみ必要最小限のアクセス権を付与する
