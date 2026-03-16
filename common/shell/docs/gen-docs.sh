@@ -24,14 +24,13 @@ let
       let
         # サブモジュールのオプションを取得
         subOpts = opt.type.getSubOptions [];
-        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) subOpts;
+        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) opt;
         content = lib.concatStrings children;
       in
       if content == "" then "" else "${p}- **${name}** (Submodule)\n${content}"
     else if isAttrsOfSubmodule then
       let
         # attrsOf submodule の場合、入れ子の型からオプションを取得
-        # Note: 構造によっては nestedTypes.elemType.getSubOptions になる
         subOpts = if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [] else {};
         children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) subOpts;
         content = lib.concatStrings children;
@@ -56,10 +55,13 @@ let
       "";
 
 in
-opt: "# Custom Options Tree\nGenerated on ${builtins.substring 0 10 (builtins.toString builtins.currentTime)}\n\n" + (renderTree 0 "custom" opt)
+opt: "# Custom Options Tree\nGenerated on __DATE_PLACEHOLDER__\n\n" + (renderTree 0 "custom" opt)
 EOF
 
 nix eval .#nixosConfigurations.thinkpadx13-nix.options.custom --impure --raw --apply "$(cat /tmp/gen-docs.nix)" > CUSTOM_OPTIONS.md
+
+# 日付を人間に読みやすい形式に置換
+sed -i "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" CUSTOM_OPTIONS.md
 
 rm /tmp/gen-docs.nix
 echo "Done! Check CUSTOM_OPTIONS.md"
