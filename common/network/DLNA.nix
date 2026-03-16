@@ -59,21 +59,8 @@
       # minidlnaに教える実際のパス（ワープ先を使用）
       userMediaDirs = map (info: "${info.prefix},${info.warpPath}") userMediaInfo;
 
-      # ACLルールの生成: 親ディレクトリの実行権限(x)と、メディアディレクトリ自体の読み取り・実行権限(rx)
-      mkAclRules =
-        path:
-        let
-          parts = lib.filter (s: s != "") (lib.splitString "/" path);
-          # /home/user/Videos -> ["/", "/home", "/home/user"]
-          prefixes = lib.genList (i: "/" + (lib.concatStringsSep "/" (lib.take i parts))) (lib.length parts);
-          # ルートディレクトリなどは除外
-          validParents = lib.filter (p: p != "" && p != "/") prefixes;
-        in
-        # 親ディレクトリには非再帰的に 'x' (a+), メディアディレクトリには再帰的に 'rx' かつデフォルトACLも設定 (A+)
-        # maskを明示的に設定してACLを有効にする
-        (map (p: "A+ ${p} - - - - u:minidlna:x,m::x") validParents) ++ [ "A+ ${path} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx" ];
-
-      aclRules = lib.unique (lib.flatten (map (info: mkAclRules info.resolvedPath) userMediaInfo));
+      # 権限設定: メディアディレクトリ自体に 'rx' 権限を付与し、デフォルトACLも設定して新規ファイルに対応
+      aclRules = map (info: "A+ ${info.resolvedPath} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx") userMediaInfo;
     in
     lib.mkIf anyUserEnabled {
       services.minidlna = {
