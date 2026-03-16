@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
-echo "Generating CUSTOM_OPTIONS.md in tree format (including submodules)..."
+echo "Generating CUSTOM_OPTIONS.md in tree format (cleaned and filtered)..."
 
 # Nix側で直接Markdownを組み立てるためのスクリプトを生成
 cat << 'EOF' > /tmp/gen-docs.nix
 let
   lib = (import <nixpkgs> {}).lib;
   
+  # 文字列のクリーンアップ（改行をスペースに、コードブロックなどを安全に）
+  cleanDesc = s: 
+    if !builtins.isString s then "No description"
+    else lib.replaceStrings ["\n" "\r" "`" "|"] [" " "" "'" "/"] s;
+
   # 再帰的に木構造をMarkdown化する関数
   renderTree = indent: name: opt:
     let
@@ -24,7 +29,9 @@ let
       let
         # サブモジュールのオプションを取得
         subOpts = opt.type.getSubOptions [];
-        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) opt;
+        # _module などのノイズを除外
+        filteredSubOpts = lib.filterAttrs (n: _: n != "_module") subOpts;
+        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
         content = lib.concatStrings children;
       in
       if content == "" then "" else "${p}- **${name}** (Submodule)\n${content}"
@@ -32,15 +39,15 @@ let
       let
         # attrsOf submodule の場合、入れ子の型からオプションを取得
         subOpts = if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [] else {};
-        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) subOpts;
+        # _module などのノイズを除外
+        filteredSubOpts = lib.filterAttrs (n: _: n != "_module") subOpts;
+        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
         content = lib.concatStrings children;
       in
       if content == "" then "" else "${p}- **${name}** (User Options)\n${content}"
     else if isOption then
       let
-        desc = if opt ? description then 
-                 (if builtins.isString opt.description then opt.description else "Complex description")
-               else "No description";
+        desc = if opt ? description then cleanDesc opt.description else "No description";
         default = if opt ? default then builtins.toJSON opt.default else "No default";
       in
       "${p}- `${name}` (Default: `${default}`): ${desc}\n"
