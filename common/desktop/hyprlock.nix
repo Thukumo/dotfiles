@@ -88,21 +88,28 @@
       };
     };
 
-    services.swayidle = {
+    services.hypridle = {
       enable = true;
-      timeouts = [
-        {
-          timeout = 300;
-          command = "${pkgs.hyprlock}/bin/hyprlock";
-        }
-        {
-          timeout = 600;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-      events = {
-        before-sleep = "${pkgs.hyprlock}/bin/hyprlock";
-        lock = "${pkgs.hyprlock}/bin/hyprlock";
+      settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+        };
+
+        listener = [
+          {
+            timeout = 300; # 5min
+            on-timeout = "loginctl lock-session";
+          }
+          {
+            timeout = 330; # 5.5min
+            on-timeout = "niri msg action power-off-monitors";
+          }
+          {
+            timeout = 600; # 10min
+            on-timeout = "systemctl suspend";
+          }
+        ];
       };
     };
   });
