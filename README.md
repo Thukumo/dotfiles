@@ -12,6 +12,11 @@
 
 現在のところ、インストール後に一度インストール先のマシン側の`~`で、手動で`git clone <URL> dotfiles`してやる必要がある
 
+## セットアップ
+
+リポジトリにて、pre-commitの有効化\
+`pre-commit install`
+
 ## 暗号化されたデータの追加
 
 `EDITOR='cp /dev/stdin' ragenix -e <filename>.age`にパイプすると楽

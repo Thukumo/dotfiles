@@ -29,6 +29,7 @@
     wiremix
 
     wl-clipboard-rs
+    pre-commit
   ];
 
   home.shellAliases = {

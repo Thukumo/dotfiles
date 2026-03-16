@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-echo "Generating CUSTOM_OPTIONS.md with examples..."
+echo "Generating CUSTOM_OPTIONS.md in tree format (including submodules)..."
+
+TEMP_FILE=$(mktemp)
+FINAL_FILE="CUSTOM_OPTIONS.md"
 
 # Nix側で直接Markdownを組み立てるためのスクリプトを生成
 cat << 'EOF' > /tmp/gen-docs.nix
@@ -68,10 +71,26 @@ in
 opt: "# Custom Options Tree\nGenerated on __DATE_PLACEHOLDER__\n\n" + (renderTree 0 "custom" opt)
 EOF
 
-nix eval .#nixosConfigurations.thinkpadx13-nix.options.custom --impure --raw --apply "$(cat /tmp/gen-docs.nix)" > CUSTOM_OPTIONS.md
+# 一時ファイルに生成
+nix eval .#nixosConfigurations.thinkpadx13-nix.options.custom --impure --raw --apply "$(cat /tmp/gen-docs.nix)" > "$TEMP_FILE"
 
-# 日付を人間に読みやすい形式に置換
-sed -i "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" CUSTOM_OPTIONS.md
+# 日付行(2行目)を除いて比較
+SHOULD_UPDATE=true
+if [ -f "$FINAL_FILE" ]; then
+    if diff <(sed '2d' "$FINAL_FILE") <(sed '2d' "$TEMP_FILE") > /dev/null; then
+        SHOULD_UPDATE=false
+    fi
+fi
 
-rm /tmp/gen-docs.nix
-echo "Done! Check CUSTOM_OPTIONS.md"
+if [ "$SHOULD_UPDATE" = true ]; then
+    echo "Options changed. Updating $FINAL_FILE..."
+    sed "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" "$TEMP_FILE" > "$FINAL_FILE"
+    # Gitリポジトリ内であればステージングに追加
+    if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+        git add "$FINAL_FILE"
+    fi
+else
+    echo "No changes in options (ignoring date). $FINAL_FILE is up to date."
+fi
+
+rm /tmp/gen-docs.nix "$TEMP_FILE"
