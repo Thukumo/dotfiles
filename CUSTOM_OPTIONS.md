@@ -1,0 +1,63 @@
+# Custom Options Tree
+Generated on 1773663304
+
+- **custom**
+  - **desktop**
+    - **pipewire**
+      - `enable` (Default: `true`): No description
+    - **sunshine**
+      - `enable` (Default: `false`): Whether to enable .
+  - **hardware**
+    - **disk**
+      - **disko**
+        - `ESPSize` (Default: `"2G"`): No description
+        - `diskName` (Default: `No default`): No description
+        - `enable` (Default: `true`): No description
+        - `swapSize` (Default: `No default`): No description
+      - **fstrim**
+        - `enable` (Default: `true`): No description
+      - **snapshot**
+        - `enable` (Default: `false`): No description
+    - **fwupdmgr**
+      - `enable` (Default: `true`): No description
+    - **gpu**
+      - **nvidia**
+        - `enable` (Default: `false`): Whether to enable nvidia GPU.
+    - **keybind**
+      - `deviceIds` (Default: `[]`): List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.
+      - `enable` (Default: `true`): No description
+    - **secure-boot**
+      - `enable` (Default: `false`): Whether to enable Secure Boot with Lanzaboote.
+      - **tpm2-totp**
+        - `enable` (Default: `true`): Enable TPM2 TOTP support
+      - **tpm2-unlock**
+        - `enable` (Default: `true`): Enable TPM2 LUKS unlocking
+        - `luksDevice` (Default: `null`): The name of the LUKS device to apply TPM2 unlock settings to
+    - **tune**
+      - **ananicy**
+        - `enable` (Default: `true`): No description
+      - **auto-cpufreq**
+        - `enable` (Default: `true`): No description
+      - **bpftune**
+        - `enable` (Default: `true`): No description
+      - **earlyoom**
+        - `enable` (Default: `false`): Whether to enable earlyoom.
+      - **ksm**
+        - `enable` (Default: `true`): No description
+        - `enableForAll` (Default: `false`): Whether to enable Enable ksm for all.
+      - **powertop**
+        - `enable` (Default: `true`): No description
+      - **zswap**
+        - `enable` (Default: `true`): No description
+  - **network**
+    - **cloudflare-warp**
+      - `enable` (Default: `false`): Whether to enable Cloudflare Warp.
+    - **mycelium**
+      - `enable` (Default: `true`): No description
+    - **wait-online**
+      - `enable` (Default: `false`): Whether to enable NetworkManager-wait-online.
+    - **zapret**
+      - `enable` (Default: `false`): Whether to enable Zapret.
+  - **secrets**
+    - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
+  - `users` (Default: `{}`): Custom per-user configuration options
