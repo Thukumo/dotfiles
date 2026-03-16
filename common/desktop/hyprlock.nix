@@ -107,7 +107,7 @@
           }
           {
             timeout = 600; # 10min
-            on-timeout = "systemctl suspend";
+            on-timeout = "[ ! -f /tmp/no-suspend ] && systemctl suspend";
           }
         ];
       };
