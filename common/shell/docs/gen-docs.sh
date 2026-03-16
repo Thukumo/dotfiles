@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Generating CUSTOM_OPTIONS.md in tree format (generalized filtering)..."
+echo "Generating CUSTOM_OPTIONS.md with examples..."
 
 # Nix側で直接Markdownを組み立てるためのスクリプトを生成
 cat << 'EOF' > /tmp/gen-docs.nix
@@ -49,12 +49,13 @@ let
       let
         desc = if opt ? description then cleanDesc opt.description else "No description";
         default = if opt ? default then builtins.toJSON opt.default else "No default";
+        # Exampleが存在する場合のみ表示
+        example = if opt ? example then " (Example: `${builtins.toJSON opt.example}`)" else "";
       in
-      "${p}- `${name}` (Default: `${default}`): ${desc}\n"
+      "${p}- `${name}` (Default: `${default}`)${example}: ${desc}\n"
     else if builtins.isAttrs opt && !(opt ? _type) then
       let
         # 子要素を再帰的に取得
-        # 通常の属性セットでも _ で始まるものは除外
         filteredAttrs = lib.filterAttrs (n: _: ! (lib.hasPrefix "_" n)) opt;
         renderedChildren = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredAttrs;
         content = lib.concatStrings renderedChildren;

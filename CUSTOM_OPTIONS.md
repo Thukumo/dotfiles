@@ -1,12 +1,12 @@
 # Custom Options Tree
-Generated on 2026-03-16 21:32:13
+Generated on 2026-03-16 21:33:29
 
 - **custom**
   - **desktop**
     - **pipewire**
       - `enable` (Default: `true`): No description
     - **sunshine**
-      - `enable` (Default: `false`): Whether to enable .
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable .
   - **hardware**
     - **disk**
       - **disko**
@@ -22,12 +22,12 @@ Generated on 2026-03-16 21:32:13
       - `enable` (Default: `true`): No description
     - **gpu**
       - **nvidia**
-        - `enable` (Default: `false`): Whether to enable nvidia GPU.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable nvidia GPU.
     - **keybind**
-      - `deviceIds` (Default: `[]`): List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.
+      - `deviceIds` (Default: `[]`) (Example: `["0001:0001"]`): List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.
       - `enable` (Default: `true`): No description
     - **secure-boot**
-      - `enable` (Default: `false`): Whether to enable Secure Boot with Lanzaboote.
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable Secure Boot with Lanzaboote.
       - **tpm2-totp**
         - `enable` (Default: `true`): Enable TPM2 TOTP support
       - **tpm2-unlock**
@@ -41,23 +41,23 @@ Generated on 2026-03-16 21:32:13
       - **bpftune**
         - `enable` (Default: `true`): No description
       - **earlyoom**
-        - `enable` (Default: `false`): Whether to enable earlyoom.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable earlyoom.
       - **ksm**
         - `enable` (Default: `true`): No description
-        - `enableForAll` (Default: `false`): Whether to enable Enable ksm for all.
+        - `enableForAll` (Default: `false`) (Example: `true`): Whether to enable Enable ksm for all.
       - **powertop**
         - `enable` (Default: `true`): No description
       - **zswap**
         - `enable` (Default: `true`): No description
   - **network**
     - **cloudflare-warp**
-      - `enable` (Default: `false`): Whether to enable Cloudflare Warp.
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
     - **mycelium**
       - `enable` (Default: `true`): No description
     - **wait-online**
-      - `enable` (Default: `false`): Whether to enable NetworkManager-wait-online.
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable NetworkManager-wait-online.
     - **zapret**
-      - `enable` (Default: `false`): Whether to enable Zapret.
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
   - **users** (User Options)
@@ -65,74 +65,74 @@ Generated on 2026-03-16 21:32:13
       - `userConfig` (Default: `{}`): Attribute set merged into users.users.<name>.
     - **desktop**
       - **activate-linux**
-        - `enable` (Default: `false`): Whether to enable activate-linux watermark.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable activate-linux watermark.
       - **apps**
         - **blender**
-          - `enable` (Default: `false`): Whether to enable Blender.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Blender.
         - **bottles**
-          - `enable` (Default: `false`): Whether to enable Bottles.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Bottles.
         - **chromium**
-          - `enable` (Default: `false`): Whether to enable Chromium.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Chromium.
         - **discord**
-          - `enable` (Default: `false`): Whether to enable Discord.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Discord.
         - **gnome-disk-utility**
-          - `enable` (Default: `false`): Whether to enable GNOME Disk Utility.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable GNOME Disk Utility.
         - **google-chrome**
-          - `enable` (Default: `false`): Whether to enable Google Chrome.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Chrome.
         - **libreoffice**
-          - `enable` (Default: `false`): Whether to enable LibreOffice.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreOffice.
         - **localsend**
-          - `enable` (Default: `false`): Whether to enable LocalSend.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable LocalSend.
         - **mattermost-desktop**
-          - `enable` (Default: `false`): Whether to enable Mattermost Desktop.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Mattermost Desktop.
         - **prismLauncher**
-          - `enable` (Default: `false`): Whether to enable Discord.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Discord.
         - **qutebrowser**
-          - `enable` (Default: `false`): Whether to enable qutebrowser.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable qutebrowser.
         - **rquickshare**
-          - `enable` (Default: `false`): Whether to enable RQuickShare.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable RQuickShare.
         - **steam**
-          - `enable` (Default: `false`): Whether to enable Steam.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Steam.
         - **thunar**
-          - `enable` (Default: `false`): Whether to enable Thunar.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Thunar.
         - **zoom**
-          - `enable` (Default: `false`): Whether to enable Zoom.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Zoom.
       - `de` (Default: `null`): Desktop environment or window manager to use
-      - `enable` (Default: `false`): Whether to enable desktop environment.
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable desktop environment.
       - **hyprlock**
         - `enable` (Default: `true`): No description
       - `ime` (Default: `null`): Input method engine to use
       - `launcher` (Default: `null`): Application launcher to use
       - `terminal` (Default: `null`): Terminal emulator to use
       - **vr**
-        - `enable` (Default: `false`): Whether to enable VR support.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
     - **dev**
       - **aider**
-        - `enable` (Default: `false`): Whether to enable aider.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable aider.
       - **antigravity**
-        - `enable` (Default: `false`): Whether to enable Google Antigravity.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Antigravity.
       - **gns3**
-        - `enable` (Default: `false`): Whether to enable gns3.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable gns3.
       - **ollama**
-        - `enable` (Default: `false`): Whether to enable ollama.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable ollama.
         - `host` (Default: `"127.0.0.1"`): The host address to bind to.
         - `loadModels` (Default: `[]`): List of ollama models to pull on startup.
         - `package` (Default: `"/nix/store/snxspr77rs2ffw5dsxqjqbn56w644ndr-ollama-0.17.7"`): The ollama package to use.
       - **opencode**
-        - `enable` (Default: `false`): Whether to enable opencode.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
         - `models` (Default: `[]`): No description
       - **podman**
-        - `enable` (Default: `false`): Whether to enable podman.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable podman.
       - **unityhub**
-        - `enable` (Default: `false`): Whether to enable Unity Hub.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable Unity Hub.
     - `dotfilesPath` (Default: `null`): Path to dotfiles directory (relative to home). Enables NixOS management aliases when set.
     - `email` (Default: `null`): User's email address for git configuration and other uses
     - **network**
       - **dlna**
-        - `enable` (Default: `false`): Whether to enable DLNA Server for this user.
-        - `mediaDirs` (Default: `[]`): Media directories for this user. Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video"). Relative paths are resolved to the user's home. 
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable DLNA Server for this user.
+        - `mediaDirs` (Default: `[]`) (Example: `["V,Documents/mov"]`): Media directories for this user. Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video"). Relative paths are resolved to the user's home. 
       - **globalProtect**
-        - `enable` (Default: `false`): Whether to enable GlobalProtect VPN.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable GlobalProtect VPN.
     - **persistence**
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user
