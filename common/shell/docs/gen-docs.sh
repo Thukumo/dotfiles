@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-echo "Generating CUSTOM_OPTIONS.md in tree format (cleaned and filtered)..."
+echo "Generating CUSTOM_OPTIONS.md in tree format (generalized filtering)..."
 
 # Nix側で直接Markdownを組み立てるためのスクリプトを生成
 cat << 'EOF' > /tmp/gen-docs.nix
 let
   lib = (import <nixpkgs> {}).lib;
   
-  # 文字列のクリーンアップ（改行をスペースに、コードブロックなどを安全に）
+  # 文字列のクリーンアップ
   cleanDesc = s: 
     if !builtins.isString s then "No description"
     else lib.replaceStrings ["\n" "\r" "`" "|"] [" " "" "'" "/"] s;
@@ -29,8 +29,8 @@ let
       let
         # サブモジュールのオプションを取得
         subOpts = opt.type.getSubOptions [];
-        # _module などのノイズを除外
-        filteredSubOpts = lib.filterAttrs (n: _: n != "_module") subOpts;
+        # _ で始まる内部属性を除外
+        filteredSubOpts = lib.filterAttrs (n: _: ! (lib.hasPrefix "_" n)) subOpts;
         children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
         content = lib.concatStrings children;
       in
@@ -39,8 +39,8 @@ let
       let
         # attrsOf submodule の場合、入れ子の型からオプションを取得
         subOpts = if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [] else {};
-        # _module などのノイズを除外
-        filteredSubOpts = lib.filterAttrs (n: _: n != "_module") subOpts;
+        # _ で始まる内部属性を除外
+        filteredSubOpts = lib.filterAttrs (n: _: ! (lib.hasPrefix "_" n)) subOpts;
         children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
         content = lib.concatStrings children;
       in
@@ -54,7 +54,9 @@ let
     else if builtins.isAttrs opt && !(opt ? _type) then
       let
         # 子要素を再帰的に取得
-        renderedChildren = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) opt;
+        # 通常の属性セットでも _ で始まるものは除外
+        filteredAttrs = lib.filterAttrs (n: _: ! (lib.hasPrefix "_" n)) opt;
+        renderedChildren = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredAttrs;
         content = lib.concatStrings renderedChildren;
       in
       if content == "" then "" else "${p}- **${name}**\n${content}"
