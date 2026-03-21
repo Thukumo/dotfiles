@@ -131,6 +131,16 @@
           );
       spawn-at-startup = [
         # fcitx5は、autostartにファイルがあるから不要っぽい
+        {
+          command = [
+            "${pkgs.swaybg}/bin/swaybg"
+            "-i"
+            "${pkgs.fetchurl {
+              url = "https://raw.githubusercontent.com/Amog-OS/AmogOS-Wallpapers/ccec8fbc1d2ad18e4115bf6833f81e8ab774e6e9/Windows11-Blue.png";
+              hash = "sha256-AoCAElNCj0bxgfMBcoqGaaHyByqto5RzqykP4aFyoRE=";
+            }}"
+          ];
+        }
       ];
     };
   };
