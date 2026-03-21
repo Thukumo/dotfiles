@@ -90,8 +90,8 @@
                 "J" = focus-window-down;
                 "Shift+H" = move-column-left;
                 "Shift+L" = move-column-right;
-                "Shift+K" = move-window-up;
-                "Shift+J" = move-window-down;
+                "Shift+K" = move-column-to-workspace-up;
+                "Shift+J" = move-column-to-workspace-down;
 
                 "Q" = close-window;
                 "F" = maximize-column;
@@ -112,6 +112,12 @@
                   value = focus-workspace n;
                 }) (lib.range 0 9)
               );
+              moveW = {
+                "Shift+F" = move-column-to-monitor-right;
+                "Shift+A" = move-column-to-monitor-left;
+                "Shift+S" = move-column-to-monitor-up;
+                "Shift+D" = move-column-to-monitor-down;
+              };
               other = {
                 "XF86AudioRaiseVolume" = spawn "swayosd-client" "--output-volume" "raise";
                 "XF86AudioLowerVolume" = spawn "swayosd-client" "--output-volume" "lower";
@@ -121,7 +127,7 @@
                 "XF86MonBrightnessDown" = spawn "swayosd-client" "--brightness" "lower";
               };
             in
-            (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (normalBind // worksp)) // other
+            (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (normalBind // worksp // moveW)) // other
           );
       spawn-at-startup = [
         # fcitx5は、autostartにファイルがあるから不要っぽい
