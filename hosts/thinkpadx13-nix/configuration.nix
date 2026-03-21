@@ -61,8 +61,11 @@
         blender.enable = true;
       };
     };
-    dev.antigravity.enable = true;
-    dev.gns3.enable = true;
+    dev = {
+      antigravity.enable = true;
+      gns3.enable = true;
+      unityhub.enable = true;
+    };
   };
   custom.desktop.sunshine.enable = false;
 
