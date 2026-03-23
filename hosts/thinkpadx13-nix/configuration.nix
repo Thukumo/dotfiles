@@ -72,8 +72,15 @@
   custom.hardware.keybind.deviceIds = [ "0001:0001" ]; # Internal keyboard only
 
   imports = [
-    ./hardware.nix # 再インストール時に消す
+    ./hardware.nix
   ];
+  custom.hardware.disk = {
+    btrfs-autoScrub.enable = true;
+    beesd = {
+      enable = true;
+      hashTableSizeMB = 256;
+    };
+  };
 
   custom.hardware.tune.earlyoom.enable = true;
 

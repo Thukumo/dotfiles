@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-03-19 22:37:09
+Generated on 2026-03-23 21:02:17
 
 - **custom**
   - **desktop**
@@ -9,6 +9,11 @@ Generated on 2026-03-19 22:37:09
       - `enable` (Default: `false`) (Example: `true`): Whether to enable .
   - **hardware**
     - **disk**
+      - **beesd**
+        - `enable` (Default: `false`): No description
+        - `hashTableSizeMB` (Default: `No default`): No description
+      - **btrfs-autoScrub**
+        - `enable` (Default: `false`): No description
       - **disko**
         - `ESPSize` (Default: `"2G"`): No description
         - `diskName` (Default: `No default`): No description

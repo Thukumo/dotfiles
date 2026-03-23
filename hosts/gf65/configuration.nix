@@ -81,11 +81,12 @@
     "/etc/age/key.txt"
   ];
 
-  custom = {
-    hardware.disk.disko = {
+  custom.hardware.disk ={
+    disko = {
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
     };
+    beesd.hashTableSizeMB = 2048;
   };
 
   custom.hardware.gpu.nvidia.enable = true;
