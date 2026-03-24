@@ -12,6 +12,13 @@
   )) { };
 
   home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.hyprlock.enable) (_: {
+    home.shellAliases = {
+      insomnia = "touch /tmp/no-suspend";
+      sleepy = "rm -f /tmp/no-suspend";
+      awake = "touch /tmp/no-lock";
+      asleep = "rm -f /tmp/no-lock";
+    };
+
     programs.hyprlock = {
       enable = true;
       settings = {
@@ -99,15 +106,15 @@
         listener = [
           {
             timeout = 300; # 5min
-            on-timeout = "loginctl lock-session";
+            on-timeout = "[ ! -f /tmp/no-lock ] && loginctl lock-session";
           }
           {
             timeout = 330; # 5.5min
-            on-timeout = "niri msg action power-off-monitors";
+            on-timeout = "[ ! -f /tmp/no-lock ] && niri msg action power-off-monitors";
           }
           {
             timeout = 600; # 10min
-            on-timeout = "[ ! -f /tmp/no-suspend ] && systemctl suspend";
+            on-timeout = "[ ! -f /tmp/no-suspend ] && [ ! -f /tmp/no-lock ] && systemctl suspend";
           }
         ];
       };
