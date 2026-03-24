@@ -77,21 +77,21 @@
                   "nix" = {
                     mountpoint = "/nix";
                     mountOptions = [
-                      "compress=zstd"
+                      "compress-force=zstd"
                       "noatime"
                     ];
                   };
                   "persist" = {
                     mountpoint = "/persist";
                     mountOptions = [
-                      "compress=zstd"
+                      "compress-force=zstd"
                       "noatime"
                     ];
                   };
                   "backup" = {
                     mountpoint = "/old";
                     mountOptions = [
-                      "compress=zstd"
+                      "compress-force=zstd"
                       "noatime"
                     ];
                   };
