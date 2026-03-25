@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-03-24 07:42:35
+Generated on 2026-03-25 12:44:58
 
 - **custom**
   - **desktop**
@@ -90,6 +90,9 @@ Generated on 2026-03-24 07:42:35
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LocalSend.
         - **mattermost-desktop**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Mattermost Desktop.
+        - **mpv**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable mpv with Anime4K shaders.
+          - `gpu-api` (Default: `null`): GPU API for mpv (null for auto)
         - **prismLauncher**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Discord.
         - **qutebrowser**

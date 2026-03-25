@@ -21,6 +21,16 @@
     "plugdev"
   ];
 
+  environment.systemPackages = [
+    (pkgs.video2x.override {
+      ffmpeg = pkgs.ffmpeg-full;
+    })
+  ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    msi-ec
+  ];
+  boot.kernelModules = [ "msi-ec" ];
+
   networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
     desktop = {
@@ -41,7 +51,12 @@
         thunar.enable = true;
         steam.enable = true;
         prismLauncher.enable = true;
+        localsend.enable = true;
         blender.enable = true;
+        mpv = {
+          enable = true;
+          gpu-api = "vulkan";
+        };
       };
       vr.enable = true;
     };
@@ -72,6 +87,7 @@
     };
   };
   services.open-webui.enable = false;
+  custom.network.cloudflare-warp.enable = true;
 
   custom.hardware.keybind.deviceIds = [ "0001:0001" ];
 
@@ -81,7 +97,7 @@
     "/etc/age/key.txt"
   ];
 
-  custom.hardware.disk ={
+  custom.hardware.disk = {
     disko = {
       diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
       swapSize = "70G";
