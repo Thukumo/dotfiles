@@ -552,10 +552,13 @@ encode_cuda() {
 
 process_file() {
   local rel_path="$1"
-  local input output temp_output backend_tag
+  local input output temp_output backend_tag shader_tag anime4k_shader
   local single_file_mode="${SINGLE_FILE_MODE:-0}"
   if [[ "$BACKEND" == "libplacebo" ]]; then
-    backend_tag="anime4k"
+    anime4k_shader="${ANIME4K_SHADER:-${SHADER_PATH##*/}}"
+    shader_tag="${anime4k_shader%.glsl}"
+    shader_tag="${shader_tag// /_}"
+    backend_tag="anime4k.${shader_tag}"
   else
     backend_tag="$BACKEND"
   fi
@@ -642,7 +645,7 @@ validate_decode_hw_for_backend
 
 print_runtime_config
 
-export IN_DIR OUT_DIR SHADER_PATH BACKEND CQ FFMPEG_BIN FFPROBE_BIN NVENC_CODEC NVENC_PRESET TARGET_W TARGET_H VULKAN_DEVICE_INDEX DECODE_HW BIT_DEPTH_MODE
+export IN_DIR OUT_DIR SHADER_PATH ANIME4K_SHADER BACKEND CQ FFMPEG_BIN FFPROBE_BIN NVENC_CODEC NVENC_PRESET TARGET_W TARGET_H VULKAN_DEVICE_INDEX DECODE_HW BIT_DEPTH_MODE
 export -f is_valid_video remux_if_no_upscale_needed encode_libplacebo encode_cuda process_file get_input_bit_depth choose_pix_fmt_for_input
 
 if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
