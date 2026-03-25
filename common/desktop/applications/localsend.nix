@@ -23,15 +23,5 @@ in
       enable = true;
       openFirewall = true;
     };
-
-    home-manager.users =
-      myLib.mkForEachUsers (user: user.custom.desktop.apps.localsend.enable or false)
-        (
-          _: _: {
-            home.persistence."/persist".directories = [
-              ".config/LocalSend"
-            ];
-          }
-        );
   };
 }
