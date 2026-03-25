@@ -14,10 +14,9 @@ Options:
   --mode MODE                  fast|anime4k|auto (fast=CUDA only, auto=Anime4K->CUDA)
   --codec NAME                 Encoder codec (default: hevc_nvenc)
   --preset NAME                Encoder preset (default: p4)
+  --bit-depth MODE             Output bit depth: auto|8|10 (default: auto)
   --width N                    Output width (default: 3840)
   --height N                   Output height (default: 2160)
-  --target-w N                 Alias of --width
-  --target-h N                 Alias of --height
   --vulkan-device-index N      Vulkan device index (default: 1)
   --decode-hw MODE             sw | vulkan | cuda (default: sw)
   --prime-offload              Enable NVIDIA PRIME offload env vars
@@ -45,6 +44,7 @@ CLI_CQ=""
 CLI_UPSCALE_MODE=""
 CLI_NVENC_CODEC=""
 CLI_NVENC_PRESET=""
+CLI_BIT_DEPTH_MODE=""
 CLI_TARGET_W=""
 CLI_TARGET_H=""
 CLI_VULKAN_DEVICE_INDEX=""
@@ -98,12 +98,17 @@ while [[ $# -gt 0 ]]; do
       CLI_NVENC_PRESET="$2"
       shift 2
       ;;
-    -w|--target-w|--width)
+    --bit-depth)
+      require_arg "$1" "${2:-}"
+      CLI_BIT_DEPTH_MODE="$2"
+      shift 2
+      ;;
+    -w|--width)
       require_arg "$1" "${2:-}"
       CLI_TARGET_W="$2"
       shift 2
       ;;
-    -h|--target-h|--height)
+    -h|--height)
       require_arg "$1" "${2:-}"
       CLI_TARGET_H="$2"
       shift 2
@@ -199,6 +204,7 @@ FFPROBE_BIN="__FFPROBE_BIN__"
 UPSCALE_MODE="${CLI_UPSCALE_MODE:-auto}"   # anime4k | fast | auto
 NVENC_CODEC="${CLI_NVENC_CODEC:-hevc_nvenc}"
 NVENC_PRESET="${CLI_NVENC_PRESET:-p4}"
+BIT_DEPTH_MODE="${CLI_BIT_DEPTH_MODE:-auto}" # auto | 8 | 10
 TARGET_W="${CLI_TARGET_W:-3840}"
 TARGET_H="${CLI_TARGET_H:-2160}"
 VULKAN_DEVICE_INDEX="${CLI_VULKAN_DEVICE_INDEX:-1}"
@@ -277,6 +283,60 @@ validate_decode_hw() {
   esac
 }
 
+validate_bit_depth_mode() {
+  case "$BIT_DEPTH_MODE" in
+    auto|8|10)
+      ;;
+    *)
+      echo "Invalid --bit-depth: $BIT_DEPTH_MODE (expected: auto | 8 | 10)" >&2
+      exit 1
+      ;;
+  esac
+}
+
+get_input_bit_depth() {
+  local path="$1"
+  local pix_fmt bits
+  pix_fmt="$("$FFPROBE_BIN" -v error -select_streams v:0 \
+    -show_entries stream=pix_fmt -of default=noprint_wrappers=1:nokey=1 \
+    "$path" 2>/dev/null || true)"
+  bits="$("$FFPROBE_BIN" -v error -select_streams v:0 \
+    -show_entries stream=bits_per_raw_sample -of default=noprint_wrappers=1:nokey=1 \
+    "$path" 2>/dev/null || true)"
+
+  if [[ "$bits" =~ ^[0-9]+$ ]]; then
+    echo "$bits"
+    return 0
+  fi
+  case "$pix_fmt" in
+    *p010*|*yuv420p10*|*yuv422p10*|*yuv444p10*|*gbrp10*)
+      echo 10
+      ;;
+    *)
+      echo 8
+      ;;
+  esac
+}
+
+choose_pix_fmt_for_input() {
+  local input_path="$1"
+  case "$BIT_DEPTH_MODE" in
+    8)
+      echo "nv12"
+      ;;
+    10)
+      echo "p010le"
+      ;;
+    auto)
+      if (( "$(get_input_bit_depth "$input_path")" >= 10 )); then
+        echo "p010le"
+      else
+        echo "nv12"
+      fi
+      ;;
+  esac
+}
+
 resolve_ffmpeg_binary() {
   refresh_filters_output
 }
@@ -334,6 +394,7 @@ print_runtime_config() {
   echo "FFmpeg:   $FFMPEG_BIN"
   echo "Prime:    $USE_PRIME_OFFLOAD"
   echo "Codec:    $NVENC_CODEC"
+  echo "BitDepth: $BIT_DEPTH_MODE"
   echo "Shader:   $ANIME4K_SHADER"
   echo "Vulkan:   vk:${VULKAN_DEVICE_INDEX}"
   echo "Decode:   $DECODE_HW"
@@ -372,6 +433,8 @@ encode_libplacebo() {
   local input_path="$1"
   local temp_output="$2"
   local mux_flags=()
+  local output_pix_fmt
+  output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
 
   if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
     mux_flags=(-movflags +faststart)
@@ -383,6 +446,7 @@ encode_libplacebo() {
       -hwaccel vulkan -hwaccel_output_format vulkan \
       -i "$input_path" \
       -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
+      -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
@@ -391,6 +455,7 @@ encode_libplacebo() {
     "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
       -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
       -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
+      -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
@@ -402,6 +467,13 @@ encode_cuda() {
   local input_path="$1"
   local temp_output="$2"
   local mux_flags=()
+  local output_pix_fmt pre_filter
+  output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
+  if [[ "$output_pix_fmt" == "p010le" ]]; then
+    pre_filter="format=p010le,hwupload_cuda"
+  else
+    pre_filter="format=nv12,hwupload_cuda"
+  fi
 
   if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
     mux_flags=(-movflags +faststart)
@@ -412,13 +484,15 @@ encode_cuda() {
       -hwaccel cuda -hwaccel_output_format cuda \
       -i "$input_path" \
       -vf "scale_cuda=${TARGET_W}:${TARGET_H}" \
+      -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
       "$temp_output"
   else
     "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
-      -vf "format=nv12,hwupload_cuda,scale_cuda=${TARGET_W}:${TARGET_H}" \
+      -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
+      -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
@@ -510,14 +584,15 @@ else
 fi
 
 validate_decode_hw
+validate_bit_depth_mode
 validate_anime4k_shader_selection
 resolve_ffmpeg_binary
 BACKEND="$(select_backend)"
 
 print_runtime_config
 
-export IN_DIR OUT_DIR SHADER_PATH BACKEND CQ FFMPEG_BIN FFPROBE_BIN NVENC_CODEC NVENC_PRESET TARGET_W TARGET_H VULKAN_DEVICE_INDEX DECODE_HW
-export -f is_valid_video remux_if_no_upscale_needed encode_libplacebo encode_cuda process_file
+export IN_DIR OUT_DIR SHADER_PATH BACKEND CQ FFMPEG_BIN FFPROBE_BIN NVENC_CODEC NVENC_PRESET TARGET_W TARGET_H VULKAN_DEVICE_INDEX DECODE_HW BIT_DEPTH_MODE
+export -f is_valid_video remux_if_no_upscale_needed encode_libplacebo encode_cuda process_file get_input_bit_depth choose_pix_fmt_for_input
 
 if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
   process_file "$INPUT_FILE"
