@@ -18,7 +18,7 @@ Options:
   --width N                    Output width (default: 3840)
   --height N                   Output height (default: 2160)
   --vulkan-device-index N      Vulkan device index (default: 1)
-  --decode-hw MODE             sw | vulkan | cuda (default: sw)
+  --decode-hw MODE             auto | sw | vulkan | cuda (default: auto)
   --prime-offload              Enable NVIDIA PRIME offload env vars
   --no-prime-offload           Disable NVIDIA PRIME offload env vars
   -w N                         Alias of --width
@@ -208,7 +208,7 @@ BIT_DEPTH_MODE="${CLI_BIT_DEPTH_MODE:-auto}" # auto | 8 | 10
 TARGET_W="${CLI_TARGET_W:-3840}"
 TARGET_H="${CLI_TARGET_H:-2160}"
 VULKAN_DEVICE_INDEX="${CLI_VULKAN_DEVICE_INDEX:-1}"
-DECODE_HW="${CLI_DECODE_HW:-sw}" # sw | vulkan | cuda
+DECODE_HW="${CLI_DECODE_HW:-auto}" # auto | sw | vulkan | cuda
 JOBS=1
 FILTERS_OUTPUT=""
 
@@ -274,10 +274,25 @@ is_valid_video() {
 
 validate_decode_hw() {
   case "$DECODE_HW" in
-    sw|vulkan|cuda)
+    auto|sw|vulkan|cuda)
       ;;
     *)
-      echo "Invalid DECODE_HW: $DECODE_HW (expected: sw | vulkan | cuda)" >&2
+      echo "Invalid DECODE_HW: $DECODE_HW (expected: auto | sw | vulkan | cuda)" >&2
+      exit 1
+      ;;
+  esac
+}
+
+validate_decode_hw_for_backend() {
+  case "$BACKEND:$DECODE_HW" in
+    cuda:auto|cuda:sw|cuda:cuda|libplacebo:auto|libplacebo:sw|libplacebo:vulkan)
+      ;;
+    cuda:vulkan)
+      echo "--decode-hw vulkan is incompatible with CUDA backend." >&2
+      exit 1
+      ;;
+    libplacebo:cuda)
+      echo "--decode-hw cuda is incompatible with Anime4K/libplacebo backend." >&2
       exit 1
       ;;
   esac
@@ -434,14 +449,19 @@ encode_libplacebo() {
   local temp_output="$2"
   local mux_flags=()
   local output_pix_fmt
+  local decode_mode="$DECODE_HW"
   output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
 
   if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
     mux_flags=(-movflags +faststart)
   fi
 
-  if [[ "$DECODE_HW" == "vulkan" ]]; then
-    "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y \
+  if [[ "$decode_mode" == "auto" ]]; then
+    decode_mode="vulkan"
+  fi
+
+  if [[ "$decode_mode" == "vulkan" ]]; then
+    if ! "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y \
       -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
       -hwaccel vulkan -hwaccel_output_format vulkan \
       -i "$input_path" \
@@ -450,7 +470,20 @@ encode_libplacebo() {
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
-      "$temp_output"
+      "$temp_output"; then
+      if [[ "$DECODE_HW" != "auto" ]]; then
+        return 1
+      fi
+      echo "Vulkan decode failed; retrying with software decode: $input_path"
+      "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+        -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
+        -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
+        -pix_fmt "$output_pix_fmt" \
+        -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
+        -c:a copy \
+        "${mux_flags[@]}" \
+        "$temp_output"
+    fi
   else
     "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
       -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
@@ -468,6 +501,7 @@ encode_cuda() {
   local temp_output="$2"
   local mux_flags=()
   local output_pix_fmt pre_filter
+  local decode_mode="$DECODE_HW"
   output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
   if [[ "$output_pix_fmt" == "p010le" ]]; then
     pre_filter="format=p010le,hwupload_cuda"
@@ -479,8 +513,12 @@ encode_cuda() {
     mux_flags=(-movflags +faststart)
   fi
 
-  if [[ "$DECODE_HW" == "cuda" ]]; then
-    "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y \
+  if [[ "$decode_mode" == "auto" ]]; then
+    decode_mode="cuda"
+  fi
+
+  if [[ "$decode_mode" == "cuda" ]]; then
+    if ! "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y \
       -hwaccel cuda -hwaccel_output_format cuda \
       -i "$input_path" \
       -vf "scale_cuda=${TARGET_W}:${TARGET_H}" \
@@ -488,7 +526,19 @@ encode_cuda() {
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
-      "$temp_output"
+      "$temp_output"; then
+      if [[ "$DECODE_HW" != "auto" ]]; then
+        return 1
+      fi
+      echo "CUDA decode failed; retrying with software decode: $input_path"
+      "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+        -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
+        -pix_fmt "$output_pix_fmt" \
+        -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
+        -c:a copy \
+        "${mux_flags[@]}" \
+        "$temp_output"
+    fi
   else
     "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
       -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
@@ -588,6 +638,7 @@ validate_bit_depth_mode
 validate_anime4k_shader_selection
 resolve_ffmpeg_binary
 BACKEND="$(select_backend)"
+validate_decode_hw_for_backend
 
 print_runtime_config
 
