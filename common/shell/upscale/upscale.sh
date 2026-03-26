@@ -13,7 +13,7 @@ Options:
   --cq N                       Constant quality (default: 24)
   --mode MODE                  fast|anime4k|auto (fast=CUDA only, auto=Anime4K->CUDA)
   --codec NAME                 Encoder codec (default: hevc_nvenc)
-  --preset NAME                Encoder preset (default: p4)
+  --preset NAME                Encoder preset (default: p3)
   --bit-depth MODE             Output bit depth: auto|8|10 (default: auto)
   --width N                    Output width (default: 3840)
   --height N                   Output height (default: 2160)
@@ -203,7 +203,7 @@ FFMPEG_BIN="__FFMPEG_BIN__"
 FFPROBE_BIN="__FFPROBE_BIN__"
 UPSCALE_MODE="${CLI_UPSCALE_MODE:-auto}"   # anime4k | fast | auto
 NVENC_CODEC="${CLI_NVENC_CODEC:-hevc_nvenc}"
-NVENC_PRESET="${CLI_NVENC_PRESET:-p4}"
+NVENC_PRESET="${CLI_NVENC_PRESET:-p3}"
 BIT_DEPTH_MODE="${CLI_BIT_DEPTH_MODE:-auto}" # auto | 8 | 10
 TARGET_W="${CLI_TARGET_W:-3840}"
 TARGET_H="${CLI_TARGET_H:-2160}"
@@ -397,22 +397,43 @@ select_backend() {
 }
 
 print_runtime_config() {
+  local mode_display decode_display bit_depth_display
   if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
     echo "File:     $INPUT_FILE"
   else
     echo "Scanning: $IN_DIR"
     echo "Output:   $OUT_DIR"
   fi
+
+  mode_display="$UPSCALE_MODE"
+  if [[ "$UPSCALE_MODE" == "auto" ]]; then
+    mode_display="auto -> $BACKEND"
+  fi
+
+  decode_display="$DECODE_HW"
+  if [[ "$DECODE_HW" == "auto" ]]; then
+    if [[ "$BACKEND" == "libplacebo" ]]; then
+      decode_display="auto -> vulkan (fallback: sw)"
+    else
+      decode_display="auto -> cuda (fallback: sw)"
+    fi
+  fi
+
+  bit_depth_display="$BIT_DEPTH_MODE"
+  if [[ "$BIT_DEPTH_MODE" == "auto" ]]; then
+    bit_depth_display="auto (per-file: >=10bit->p010le, else nv12)"
+  fi
+
   echo "Backend:  $BACKEND"
-  echo "Mode:     $UPSCALE_MODE"
+  echo "Mode:     $mode_display"
   echo "Jobs:     $JOBS"
   echo "FFmpeg:   $FFMPEG_BIN"
   echo "Prime:    $USE_PRIME_OFFLOAD"
   echo "Codec:    $NVENC_CODEC"
-  echo "BitDepth: $BIT_DEPTH_MODE"
+  echo "BitDepth: $bit_depth_display"
   echo "Shader:   $ANIME4K_SHADER"
   echo "Vulkan:   vk:${VULKAN_DEVICE_INDEX}"
-  echo "Decode:   $DECODE_HW"
+  echo "Decode:   $decode_display"
 }
 
 remux_if_no_upscale_needed() {
@@ -645,12 +666,18 @@ validate_decode_hw_for_backend
 
 print_runtime_config
 
-export IN_DIR OUT_DIR SHADER_PATH ANIME4K_SHADER BACKEND CQ FFMPEG_BIN FFPROBE_BIN NVENC_CODEC NVENC_PRESET TARGET_W TARGET_H VULKAN_DEVICE_INDEX DECODE_HW BIT_DEPTH_MODE
-export -f is_valid_video remux_if_no_upscale_needed encode_libplacebo encode_cuda process_file get_input_bit_depth choose_pix_fmt_for_input
+on_interrupt() {
+  echo "Interrupted. Stopping immediately." >&2
+  exit 130
+}
+trap on_interrupt INT TERM
 
 if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
   process_file "$INPUT_FILE"
 else
-  fd -j "$JOBS" -t f -e mp4 -e mkv -e avi --base-directory "$IN_DIR" . \
-    -x bash -euo pipefail -c "process_file \"\$1\"" _ "{}"
+  while IFS= read -r rel_path; do
+    process_file "$rel_path"
+  done < <(
+    fd -j "$JOBS" -t f -e mp4 -e mkv -e avi --base-directory "$IN_DIR" .
+  )
 fi
