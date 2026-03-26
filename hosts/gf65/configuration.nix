@@ -33,6 +33,10 @@
 
   networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
+    network.dlna = {
+      enable = true;
+      mediaDirs = [ "V,Documents/mov" ];
+    };
     desktop = {
       enable = true;
       de = "niri";
