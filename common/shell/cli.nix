@@ -9,7 +9,7 @@
     bluetui
     zellij
     trash-cli
-    ffmpeg
+    ffmpeg-full
     yt-dlp
     wev
 

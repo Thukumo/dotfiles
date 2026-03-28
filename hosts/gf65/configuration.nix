@@ -21,11 +21,6 @@
     "plugdev"
   ];
 
-  environment.systemPackages = [
-    (pkgs.video2x.override {
-      ffmpeg = pkgs.ffmpeg-full;
-    })
-  ];
   boot.extraModulePackages = with config.boot.kernelPackages; [
     msi-ec
   ];
