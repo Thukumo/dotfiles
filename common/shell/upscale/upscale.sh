@@ -211,6 +211,9 @@ VULKAN_DEVICE_INDEX="${CLI_VULKAN_DEVICE_INDEX:-1}"
 DECODE_HW="${CLI_DECODE_HW:-auto}" # auto | sw | vulkan | cuda
 JOBS=1
 FILTERS_OUTPUT=""
+RUN_USED_DECODE=""
+RUN_USED_BIT_DEPTH=""
+RUN_USED_PIX_FMT=""
 
 list_available_anime4k_shaders() {
   local shader_file
@@ -245,11 +248,11 @@ has_filter() {
 }
 
 refresh_filters_output() {
-  FILTERS_OUTPUT="$("$FFMPEG_BIN" -hide_banner -filters 2>/dev/null || true)"
+  FILTERS_OUTPUT="$("$FFMPEG_BIN" -nostdin -hide_banner -filters 2>/dev/null || true)"
 }
 
 can_use_libplacebo() {
-  "$FFMPEG_BIN" -v error \
+  "$FFMPEG_BIN" -nostdin -v error \
     -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
     -f lavfi -i color=size=32x32:rate=1 -frames:v 1 \
     -vf "libplacebo=w=32:h=32:custom_shader_path=$SHADER_PATH" \
@@ -257,7 +260,7 @@ can_use_libplacebo() {
 }
 
 can_use_cuda_nvenc() {
-  "$FFMPEG_BIN" -v error \
+  "$FFMPEG_BIN" -nostdin -v error \
     -f lavfi -i testsrc2=size=320x180:rate=1 -frames:v 2 \
     -vf "format=yuv420p,hwupload_cuda,scale_cuda=640:360" \
     -c:v hevc_nvenc \
@@ -352,6 +355,21 @@ choose_pix_fmt_for_input() {
   esac
 }
 
+bit_depth_from_pix_fmt() {
+  local pix_fmt="$1"
+  case "$pix_fmt" in
+    p010le|*10*)
+      echo "10"
+      ;;
+    nv12|*8*)
+      echo "8"
+      ;;
+    *)
+      echo "unknown"
+      ;;
+  esac
+}
+
 resolve_ffmpeg_binary() {
   refresh_filters_output
 }
@@ -397,7 +415,7 @@ select_backend() {
 }
 
 print_runtime_config() {
-  local mode_display decode_display bit_depth_display
+  local mode_display decode_request decode_plan bit_depth_request bit_depth_plan
   if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
     echo "File:     $INPUT_FILE"
   else
@@ -410,19 +428,28 @@ print_runtime_config() {
     mode_display="auto -> $BACKEND"
   fi
 
-  decode_display="$DECODE_HW"
+  decode_request="$DECODE_HW"
+  decode_plan="$DECODE_HW"
   if [[ "$DECODE_HW" == "auto" ]]; then
     if [[ "$BACKEND" == "libplacebo" ]]; then
-      decode_display="auto -> vulkan (fallback: sw)"
+      decode_plan="vulkan (fallback: sw)"
     else
-      decode_display="auto -> cuda (fallback: sw)"
+      decode_plan="cuda (fallback: sw)"
     fi
   fi
 
-  bit_depth_display="$BIT_DEPTH_MODE"
-  if [[ "$BIT_DEPTH_MODE" == "auto" ]]; then
-    bit_depth_display="auto (per-file: >=10bit->p010le, else nv12)"
-  fi
+  bit_depth_request="$BIT_DEPTH_MODE"
+  case "$BIT_DEPTH_MODE" in
+    auto)
+      bit_depth_plan="input-based (>=10bit -> 10/p010le, else 8/nv12)"
+      ;;
+    10)
+      bit_depth_plan="fixed 10 (p010le)"
+      ;;
+    8)
+      bit_depth_plan="fixed 8 (nv12)"
+      ;;
+  esac
 
   echo "Backend:  $BACKEND"
   echo "Mode:     $mode_display"
@@ -430,10 +457,12 @@ print_runtime_config() {
   echo "FFmpeg:   $FFMPEG_BIN"
   echo "Prime:    $USE_PRIME_OFFLOAD"
   echo "Codec:    $NVENC_CODEC"
-  echo "BitDepth: $bit_depth_display"
+  echo "BitDepthRq: $bit_depth_request"
+  echo "BitDepthPl: $bit_depth_plan"
   echo "Shader:   $ANIME4K_SHADER"
   echo "Vulkan:   vk:${VULKAN_DEVICE_INDEX}"
-  echo "Decode:   $decode_display"
+  echo "DecodeRq: $decode_request"
+  echo "DecodePl: $decode_plan"
 }
 
 remux_if_no_upscale_needed() {
@@ -453,9 +482,12 @@ remux_if_no_upscale_needed() {
 
   if [[ "$input_w" =~ ^[0-9]+$ && "$input_h" =~ ^[0-9]+$ ]] && (( input_w >= TARGET_W && input_h >= TARGET_H )); then
     echo "No upscale needed (${input_w}x${input_h} >= ${TARGET_W}x${TARGET_H}), remuxing: $input_path"
-    if "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+    if "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
       -map 0 -c copy "${mux_flags[@]}" \
       "$temp_output"; then
+      RUN_USED_DECODE="copy"
+      RUN_USED_PIX_FMT="copy"
+      RUN_USED_BIT_DEPTH="$(get_input_bit_depth "$input_path")"
       return 0
     fi
     echo "Remux failed, falling back to re-encode: $input_path"
@@ -472,6 +504,8 @@ encode_libplacebo() {
   local output_pix_fmt
   local decode_mode="$DECODE_HW"
   output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
+  RUN_USED_PIX_FMT="$output_pix_fmt"
+  RUN_USED_BIT_DEPTH="$(bit_depth_from_pix_fmt "$output_pix_fmt")"
 
   if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
     mux_flags=(-movflags +faststart)
@@ -482,21 +516,25 @@ encode_libplacebo() {
   fi
 
   if [[ "$decode_mode" == "vulkan" ]]; then
-    if ! "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y \
+    if ! "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y \
       -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
       -hwaccel vulkan -hwaccel_output_format vulkan \
       -i "$input_path" \
       -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
       -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-      -c:a copy \
-      "${mux_flags[@]}" \
-      "$temp_output"; then
+        -c:a copy \
+        "${mux_flags[@]}" \
+        "$temp_output"; then
       if [[ "$DECODE_HW" != "auto" ]]; then
         return 1
       fi
+      if [[ ! -f "$input_path" ]]; then
+        echo "Input disappeared before software-decode retry: $input_path" >&2
+        return 1
+      fi
       echo "Vulkan decode failed; retrying with software decode: $input_path"
-      "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+      "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
         -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
         -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
         -pix_fmt "$output_pix_fmt" \
@@ -504,9 +542,12 @@ encode_libplacebo() {
         -c:a copy \
         "${mux_flags[@]}" \
         "$temp_output"
+      RUN_USED_DECODE="sw"
+    else
+      RUN_USED_DECODE="vulkan"
     fi
   else
-    "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+    "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
       -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
       -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
       -pix_fmt "$output_pix_fmt" \
@@ -514,6 +555,7 @@ encode_libplacebo() {
       -c:a copy \
       "${mux_flags[@]}" \
       "$temp_output"
+    RUN_USED_DECODE="sw"
   fi
 }
 
@@ -524,6 +566,8 @@ encode_cuda() {
   local output_pix_fmt pre_filter
   local decode_mode="$DECODE_HW"
   output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
+  RUN_USED_PIX_FMT="$output_pix_fmt"
+  RUN_USED_BIT_DEPTH="$(bit_depth_from_pix_fmt "$output_pix_fmt")"
   if [[ "$output_pix_fmt" == "p010le" ]]; then
     pre_filter="format=p010le,hwupload_cuda"
   else
@@ -539,35 +583,43 @@ encode_cuda() {
   fi
 
   if [[ "$decode_mode" == "cuda" ]]; then
-    if ! "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y \
+    if ! "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y \
       -hwaccel cuda -hwaccel_output_format cuda \
       -i "$input_path" \
       -vf "scale_cuda=${TARGET_W}:${TARGET_H}" \
       -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-      -c:a copy \
-      "${mux_flags[@]}" \
-      "$temp_output"; then
+        -c:a copy \
+        "${mux_flags[@]}" \
+        "$temp_output"; then
       if [[ "$DECODE_HW" != "auto" ]]; then
         return 1
       fi
+      if [[ ! -f "$input_path" ]]; then
+        echo "Input disappeared before software-decode retry: $input_path" >&2
+        return 1
+      fi
       echo "CUDA decode failed; retrying with software decode: $input_path"
-      "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+      "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
         -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
         -pix_fmt "$output_pix_fmt" \
         -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
         -c:a copy \
         "${mux_flags[@]}" \
         "$temp_output"
+      RUN_USED_DECODE="sw"
+    else
+      RUN_USED_DECODE="cuda"
     fi
   else
-    "$FFMPEG_BIN" -hide_banner -loglevel error -stats -y -i "$input_path" \
+    "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
       -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
       -pix_fmt "$output_pix_fmt" \
       -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
       -c:a copy \
       "${mux_flags[@]}" \
       "$temp_output"
+    RUN_USED_DECODE="sw"
   fi
 }
 
@@ -595,6 +647,10 @@ process_file() {
       output="$OUT_DIR/${rel_path}.${backend_tag}"
     fi
   fi
+  if [[ ! -f "$input" ]]; then
+    echo "Skipping missing input: $input" >&2
+    return 0
+  fi
   if [[ "$output" == *.* ]]; then
     temp_output="${output%.*}.part.${output##*.}"
   else
@@ -612,6 +668,9 @@ process_file() {
   fi
 
   echo "Upscaling [$BACKEND]: $input -> $output"
+  RUN_USED_DECODE=""
+  RUN_USED_BIT_DEPTH=""
+  RUN_USED_PIX_FMT=""
   rm -f "$temp_output"
 
   if remux_if_no_upscale_needed "$input" "$temp_output"; then
@@ -620,6 +679,8 @@ process_file() {
       exit 1
     fi
     mv -f "$temp_output" "$output"
+    echo "RunUsed: decode=${RUN_USED_DECODE:-unknown}, bitdepth=${RUN_USED_BIT_DEPTH:-unknown}, pix_fmt=${RUN_USED_PIX_FMT:-unknown}"
+    echo "Done: $output"
     return 0
   fi
 
@@ -641,6 +702,8 @@ process_file() {
     exit 1
   fi
   mv -f "$temp_output" "$output"
+  echo "RunUsed: decode=${RUN_USED_DECODE:-unknown}, bitdepth=${RUN_USED_BIT_DEPTH:-unknown}, pix_fmt=${RUN_USED_PIX_FMT:-unknown}"
+  echo "Done: $output"
 }
 
 if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
