@@ -76,7 +76,7 @@
                 "Shift+P" = power-off-monitors;
                 "Escape" = spawn "${pkgs.hyprlock}/bin/hyprlock";
 
-                "Return" = spawn "footclient";
+                "Return" = spawn "foot";
                 "Space" = spawn "fuzzel";
                 # "Space" = spawn "anyrun";
                 "M" = spawn "mattermost-desktop";

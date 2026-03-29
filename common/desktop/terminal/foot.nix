@@ -11,7 +11,6 @@
         (user: {
           programs.foot = {
             enable = true;
-            server.enable = true;
             settings = {
               main = {
                 font = "Adwaita Mono Nerd Font:size=10";
