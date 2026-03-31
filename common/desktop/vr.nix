@@ -28,7 +28,6 @@
       services.wivrn = lib.mkIf vrEnabled {
         enable = true;
         autoStart = true;
-        defaultRuntime = true;
         openFirewall = true;
         config = {
           enable = true;
