@@ -65,6 +65,7 @@
               ollama-model-loader = {
                 Unit = {
                   After = [ "ollama.service" ];
+                  Requires = [ "ollama.service" ];
                 };
 
                 Service = {
@@ -72,6 +73,12 @@
                   TimeoutStartSec = 0;
                   ExecStart = pkgs.writeShellScript "ollama-sync-models" ''
                     OLLAMA_BIN="${config.services.ollama.package}/bin/ollama"
+
+                    # Wait for the ollama server to be ready
+                    echo "Waiting for ollama server to be ready..."
+                    until $OLLAMA_BIN list >/dev/null 2>&1; do
+                      sleep 1
+                    done
 
                     ${lib.concatMapStringsSep "\n" (
                       model: "$OLLAMA_BIN pull ${lib.escapeShellArg model}"
