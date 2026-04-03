@@ -74,13 +74,14 @@
           "qwen3.5:4b"
           "qwen3.5:9b"
           "qwen3.5:35b"
+          "gemma4:e4b"
         ];
       };
       opencode = {
         enable = true;
         models = config.custom.users."tsukumo".dev.ollama.loadModels;
       };
-      aider.enable = true;
+      aider.enable = false;
       antigravity.enable = true;
       unityhub.enable = true;
     };
