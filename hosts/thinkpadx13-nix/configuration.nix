@@ -2,7 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ myLib, ... }:
+{
+  myLib,
+  pkgs,
+  config,
+  ...
+}:
 
 {
   custom.hardware.secure-boot.enable = true;
@@ -32,6 +37,7 @@
   });
 
   custom.network.mycelium.enable = false;
+  custom.network.cloudflare-warp.enable = false;
   custom.users."tsukumo" = {
     network.dlna = {
       enable = true;
@@ -65,6 +71,16 @@
       antigravity.enable = true;
       gns3.enable = true;
       unityhub.enable = true;
+      ollama = {
+        enable = true;
+        loadModels = [
+          "gemma4:e4b"
+        ];
+      };
+      opencode = {
+        enable = true;
+        models = config.custom.users."tsukumo".dev.ollama.loadModels;
+      };
     };
   };
   custom.desktop.sunshine.enable = false;
