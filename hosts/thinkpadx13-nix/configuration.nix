@@ -76,6 +76,16 @@
         loadModels = [
           "gemma4:e4b"
         ];
+        package = pkgs.ollama.overrideAttrs (_: rec {
+          version = "0.20.2";
+          src = pkgs.fetchFromGitHub {
+            owner = "ollama";
+            repo = "ollama";
+            rev = "v${version}";
+            hash = "sha256-Ic3eLOohLR7MQGkLvDJBNOCiBBKxh6l8X9MgK0b4w+Y=";
+            fetchSubmodules = true;
+          };
+        });
       };
       opencode = {
         enable = true;
