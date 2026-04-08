@@ -67,4 +67,6 @@
       "--cmd cd"
     ];
   };
+
+  programs.carapace.enable = true;
 }
