@@ -2,6 +2,8 @@
 
 {
   home.packages = with pkgs; [
+    nushell
+
     nerd-fonts.adwaita-mono
     fastfetch
     gotop
