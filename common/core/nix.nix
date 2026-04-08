@@ -31,11 +31,11 @@
       {
         home.persistence."/persist".directories = [ u.custom.dotfilesPath ];
 
-        home.shellAliases = {
-          rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
-          update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
-          check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
-        };
+        # home.shellAliases = {
+        #   rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
+        #   update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
+        #   check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
+        # };
         systemd.user.services.git-pull-dotfiles = {
           Unit = {
             Description = "Pull dotfiles repository on login";

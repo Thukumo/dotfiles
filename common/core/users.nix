@@ -97,7 +97,7 @@
             "networkmanager"
             "wheel"
           ];
-          shell = pkgs.zsh;
+          shell = pkgs.nushell;
         };
 
         email = "contact@tsukumo.f5.si";

@@ -2,8 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    nushell
-
     nerd-fonts.adwaita-mono
     fastfetch
     gotop
@@ -35,7 +33,6 @@
   ];
 
   home.shellAliases = {
-    ls = "${pkgs.lsd}/bin/lsd";
     pres = "${pkgs.gnutar}/bin/tar -I 'zstd -T0'";
     sl = "nix shell";
   };
@@ -62,6 +59,7 @@
       };
     };
   };
+
   programs.btop = {
     enable = true;
     settings = {
