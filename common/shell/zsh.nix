@@ -1,13 +1,16 @@
 {
   pkgs,
+  lib,
   osConfig,
   config,
   ...
 }:
-
+let
+  isEnabled = osConfig.users.users.${config.home.username}.shell == pkgs.zsh;
+in
 {
   programs.zsh = {
-    enable = osConfig.users.users.${config.home.username}.shell == pkgs.zsh;
+    enable = isEnabled;
 
     enableCompletion = true;
     autosuggestion.enable = true;
@@ -51,4 +54,7 @@
       zstyle ':completion:*' menu select
     '';
   };
+  home.persistence."/persist".directories = lib.optionals isEnabled [
+    ".local/state/zsh"
+  ];
 }

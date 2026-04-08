@@ -108,13 +108,7 @@
           directories = [
             "Documents"
             ".local/state/wireplumber"
-          ]
-          ++ lib.optional (
-            config.custom.users.tsukumo.account.userConfig.shell == pkgs.fish
-          ) ".local/share/fish"
-          ++ lib.optional (
-            config.custom.users.tsukumo.account.userConfig.shell == pkgs.zsh
-          ) ".local/state/zsh";
+          ];
           files = [
             ".ssh/known_hosts"
           ];
