@@ -41,13 +41,19 @@
             val:
             let
               parts = lib.splitString "," val;
-              _ = assert lib.assertMsg (lib.length parts >= 2) "DLNA mediaDir '${val}' must be in 'PREFIX,PATH' format (e.g. 'V,Documents/mov')"; parts;
+              _ =
+                assert lib.assertMsg (
+                  lib.length parts >= 2
+                ) "DLNA mediaDir '${val}' must be in 'PREFIX,PATH' format (e.g. 'V,Documents/mov')";
+                parts;
 
               prefix = lib.head parts;
               path = lib.concatStringsSep "," (lib.tail parts);
               resolvedPath = if lib.hasPrefix "/" path then path else "${homeDir}/${path}";
               # サービス内部での中立なマウント先（親の 700 権限をバイパスするため）
-              warpPath = "/run/minidlna/warp_${lib.replaceStrings [ "/" ] [ "_" ] (lib.removePrefix "/" resolvedPath)}";
+              warpPath = "/run/minidlna/warp_${
+                lib.replaceStrings [ "/" ] [ "_" ] (lib.removePrefix "/" resolvedPath)
+              }";
             in
             {
               inherit prefix resolvedPath warpPath;
@@ -60,7 +66,9 @@
       userMediaDirs = map (info: "${info.prefix},${info.warpPath}") userMediaInfo;
 
       # 権限設定: メディアディレクトリ自体に 'rx' 権限を付与し、デフォルトACLも設定して新規ファイルに対応
-      aclRules = map (info: "A+ ${info.resolvedPath} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx") userMediaInfo;
+      aclRules = map (
+        info: "A+ ${info.resolvedPath} - - - - u:minidlna:rx,m::rx,d:u:minidlna:rx,d:m::rx"
+      ) userMediaInfo;
     in
     lib.mkIf anyUserEnabled {
       services.minidlna = {
