@@ -23,8 +23,8 @@ in
         case_sensitive = false;
         quick = true;
         partial = true;
-        algorithm = "fuzzy";
-        # algorithm = "prefix";
+        # algorithm = "fuzzy";
+        algorithm = "prefix";
         external = {
           enable = true;
           max_results = 1000;

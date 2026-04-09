@@ -36,7 +36,7 @@
     }
   '';
 
-  programs.fzf = {
+  programs.skim = {
     enable = true;
   };
 
