@@ -42,6 +42,8 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    stylix.url = "github:danth/stylix";
   };
 
   outputs =
@@ -57,6 +59,7 @@
       nixos-generators,
       antigravity-nix,
       lanzaboote,
+      stylix,
       ...
     }@inputs:
     let
@@ -92,6 +95,7 @@
         ragenix.nixosModules.default
         disko.nixosModules.disko
         lanzaboote.nixosModules.lanzaboote
+        stylix.nixosModules.stylix
       ];
 
       mkHost =

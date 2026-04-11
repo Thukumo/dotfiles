@@ -19,6 +19,8 @@
       asleep = "rm -f /tmp/no-lock";
     };
 
+    stylix.targets.hyprlock.enable = false;
+
     programs.hyprlock = {
       enable = true;
       settings = {
@@ -63,7 +65,6 @@
             text = "$TIME";
             color = "rgba(255, 255, 255, 0.9)";
             font_size = 120;
-            font_family = "sans-serif";
             position = "0, 150";
             halign = "center";
             valign = "center";
@@ -75,7 +76,6 @@
             text = "cmd[update:18000000] echo \"<b>$(LC_TIME=C date +'%A, %B %d')</b>\"";
             color = "rgba(255, 255, 255, 0.9)";
             font_size = 24;
-            font_family = "sans-serif";
             position = "0, 50";
             halign = "center";
             valign = "center";
@@ -86,7 +86,6 @@
             text = "Hi there, $USER";
             color = "rgba(255, 255, 255, 0.7)";
             font_size = 16;
-            font_family = "sans-serif";
             position = "0, -120";
             halign = "center";
             valign = "center";

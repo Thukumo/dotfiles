@@ -13,8 +13,6 @@
             settings = {
               main = {
                 use-bold = "yes";
-                dpi-aware = "no";
-                font = "Adwaita Mono Nerd Font:size=18";
               };
             };
           };
