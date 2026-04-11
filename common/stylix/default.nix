@@ -40,7 +40,7 @@ in
         applications = 12;
         terminal = 14;
         desktop = 14;
-        popups = 18;
+        popups = 12;
       };
     };
 

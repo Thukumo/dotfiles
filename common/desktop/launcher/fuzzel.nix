@@ -1,5 +1,7 @@
 {
   myLib,
+  config,
+  lib,
   ...
 }:
 
@@ -13,6 +15,7 @@
             settings = {
               main = {
                 use-bold = "yes";
+                font = lib.mkForce "${config.stylix.fonts.monospace.name}:size=18";
               };
             };
           };
