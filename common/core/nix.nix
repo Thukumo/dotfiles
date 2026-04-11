@@ -27,15 +27,16 @@
     ))
     (myLib.mkForEachUsers (u: u.custom.dotfilesPath != null) (
       u:
-      { pkgs, ... }:
+      { config, pkgs, ... }:
       {
         home.persistence."/persist".directories = [ u.custom.dotfilesPath ];
 
-        # home.shellAliases = {
-        #   rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
-        #   update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
-        #   check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
-        # };
+        programs.nh = {
+          enable = true;
+          clean.enable = false;
+          flake = "${config.home.homeDirectory}/${u.custom.dotfilesPath}";
+        };
+
         systemd.user.services.git-pull-dotfiles = {
           Unit = {
             Description = "Pull dotfiles repository on login";
@@ -55,12 +56,20 @@
     ))
   ];
 
-  nix.gc = {
-    automatic = true;
-    dates = "00:00";
-    randomizedDelaySec = "45min";
-    options = "--delete-older-than 7d";
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      extraArgs = "--keep-since 7d --keep 3";
+    };
   };
+
+  # nix.gc = {
+  #   automatic = true;
+  #   dates = "00:00";
+  #   randomizedDelaySec = "45min";
+  #   options = "--delete-older-than 7d";
+  # };
 
   nix.optimise = {
     automatic = true;
