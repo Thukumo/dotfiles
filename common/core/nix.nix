@@ -2,6 +2,7 @@
   config,
   lib,
   myLib,
+  pkgs,
   ...
 }:
 
@@ -12,6 +13,19 @@
     "nix-command"
     "flakes"
   ];
+
+  # https://lix.systems/add-to-config/
+  nixpkgs.overlays = [
+    (final: prev: {
+      inherit (prev.lixPackageSets.stable)
+        nixpkgs-review
+        nix-eval-jobs
+        nix-fast-build
+        colmena
+        ;
+    })
+  ];
+  nix.package = pkgs.lix;
 
   nixpkgs.config.allowUnfree = true;
   home-manager.useGlobalPkgs = true;

@@ -100,13 +100,6 @@
   imports = [
     ./hardware.nix
   ];
-  custom.hardware.disk = {
-    btrfs-autoScrub.enable = true;
-    beesd = {
-      enable = true;
-      hashTableSizeMB = 256;
-    };
-  };
 
   custom.hardware.tune.earlyoom.enable = true;
 
@@ -116,15 +109,18 @@
     "/etc/age"
   ];
 
-  custom.hardware = {
-    disk = {
-      disko = {
-        enable = false; # 後で再インストールするときに有効にする
-        diskName = "/dev/disk/by-id/nvme-SKHynix_HFS256GD9TNI-L2B0B_NY06N11541090762N";
-        swapSize = "10G";
-      };
-      snapshot.enable = true;
+  custom.hardware.disk = {
+    btrfs-autoScrub.enable = true;
+    beesd = {
+      enable = true;
+      hashTableSizeMB = 256;
     };
+    disko = {
+      enable = false; # 後で再インストールするときに有効にする
+      diskName = "/dev/disk/by-id/nvme-SKHynix_HFS256GD9TNI-L2B0B_NY06N11541090762N";
+      swapSize = "10G";
+    };
+    snapshot.enable = true;
   };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
