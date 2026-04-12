@@ -5,11 +5,11 @@
 
 {
   home.packages = with pkgs; [
-    # feh
     fd
     ripgrep
 
   ];
+
   programs.yazi = {
     enable = true;
     settings = {
@@ -25,8 +25,32 @@
         ];
         play = [
           {
-            # run = ''${pkgs.vlc}/bin/vlc "$@"'';
-            run = ''${pkgs.ffmpeg}/bin/ffplay -i "$@"'';
+            run = ''${pkgs.vlc}/bin/vlc "$@"'';
+          }
+        ];
+        image = [
+          {
+            run = ''${pkgs.feh}/bin/feh "$@"'';
+          }
+        ];
+      };
+      open = {
+        prepend_rules = [
+          {
+            mime = "text/*";
+            use = [ "edit" ];
+          }
+          {
+            mime = "image/*";
+            use = [ "image" ];
+          }
+          {
+            mime = "audio/*";
+            use = [ "play" ];
+          }
+          {
+            mime = "video/*";
+            use = [ "play" ];
           }
         ];
       };
