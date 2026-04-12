@@ -13,7 +13,7 @@ in
   stylix = {
     enable = true;
     image = wallpaper;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/one-light.yaml";
 
     fonts = {
       serif = {
