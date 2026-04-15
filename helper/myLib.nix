@@ -17,7 +17,7 @@
                 throw "custom.users.${name} is defined, but users.users.${name} does not exist (typo?)";
 
             user' = sysUser // {
-              name = name;
+              inherit name;
               custom = userCfg;
             };
           in

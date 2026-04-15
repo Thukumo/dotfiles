@@ -1,7 +1,6 @@
 {
   lib,
   myLib,
-  pkgs,
   ...
 }:
 {
@@ -30,7 +29,7 @@
       _:
       { pkgs, myConfig, ... }:
       let
-        anime4k = pkgs.anime4k;
+        inherit (pkgs) anime4k;
         mpvConfig = myConfig.desktop.apps.mpv;
       in
       {

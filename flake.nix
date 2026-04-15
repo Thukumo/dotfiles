@@ -126,6 +126,11 @@
                 enable = true;
                 settings.edit = true;
               };
+              statix = {
+                enable = true;
+                name = "statix fix";
+                entry = "${pkgs.statix}/bin/statix fix";
+              };
               gen-docs = {
                 enable = true;
                 name = "Generate custom options documentation";

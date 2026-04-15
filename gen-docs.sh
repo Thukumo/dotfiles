@@ -3,10 +3,11 @@
 echo "Generating CUSTOM_OPTIONS.md in tree format (including submodules)..."
 
 TEMP_FILE=$(mktemp)
+NIX_SCRIPT=$(mktemp --suffix=.nix)
 FINAL_FILE="CUSTOM_OPTIONS.md"
 
 # Nix側で直接Markdownを組み立てるためのスクリプトを生成
-cat << 'EOF' > /tmp/gen-docs.nix
+cat << 'EOF' > "$NIX_SCRIPT"
 let
   lib = (import <nixpkgs> {}).lib;
   
@@ -72,7 +73,7 @@ opt: "# Custom Options Tree\nGenerated on __DATE_PLACEHOLDER__\n\n" + (renderTre
 EOF
 
 # 一時ファイルに生成
-nix eval .#nixosConfigurations.thinkpadx13-nix.options.custom --impure --raw --apply "$(cat /tmp/gen-docs.nix)" > "$TEMP_FILE"
+nix eval .#nixosConfigurations.thinkpadx13-nix.options.custom --impure --raw --apply "$(cat "$NIX_SCRIPT")" > "$TEMP_FILE"
 
 # 日付行(2行目)を除いて比較
 SHOULD_UPDATE=true
@@ -93,4 +94,4 @@ else
     echo "No changes in options (ignoring date). $FINAL_FILE is up to date."
 fi
 
-rm /tmp/gen-docs.nix "$TEMP_FILE"
+rm "$NIX_SCRIPT" "$TEMP_FILE"

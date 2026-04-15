@@ -58,7 +58,7 @@
         missingInCustom = lib.filter (n: !(builtins.hasAttr n config.custom.users)) normalNames;
         missingInUsers = lib.filter (n: !(builtins.hasAttr n config.users.users)) customNames;
         customNotNormal = lib.filter (
-          n: (builtins.hasAttr n config.users.users) && !((config.users.users.${n}.isNormalUser or false))
+          n: (builtins.hasAttr n config.users.users) && !(config.users.users.${n}.isNormalUser or false)
         ) customNames;
       in
       [

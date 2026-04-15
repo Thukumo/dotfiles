@@ -7,12 +7,9 @@
 {
   options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule (
-        { ... }:
-        {
-          options.network.globalProtect.enable = lib.mkEnableOption "GlobalProtect VPN";
-        }
-      )
+      lib.types.submodule (_: {
+        options.network.globalProtect.enable = lib.mkEnableOption "GlobalProtect VPN";
+      })
     );
   };
 
@@ -50,8 +47,8 @@
         home-manager.users =
           myLib.mkForEachUsers (user: user.custom.network.globalProtect.enable or false)
             (
-              user:
-              { config, pkgs, ... }:
+              _user:
+              { pkgs, ... }:
               {
                 home.packages = [
                   (pkgs.writeShellScriptBin "vpn-connect" ''

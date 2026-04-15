@@ -21,9 +21,9 @@
       );
     in
     {
-      environment.systemPackages = lib.mkIf vrEnabled ([
+      environment.systemPackages = lib.mkIf vrEnabled [
         pkgs.wayvr
-      ]);
+      ];
 
       services.wivrn = lib.mkIf vrEnabled {
         enable = true;

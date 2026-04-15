@@ -13,7 +13,7 @@
     services.beesd.filesystems."root" = {
       spec = "/";
       verbosity = "warning";
-      hashTableSizeMB = config.custom.hardware.disk.beesd.hashTableSizeMB;
+      inherit (config.custom.hardware.disk.beesd) hashTableSizeMB;
     };
   };
 }
