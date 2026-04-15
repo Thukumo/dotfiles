@@ -119,10 +119,29 @@
       devShells = lib.genAttrs systems (
         system:
         let
+          pkgs = nixpkgs.legacyPackages.${system};
           hook = git-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
               nixfmt.enable = true;
+              gen-docs = {
+                enable = true;
+                name = "Generate custom options documentation";
+                entry = "${
+                  pkgs.writeShellApplication {
+                    name = "gen-docs";
+                    runtimeInputs = with pkgs; [
+                      nix
+                      git
+                      diffutils
+                      gnused
+                      coreutils
+                    ];
+                    text = builtins.readFile ./gen-docs.sh;
+                  }
+                }/bin/gen-docs";
+
+              };
             };
           };
         in

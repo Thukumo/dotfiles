@@ -5,7 +5,6 @@ _:
     ./what
     ./upscale
     # ./pres
-    ./gen-docs
     ./convd-md2pdf
   ];
 }
