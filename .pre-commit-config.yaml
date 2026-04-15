@@ -1,9 +1,0 @@
-repos:
-  - repo: local
-    hooks:
-      - id: gen-docs
-        name: Generate custom options documentation
-        entry: gen-docs
-        language: system
-        files: '\.nix$' # Nixファイルが変更された時だけ実行
-        pass_filenames: false

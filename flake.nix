@@ -2,6 +2,8 @@
   description = "NixOS Flake";
 
   inputs = {
+    git-hooks.url = "github:cachix/git-hooks.nix";
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
@@ -48,6 +50,8 @@
 
   outputs =
     {
+      self,
+      git-hooks,
       nixpkgs,
       home-manager,
       impermanence,
@@ -108,10 +112,26 @@
           // (host.specialArgs or { });
           modules = (commonModules name) ++ (host.modules or [ ]);
         };
+
+      systems = lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts));
     in
     {
-      formatter = lib.genAttrs (lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts))) (
-        name: nixpkgs.legacyPackages.${name}.nixfmt-tree
+      devShells = lib.genAttrs systems (
+        system:
+        let
+          hook = git-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              nixfmt.enable = true;
+            };
+          };
+        in
+        {
+          default = nixpkgs.legacyPackages.${system}.mkShell {
+            inherit (hook) shellHook;
+            packages = hook.enabledPackages;
+          };
+        }
       );
       nixosConfigurations = lib.mapAttrs mkHost hosts // {
         installer = nixpkgs.lib.nixosSystem {
