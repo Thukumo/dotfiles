@@ -133,6 +133,7 @@
               };
               gen-docs = {
                 enable = true;
+                files = "\\.nix$";
                 name = "Generate custom options documentation";
                 entry = "${
                   pkgs.writeShellApplication {
@@ -147,7 +148,6 @@
                     text = builtins.readFile ./gen-docs.sh;
                   }
                 }/bin/gen-docs";
-
               };
             };
           };
