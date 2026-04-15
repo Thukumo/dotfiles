@@ -50,7 +50,6 @@
 
   outputs =
     {
-      self,
       git-hooks,
       nixpkgs,
       home-manager,
@@ -60,7 +59,6 @@
       ragenix,
       nix-index-database,
       disko,
-      nixos-generators,
       antigravity-nix,
       lanzaboote,
       stylix,
@@ -124,6 +122,10 @@
             src = ./.;
             hooks = {
               nixfmt.enable = true;
+              deadnix = {
+                enable = true;
+                settings.edit = true;
+              };
               gen-docs = {
                 enable = true;
                 name = "Generate custom options documentation";
