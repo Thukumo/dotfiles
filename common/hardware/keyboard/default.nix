@@ -39,6 +39,7 @@
             k = "up";
             j = "down";
             l = "right";
+            ";" = "backspace";
           };
           "nav+meta" = {
             h = "home";
