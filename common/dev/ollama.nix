@@ -55,8 +55,7 @@
           {
             services.ollama = {
               enable = true;
-              inherit (ollamaConfig) package;
-              inherit (ollamaConfig) host;
+              inherit (ollamaConfig) package host;
             };
             home.persistence."/persist".directories = [
               ".ollama/models"
