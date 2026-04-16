@@ -4,10 +4,8 @@
   home.packages = with pkgs; [
     fastfetch
     gotop
-    speedtest-cli
     bluetui
     zellij
-    trash-cli
     ffmpeg-full
     wev
 
