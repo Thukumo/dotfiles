@@ -26,6 +26,8 @@
   };
   programs.lazygit = {
     enable = true;
-    settings = { };
+    settings = {
+      disableStartupPopups = true;
+    };
   };
 }
