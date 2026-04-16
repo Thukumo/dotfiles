@@ -52,7 +52,7 @@
           format = "[$symbol]($style)";
         };
         insomnia = {
-          when = "test -f /tmp/no-suspend && [ ! -f /tmp/no-lock ]";
+          when = "test -f /tmp/no-suspend -a ! -f /tmp/no-lock";
           symbol = "🌙 ";
           style = "bold blue";
           format = "[$symbol]($style)";
