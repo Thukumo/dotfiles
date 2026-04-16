@@ -2,7 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    nerd-fonts.adwaita-mono
     fastfetch
     gotop
     speedtest-cli
@@ -10,12 +9,10 @@
     zellij
     trash-cli
     ffmpeg-full
-    yt-dlp
     wev
 
     gdu
 
-    clang
     cargo
 
     p7zip
