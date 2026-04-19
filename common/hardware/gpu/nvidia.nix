@@ -9,7 +9,7 @@
       powerManagement = {
         enable = true;
       };
-      open = false;
+      open = true;
     };
     nix.settings = {
       extra-substituters = [ "https://cache.nixos-cuda.org" ];
