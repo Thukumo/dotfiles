@@ -1,14 +1,41 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
-  echo "Usage: $0 <host-name> [remote-host]" >&2
+BUILD_ON_REMOTE=""
+HOST_NAME=""
+REMOTE=""
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --remote)
+      BUILD_ON_REMOTE="--build-on remote"
+      shift
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      if [[ -z "$HOST_NAME" ]]; then
+        HOST_NAME="$1"
+      elif [[ -z "$REMOTE" ]]; then
+        REMOTE="$1"
+      else
+        echo "Too many arguments" >&2
+        exit 1
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$HOST_NAME" ]]; then
+  echo "Usage: $0 [--remote] <host-name> [remote-host]" >&2
   echo "  remote-host: nixos@installer.local (default)" >&2
   exit 1
 fi
 
-HOST_NAME="$1"
-REMOTE="${2:-nixos@installer.local}"
+REMOTE="${REMOTE:-nixos@installer.local}"
 TARGET="${REMOTE#*@}"
 TMP_DIR="tmp"
 
@@ -18,8 +45,8 @@ cleanup() {
 
 trap cleanup EXIT
 
-# known_hostsから登録を削除
-ssh-keygen -R "$TARGET" 2>/dev/null || true
+# SSHオプション: known_hostsに追加せず、状態を確認できるようにする
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null"
 
 rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"/persist/etc/age
@@ -36,6 +63,6 @@ sed -i "/^  keys = {$/a\\    \"$HOST_NAME\" = \"$PUBLIC_KEY\";" secrets.nix
 
 echo "secrets.nixに公開鍵を追加しました"
 sudo ragenix -r -i "/etc/age/key.txt"
-ssh "$REMOTE" "nixos-generate-config --no-filesystems --show-hardware-config" > "hosts/${HOST_NAME}/hardware-configuration.nix"
+ssh $SSH_OPTS "$REMOTE" "nixos-generate-config --no-filesystems --show-hardware-config" > "hosts/${HOST_NAME}/hardware-configuration.nix"
 git add "hosts/${HOST_NAME}/hardware-configuration.nix"
-nix run --inputs-from . nixos-anywhere -- --extra-files "$TMP_DIR" --flake ".#${HOST_NAME}" "$REMOTE"
+nix run --inputs-from . nixos-anywhere -- --extra-files "$TMP_DIR" $BUILD_ON_REMOTE --flake ".#${HOST_NAME}" --ssh-option StrictHostKeyChecking=no --ssh-option UserKnownHostsFile=/dev/null --ssh-option GlobalKnownHostsFile=/dev/null "$REMOTE"

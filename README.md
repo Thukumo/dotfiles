@@ -13,7 +13,9 @@ mDNS(Avahi)が動作している環境でないと、installer.localの名前解
 
 `./inspect-hardware.sh (nixos@ip-addr)`
 
-`./installer.sh <host name> (nixos@ip-addr)`
+`./installer.sh [--remote] <host name> (nixos@ip-addr)`
+
+`--remote`オプションを付けると、ターゲットマシン上でビルドを実行する。
 
 現在のところ、インストール後に一度インストール先のマシン側の`~`で、手動で`git clone <URL> dotfiles`してやる必要がある
 
