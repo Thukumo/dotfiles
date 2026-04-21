@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-22 02:34:33
+Generated on 2026-04-22 02:57:13
 
 - **custom**
   - **desktop**
@@ -55,6 +55,8 @@ Generated on 2026-04-22 02:34:33
       - **zswap**
         - `enable` (Default: `true`): No description
   - **network**
+    - **avahi**
+      - `enable` (Default: `true`): No description
     - **cloudflare-warp**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
     - **mycelium**

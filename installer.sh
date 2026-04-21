@@ -1,7 +1,9 @@
 set -e
 
-# known_hostsからinstaller.localを削除
-ssh-keygen -R installer.local 2>/dev/null || true
+TARGET="${3:-installer.local}"
+
+# known_hostsから$TARGETを削除
+ssh-keygen -R "$TARGET" 2>/dev/null || true
 
 rm -rf tmp
 mkdir -p tmp/persist/etc/age
@@ -18,7 +20,7 @@ sed -i "/^  keys = {$/a\\    $1 = \"$PUBLIC_KEY\";" secrets.nix
 
 echo "secrets.nixに公開鍵を追加しました"
 sudo ragenix -r -i "${2:-/etc/age/key.txt}"
-ssh nixos@installer.local "nixos-generate-config --no-filesystems --show-hardware-config" > hosts/"$1"/hardware-configuration.nix
+ssh "nixos@$TARGET" "nixos-generate-config --no-filesystems --show-hardware-config" > hosts/"$1"/hardware-configuration.nix
 git add hosts
-, nixos-anywhere --extra-files tmp --flake .#"$1" nixos@installer.local
+, nixos-anywhere --extra-files tmp --flake .#"$1" "nixos@$TARGET"
 rm -r tmp
