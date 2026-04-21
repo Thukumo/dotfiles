@@ -14,8 +14,7 @@
 
 ## セットアップ
 
-リポジトリにて、pre-commitの有効化\
-`pre-commit install`
+`direnv allow`
 
 ## 暗号化されたデータの追加
 

@@ -5,12 +5,6 @@
 { pkgs, config, ... }:
 
 {
-  # バッテリーのあれを確認しておく
-  systemd.tmpfiles.rules = [
-    # "w /sys/class/power_supply/BAT0/charge_control_start_threshold - - - - 75"
-    # "w /sys/class/power_supply/BAT0/charge_control_end_threshold - - - - 80"
-  ];
-
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
@@ -65,8 +59,7 @@
   services.open-webui.enable = false;
   custom.network.cloudflare-warp.enable = true;
 
-  # todo integrated keyboard
-  # custom.hardware.keybind.deviceIds = [ "0001:0001" ];
+  custom.hardware.keybind.deviceIds = [ "0001:0001" ];
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
@@ -76,8 +69,7 @@
 
   custom.hardware.disk = {
     disko = {
-      # todo disk name
-      # diskName = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7HENJ0Y235481M";
+      diskName = "/dev/disk/by-id/nvme-PM9C1b_Samsung_1024GB_______S7UKNF1Y956462";
       swapSize = "70G";
     };
     beesd.hashTableSizeMB = 2048;
@@ -91,7 +83,6 @@
         enable = true;
         enableOffloadCmd = true;
       };
-      # todo check
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
     };
