@@ -22,6 +22,7 @@
     niri.url = "github:sodiboo/niri-flake";
 
     ragenix.url = "github:yaxitech/ragenix";
+    nixos-anywhere.url = "github:nix-community/nixos-anywhere";
 
     disko = {
       url = "github:nix-community/disko";
@@ -175,7 +176,8 @@
               services.avahi = {
                 enable = true;
                 hostName = "installer";
-                nssmdns4 = true;
+                # ipv6=true;だと、なぜかAレコードが帰ってこなくなる
+                ipv6 = false;
                 publish = {
                   enable = true;
                   userServices = true;
