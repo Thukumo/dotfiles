@@ -41,9 +41,12 @@ TARGET="${REMOTE#*@}"
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o ConnectTimeout=5"
 
 echo "Checking target: $TARGET"
-if ! getent hosts "$TARGET" >/dev/null 2>&1; then
-  echo "Error: Target '$TARGET' cannot be resolved." >&2
-  exit 1
+# IPアドレスかどうかの簡易チェック（数字とドット、またはIPv6のコロンが含まれているか）
+if [[ ! "$TARGET" =~ ^[0-9.]+$ ]] && [[ ! "$TARGET" =~ : ]]; then
+  if ! getent hosts "$TARGET" >/dev/null 2>&1; then
+    echo "Error: Target '$TARGET' cannot be resolved." >&2
+    exit 1
+  fi
 fi
 
 echo "Checking SSH connection to $REMOTE..."
