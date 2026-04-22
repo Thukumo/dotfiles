@@ -167,6 +167,13 @@
                 networks = {
                   # ここにWi-Fiのパスワードを入れる
                   # "ESSID".psk = "pwd";
+                  # "eduroam".auth = ''
+                  #   key_mgmt=WPA-EAP
+                  #   eap=PEAP
+                  #   phase2="auth=MSCHAPV2"
+                  #   identity=""
+                  #   password=""
+                  # '';
                 };
               };
               # ホームディレクトリにあるキーペアと同一
