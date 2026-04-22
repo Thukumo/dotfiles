@@ -37,6 +37,22 @@ fi
 
 REMOTE="${REMOTE:-nixos@installer.local}"
 TARGET="${REMOTE#*@}"
+# SSHオプション: known_hostsに追加せず、接続タイムアウトを設定
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o ConnectTimeout=5"
+
+echo "Checking target: $TARGET"
+if ! getent hosts "$TARGET" >/dev/null 2>&1; then
+  echo "Error: Target '$TARGET' cannot be resolved." >&2
+  exit 1
+fi
+
+echo "Checking SSH connection to $REMOTE..."
+if ! ssh $SSH_OPTS "$REMOTE" exit 2>/dev/null; then
+  echo "Error: Cannot connect to $REMOTE via SSH. Please check the address and ensure SSH is enabled." >&2
+  exit 1
+fi
+
+echo "Using remote: $REMOTE"
 TMP_DIR="tmp"
 
 cleanup() {
@@ -44,9 +60,6 @@ cleanup() {
 }
 
 trap cleanup EXIT
-
-# SSHオプション: known_hostsに追加せず、状態を確認できるようにする
-SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null"
 
 rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"/persist/etc/age
