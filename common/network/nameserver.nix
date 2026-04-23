@@ -2,10 +2,7 @@ _:
 
 {
   networking = {
-    networkmanager = {
-      enable = true;
-      dns = "systemd-resolved";
-    };
+    networkmanager.enable = false;
     nameservers = [
       "2606:4700:4700::1111"
       "2606:4700:4700::1001"

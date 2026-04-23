@@ -78,10 +78,16 @@
             owner = "tsukumo";
             mode = "400";
           };
+          "wifi-secrets" = {
+            file = ./secrets/wifi-secrets.age;
+            owner = "wpa_supplicant";
+            group = "wpa_supplicant";
+            mode = "400";
+          };
         };
       };
 
-      home-manager.users = myLib.mkForEachUsers (u: u.name == "tsukumo") (u: {
+      home-manager.users = myLib.mkForEachUsers (u: u.name == "tsukumo") (_u: {
         imports = [
           ./home-ragenix
         ];

@@ -94,7 +94,6 @@
         account.userConfig = {
           hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
           extraGroups = [
-            "networkmanager"
             "wheel"
           ];
           shell = pkgs.nushell;

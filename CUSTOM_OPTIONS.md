@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-22 02:57:13
+Generated on 2026-04-23 18:16:32
 
 - **custom**
   - **desktop**
@@ -61,8 +61,6 @@ Generated on 2026-04-22 02:57:13
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
     - **mycelium**
       - `enable` (Default: `true`): No description
-    - **wait-online**
-      - `enable` (Default: `false`) (Example: `true`): Whether to enable NetworkManager-wait-online.
     - **zapret**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
