@@ -162,18 +162,24 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             {
               networking.networkmanager.enable = lib.mkForce false;
-              networking.wireless = {
-                enable = true;
-                networks = {
-                  # ここにWi-Fiのパスワードを入れる
-                  # "ESSID".psk = "pwd";
-                  # "eduroam".auth = ''
-                  #   key_mgmt=WPA-EAP
-                  #   eap=PEAP
-                  #   phase2="auth=MSCHAPV2"
-                  #   identity=""
-                  #   password=""
-                  # '';
+              networking = {
+                nameservers = [
+                  "1.1.1.1"
+                  "1.0.0.1"
+                ];
+                wireless = {
+                  enable = true;
+                  networks = {
+                    # ここにWi-Fiのパスワードを入れる
+                    # "ESSID".psk = "pwd";
+                    # "eduroam".auth = ''
+                    #   key_mgmt=WPA-EAP
+                    #   eap=PEAP
+                    #   phase2="auth=MSCHAPV2"
+                    #   identity=""
+                    #   password=""
+                    # '';
+                  };
                 };
               };
               # ホームディレクトリにあるキーペアと同一
