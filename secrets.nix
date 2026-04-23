@@ -1,6 +1,6 @@
 let
   keys = {
-    "16x-aurora" = "age1ug4xsg3pkz4mc3qp0v8hxglc5c27extlwgqj28sh0reer8y8gesqgdn6ef";
+    "16x-aurora" = "age1rq8eqfp4qsznzau3xla2ftq26d3wlhjk05l9c4tnwcpkj7ecxfqqfvtjad";
     "gf65" = "age1pw34dvuy3k0pmpas7ej4sy2d8mutvp724a5afylfr0rcknndpyrscdzeh8";
     "home_manager_key" = "age1nzd7yc6dyg2m5ev35zdtydw8vprqx2qyt5pg6l5h786gqnge3vvsp6xxvh";
     "backup-pixel9a" = "age1akl70p6av6sjhuqa8wrr9ms5vn0jy6kgn5vh35c9m0jmg6hlrqtq9hp4cm";
