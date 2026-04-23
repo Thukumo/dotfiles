@@ -10,8 +10,6 @@
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
-        "/etc/NetworkManager/system-connections"
-        "/var/lib/NetworkManager/system-connections"
         "/var/lib/bluetooth"
         "/var/lib/systemd/backlight"
         "/var/lib/systemd/timers"

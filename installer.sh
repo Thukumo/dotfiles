@@ -75,7 +75,7 @@ echo "生成された公開鍵: $PUBLIC_KEY"
 
 # secrets.nixに自動追加（既存のキーがあれば削除してから追加）
 sed -i "/^    \"$HOST_NAME\" = /d" secrets.nix
-sed -i "/^  keys = {$/a\\    \"$HOST_NAME\" = \"$PUBLIC_KEY\";" secrets.nix
+sed -i "/^  systemKeysAttr = {$/a\\    \"$HOST_NAME\" = \"$PUBLIC_KEY\";" secrets.nix
 
 echo "secrets.nixに公開鍵を追加しました"
 sudo ragenix -r -i "/etc/age/key.txt"
