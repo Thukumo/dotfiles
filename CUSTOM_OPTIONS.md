@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-23 18:16:32
+Generated on 2026-04-24 09:30:26
 
 - **custom**
   - **desktop**
@@ -141,6 +141,7 @@ Generated on 2026-04-23 18:16:32
         - `mediaDirs` (Default: `[]`) (Example: `["V,Documents/mov"]`): Media directories for this user. Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video"). Relative paths are resolved to the user's home. 
       - **globalProtect**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable GlobalProtect VPN.
+        - `vpnPortal` (Default: `"gpvpn.sic.shibaura-it.ac.jp"`): No description
     - **persistence**
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user
