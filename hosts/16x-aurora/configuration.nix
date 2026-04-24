@@ -50,7 +50,8 @@
         enable = true;
         package = pkgs.ollama-cuda;
         loadModels = [
-          # "gemma4:e4b"
+          "gemma4:e4b"
+          "gemma4:31b"
         ];
       };
       opencode = {
