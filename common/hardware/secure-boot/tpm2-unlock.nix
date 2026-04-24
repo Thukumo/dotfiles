@@ -16,7 +16,11 @@ in
     };
     luksDevice = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
-      default = null;
+      default =
+        if config.custom.hardware.disk.disko.enable then
+          config.custom.hardware.disk.disko.luksDeviceName
+        else
+          null;
       description = "The name of the LUKS device to apply TPM2 unlock settings to";
     };
   };

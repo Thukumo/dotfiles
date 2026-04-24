@@ -17,6 +17,11 @@
       type = lib.types.str;
       default = "2G";
     };
+    luksDeviceName = lib.mkOption {
+      type = lib.types.str;
+      default = "cryptedpart";
+      description = "Name of the LUKS device";
+    };
   };
   config = lib.mkIf config.custom.hardware.disk.disko.enable {
     disko.devices = {
@@ -41,7 +46,7 @@
                 size = "100%";
                 content = {
                   type = "luks";
-                  name = "cryptedpart";
+                  name = config.custom.hardware.disk.disko.luksDeviceName;
                   settings.allowDiscards = true;
                   content = {
                     type = "lvm_pv";
