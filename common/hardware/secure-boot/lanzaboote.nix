@@ -10,13 +10,14 @@ in
 {
   options.custom.hardware.secure-boot = {
     enable = lib.mkEnableOption "Secure Boot with Lanzaboote";
+    init = lib.mkEnableOption "use when init secure boot";
   };
 
   config = lib.mkIf cfg.enable {
     boot.loader.systemd-boot.enable = lib.mkForce false;
 
     boot.lanzaboote = {
-      enable = true;
+      enable = !cfg.init;
       pkiBundle = "/var/lib/sbctl";
     };
 

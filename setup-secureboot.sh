@@ -72,7 +72,7 @@ find_luks_device() {
 
     # ルートデバイスの親から crypto_LUKS を探す
     local dev
-    for dev in $(lsblk -apsno NAME,FSTYPE | grep -B 100 "$root_dev" | tac | awk '{print $1}'); do
+    for dev in $(lsblk -aslno NAME,FSTYPE | grep -B 100 "$root_dev" | tac | awk '{print $1}'); do
         if [ "$(lsblk -dno FSTYPE "/dev/$dev" 2>/dev/null | xargs)" = "crypto_LUKS" ]; then
             echo "/dev/$dev"
             return 0
@@ -82,7 +82,7 @@ find_luks_device() {
     # 見つからない場合は fzf で選択
     warn "LUKS デバイスを自動特定できませんでした。"
     local selected
-    selected=$(lsblk -pno NAME,FSTYPE | grep crypto_LUKS | nix run nixpkgs#fzf -- --height 40% --reverse --header "TPM2に登録するLUKSデバイスを選択してください" | awk '{print $1}' || true)
+    selected=$(lsblk -plno NAME,FSTYPE | grep crypto_LUKS | nix run nixpkgs#fzf -- --height 40% --reverse --header "TPM2に登録するLUKSデバイスを選択してください" | awk '{print $1}' || true)
     if [ -n "$selected" ]; then
         echo "$selected" | sed 's/[^/]*\(\/dev\/.*\)/\1/'
         return 0

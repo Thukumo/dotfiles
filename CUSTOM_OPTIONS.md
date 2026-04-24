@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-24 15:04:46
+Generated on 2026-04-24 16:54:44
 
 - **custom**
   - **desktop**
@@ -34,6 +34,7 @@ Generated on 2026-04-24 15:04:46
       - `enable` (Default: `true`): No description
     - **secure-boot**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Secure Boot with Lanzaboote.
+      - `init` (Default: `false`) (Example: `true`): Whether to enable use when init secure boot.
       - **tpm2-totp**
         - `enable` (Default: `true`): Enable TPM2 TOTP support
       - **tpm2-unlock**
