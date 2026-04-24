@@ -1,7 +1,6 @@
 {
   lib,
   myLib,
-  config,
   ...
 }:
 {
@@ -14,174 +13,71 @@
             type = lib.types.str;
             default = "gpvpn.sic.shibaura-it.ac.jp";
           };
+          dnsDomains = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ "shibaura-it.ac.jp" ];
+          };
         };
       })
     );
   };
 
-  config =
-    let
-      vpnInterface = "open-connect";
-      campusRoutes = [
-        "133.68.0.0/16"
-        "172.16.0.0/12"
-        "202.18.120.0/24"
-      ];
-      campusDomains = [
-        "~ami.sic.shibaura-it.ac.jp"
-        "~shibaura-it.ac.jp"
-        "~sic.shibaura-it.ac.jp"
-      ];
-      campusDns = [
-        "133.68.5.45"
-        "133.68.5.51"
-      ];
-    in
-    lib.mkIf
-      (builtins.any (userConfig: userConfig.network.globalProtect.enable or false) (
-        builtins.attrValues config.custom.users
-      ))
-      {
-        systemd.network.networks."50-${vpnInterface}" = {
-          matchConfig.Name = vpnInterface;
-          routes = map (destination: { routeConfig.Destination = destination; }) campusRoutes;
+  config.home-manager.users =
+    myLib.mkForEachUsers (user: user.custom.network.globalProtect.enable or false)
+      (
+        user:
+        { pkgs, ... }:
+        let
+          vpnInterface = "open-connect";
+          dnsDomains = map (
+            domain: if lib.hasPrefix "~" domain then domain else "~${domain}"
+          ) user.custom.network.globalProtect.dnsDomains;
+          domainArgs = lib.concatStringsSep " " (map lib.escapeShellArg dnsDomains);
+        in
+        {
+          home.packages = [
+            (pkgs.writeShellScriptBin "vpn-connect" ''
+              set -euo pipefail
 
-          networkConfig = {
-            DNSDefaultRoute = false;
-            Domains = campusDomains;
-            DNS = campusDns;
-          };
-          linkConfig.RequiredForOnline = "no";
-        };
+              eval "$(${pkgs.gp-saml-gui}/bin/gp-saml-gui \
+                --gateway \
+                --clientos=Linux \
+                ${user.custom.network.globalProtect.vpnPortal})"
 
-        home-manager.users =
-          myLib.mkForEachUsers (user: user.custom.network.globalProtect.enable or false)
-            (
-              user:
-              { pkgs, ... }:
-              let
-                campusDnsFallback = lib.concatStringsSep " " campusDns;
-                campusDomainArgs = lib.concatStringsSep " " (map lib.escapeShellArg campusDomains);
-                staticCampusRouteCommands = lib.concatMapStringsSep "\n" (
-                  destination: ''${pkgs.iproute2}/bin/ip route replace ${destination} dev "$IFACE"''
-                ) campusRoutes;
-                openconnectUrl = "https://${user.custom.network.globalProtect.vpnPortal}/gateway:prelogin-cookie";
-              in
-              {
-                home.packages = [
-                  (pkgs.writeShellScriptBin "vpn-connect" ''
-                    eval $(${pkgs.gp-saml-gui}/bin/gp-saml-gui \
-                      --gateway \
-                      --clientos=Linux \
-                      ${user.custom.network.globalProtect.vpnPortal})
+              VPN_SCRIPT="${pkgs.writeShellScript "vpn-dns-script.sh" ''
+                set -euo pipefail
 
-                    # VPN script for TUN interface setup
-                    VPN_SCRIPT="${pkgs.writeShellScript "vpn-script.sh" ''
-                                            set -e
-                                            exec 1>/tmp/vpn-script.log 2>&1
+                # Keep openconnect's standard interface/route setup.
+                ${pkgs.vpnc-scripts}/bin/vpnc-script
 
-                                            mask_to_prefix() {
-                                              local mask="$1"
-                                              local IFS=.
-                                              local -a octets
-                                              local bits=0
+                IFACE="''${TUNDEV:-${vpnInterface}}"
 
-                                              read -r -a octets <<<"$mask"
-                                              for octet in "''${octets[@]}"; do
-                                                case "$octet" in
-                                                  255) bits=$((bits + 8)) ;;
-                                                  254) bits=$((bits + 7)) ;;
-                                                  252) bits=$((bits + 6)) ;;
-                                                  248) bits=$((bits + 5)) ;;
-                                                  240) bits=$((bits + 4)) ;;
-                                                  224) bits=$((bits + 3)) ;;
-                                                  192) bits=$((bits + 2)) ;;
-                                                  128) bits=$((bits + 1)) ;;
-                                                  0) ;;
-                                                  *) return 1 ;;
-                                                esac
-                                              done
+                case "''${reason:-}" in
+                  connect)
+                    ${lib.optionalString (dnsDomains != [ ]) ''
+                      ${pkgs.systemd}/bin/resolvectl domain "$IFACE" ${domainArgs}
+                      ${pkgs.systemd}/bin/resolvectl default-route "$IFACE" no
+                    ''}
+                    ${pkgs.systemd}/bin/resolvectl flush-caches
+                    ;;
+                esac
+              ''}"
 
-                                              echo "$bits"
-                                            }
-
-                                            apply_split_routes() {
-                                              i=0
-                                              while [ "$i" -lt "''${CISCO_SPLIT_INC:-0}" ]; do
-                                                route_addr="$(${pkgs.coreutils}/bin/printenv "CISCO_SPLIT_INC_''${i}_ADDR" || true)"
-                                                route_mask="$(${pkgs.coreutils}/bin/printenv "CISCO_SPLIT_INC_''${i}_MASK" || true)"
-                                                if [ -n "$route_addr" ] && [ -n "$route_mask" ]; then
-                                                  if route_prefix="$(mask_to_prefix "$route_mask")"; then
-                                                    ${pkgs.iproute2}/bin/ip route replace "$route_addr/$route_prefix" dev "$IFACE"
-                                                  fi
-                                                fi
-                                                i=$((i + 1))
-                                              done
-                                            }
-
-                                            IFACE="''${TUNDEV:-''${TUNSETIFF:-${vpnInterface}}}"
-                                            PREFIX="''${INTERNAL_IP4_NETMASKLEN:-}"
-                                            DNS_SERVERS="''${INTERNAL_IP4_DNS:-${campusDnsFallback}}"
-                                            TUN_MTU="''${INTERNAL_IP4_MTU:-1100}"
-
-                                            if [ -z "$PREFIX" ] && [ -n "$INTERNAL_IP4_NETMASK" ]; then
-                                              PREFIX="$(mask_to_prefix "$INTERNAL_IP4_NETMASK")"
-                                            fi
-                                            PREFIX="''${PREFIX:-24}"
-
-                                            echo "$(date): VPN script started"
-                                            echo "reason=$reason"
-                                            echo "INTERNAL_IP4_ADDRESS=$INTERNAL_IP4_ADDRESS"
-                                            echo "TUNDEV=$TUNDEV"
-                                            echo "TUNSETIFF=$TUNSETIFF"
-                                            echo "IFACE=$IFACE"
-                                            echo "PREFIX=$PREFIX"
-
-                                            case "$reason" in
-                                              connect)
-                                                if [ -z "$INTERNAL_IP4_ADDRESS" ]; then
-                                                  echo "INTERNAL_IP4_ADDRESS is empty"
-                                                  exit 1
-                                                fi
-
-                                                echo "Setting up interface $IFACE with $INTERNAL_IP4_ADDRESS/$PREFIX"
-                                                ${pkgs.iproute2}/bin/ip link set "$IFACE" mtu "$TUN_MTU" up
-                                                ${pkgs.iproute2}/bin/ip addr replace "$INTERNAL_IP4_ADDRESS/$PREFIX" dev "$IFACE"
-
-                                                apply_split_routes
-                      ${staticCampusRouteCommands}
-                                                ${pkgs.systemd}/bin/resolvectl dns "$IFACE" $DNS_SERVERS
-                                                ${pkgs.systemd}/bin/resolvectl domain "$IFACE" ${campusDomainArgs}
-                                                ${pkgs.systemd}/bin/resolvectl default-route "$IFACE" no
-                                                ${pkgs.systemd}/bin/resolvectl flush-caches
-                                                echo "Interface setup complete"
-                                                ;;
-                                              disconnect)
-                                                echo "Disconnecting $IFACE"
-                                                ${pkgs.systemd}/bin/resolvectl revert "$IFACE"
-                                                ${pkgs.iproute2}/bin/ip link set "$IFACE" down
-                                                ;;
-                                            esac
-                    ''}"
-
-                    echo "$COOKIE" | sudo ${pkgs.openconnect}/bin/openconnect \
-                      --protocol=gp \
-                      --interface="${vpnInterface}" \
-                      --user="$USER" \
-                      --os="$OS" \
-                      --mtu 1100 \
-                      --no-dtls \
-                      --passwd-on-stdin \
-                      --csd-wrapper="${pkgs.openconnect}/libexec/openconnect/hipreport.sh" \
-                      --script "$VPN_SCRIPT" \
-                      ${openconnectUrl}
-                  '')
-                ];
-                home.persistence."/persist".directories = [
-                  ".local/share/.gp-saml-gui-wrapped"
-                  ".cache/.gp-saml-gui-wrapped"
-                ];
-              }
-            );
-      };
+              echo "$COOKIE" | sudo ${pkgs.openconnect}/bin/openconnect \
+                --protocol=gp \
+                --interface="${vpnInterface}" \
+                --user="$USER" \
+                --no-dtls \
+                --passwd-on-stdin \
+                --csd-wrapper "${pkgs.openconnect}/libexec/openconnect/hipreport.sh" \
+                --script "$VPN_SCRIPT" \
+                "https://${user.custom.network.globalProtect.vpnPortal}/gateway:prelogin-cookie"
+            '')
+          ];
+          home.persistence."/persist".directories = [
+            ".local/share/.gp-saml-gui-wrapped"
+            ".cache/.gp-saml-gui-wrapped"
+          ];
+        }
+      );
 }

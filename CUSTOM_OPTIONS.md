@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-24 09:30:26
+Generated on 2026-04-24 12:13:45
 
 - **custom**
   - **desktop**
@@ -140,6 +140,7 @@ Generated on 2026-04-24 09:30:26
         - `enable` (Default: `false`) (Example: `true`): Whether to enable DLNA Server for this user.
         - `mediaDirs` (Default: `[]`) (Example: `["V,Documents/mov"]`): Media directories for this user. Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video"). Relative paths are resolved to the user's home. 
       - **globalProtect**
+        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): No description
         - `enable` (Default: `false`) (Example: `true`): Whether to enable GlobalProtect VPN.
         - `vpnPortal` (Default: `"gpvpn.sic.shibaura-it.ac.jp"`): No description
     - **persistence**
