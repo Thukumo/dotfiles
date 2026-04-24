@@ -8,6 +8,7 @@
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
+    network.globalProtect.enable = true;
     network.dlna = {
       enable = false;
       mediaDirs = [ "V,Documents/mov" ];
@@ -44,7 +45,7 @@
         enable = true;
         package = pkgs.ollama-cuda;
         loadModels = [
-          "gemma4:e4b"
+          # "gemma4:e4b"
         ];
       };
       opencode = {
