@@ -8,6 +8,10 @@ let
         pskRaw = pwdVar;
       };
     };
+    "AP80211-5n" = {
+      name = "5n";
+      f = p: { pskRaw = p; };
+    };
     "eduroam" = {
       f = pwdVar: {
         auth = ''
