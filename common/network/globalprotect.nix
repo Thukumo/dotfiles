@@ -25,7 +25,7 @@
       campusRoutes = [
         "133.68.0.0/16"
         "172.16.0.0/12"
-        "202.18.0.0/16"
+        "202.18.120.0/24"
       ];
       campusDomains = [
         "~ami.sic.shibaura-it.ac.jp"
@@ -105,26 +105,6 @@
                                               echo "$bits"
                                             }
 
-                                            ensure_gateway_route() {
-                                              case "''${VPNGATEWAY:-}" in
-                                                ""|*[!0-9.]*)
-                                                  return 0
-                                                  ;;
-                                              esac
-
-                                              default_route="$(${pkgs.iproute2}/bin/ip -4 route show default | ${pkgs.coreutils}/bin/head -n1)"
-                                              default_gw="$(printf '%s\n' "$default_route" | ${pkgs.gnugrep}/bin/grep -oE 'via [^ ]+' | ${pkgs.coreutils}/bin/cut -d' ' -f2 || true)"
-                                              default_dev="$(printf '%s\n' "$default_route" | ${pkgs.gnugrep}/bin/grep -oE 'dev [^ ]+' | ${pkgs.coreutils}/bin/cut -d' ' -f2 || true)"
-
-                                              if [ -n "$default_dev" ]; then
-                                                if [ -n "$default_gw" ]; then
-                                                  ${pkgs.iproute2}/bin/ip route replace "$VPNGATEWAY/32" via "$default_gw" dev "$default_dev"
-                                                else
-                                                  ${pkgs.iproute2}/bin/ip route replace "$VPNGATEWAY/32" dev "$default_dev"
-                                                fi
-                                              fi
-                                            }
-
                                             apply_split_routes() {
                                               i=0
                                               while [ "$i" -lt "''${CISCO_SPLIT_INC:-0}" ]; do
@@ -168,7 +148,6 @@
                                                 ${pkgs.iproute2}/bin/ip link set "$IFACE" mtu "$TUN_MTU" up
                                                 ${pkgs.iproute2}/bin/ip addr replace "$INTERNAL_IP4_ADDRESS/$PREFIX" dev "$IFACE"
 
-                                                ensure_gateway_route
                                                 apply_split_routes
                       ${staticCampusRouteCommands}
                                                 ${pkgs.systemd}/bin/resolvectl dns "$IFACE" $DNS_SERVERS
