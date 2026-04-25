@@ -16,6 +16,9 @@
       core = {
         editor = "nvim";
       };
+      push = {
+        autoSetupRemote = true;
+      };
     };
   };
   programs.gh = {
