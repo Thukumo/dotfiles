@@ -50,6 +50,7 @@
         enable = true;
         package = pkgs.ollama-cuda;
         loadModels = [
+          "gemma4:e2b"
           "gemma4:e4b"
           "gemma4:31b"
         ];
@@ -58,7 +59,7 @@
         enable = true;
         models = config.custom.users."tsukumo".dev.ollama.loadModels;
       };
-      aider.enable = false;
+      aider.enable = true;
       antigravity.enable = true;
       unityhub.enable = true;
     };
