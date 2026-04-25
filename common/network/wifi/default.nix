@@ -4,24 +4,11 @@ let
   wifiList = {
     "φ2" = {
       name = "phi2";
-      f = pwdVar: {
-        pskRaw = pwdVar;
-      };
+      f = pwdVar: { pskRaw = pwdVar; };
     };
     "AP80211-5n" = {
       name = "5n";
       f = p: { pskRaw = p; };
-    };
-    "eduroam" = {
-      f = pwdVar: {
-        auth = ''
-          key_mgmt=WPA-EAP
-          eap=PEAP
-          identity="@eduroam_identity@"
-          password=${pwdVar}
-          phase2="auth=MSCHAPV2"
-        '';
-      };
     };
   };
   mkConf = essid: val: (val.f "ext:${val.name or essid}_pwd");
@@ -29,7 +16,11 @@ in
 {
   networking.wireless = {
     enable = true;
-    secretsFile = config.age.secrets.wifi-secrets.path;
+    secretsFile = config.age.secrets.wifi-pwds.path;
+    extraConfigFiles = [
+      # PR通るまで待つ
+      # config.age.secrets.eduroam.path
+    ];
     networks = lib.mapAttrs mkConf wifiList;
   };
 }

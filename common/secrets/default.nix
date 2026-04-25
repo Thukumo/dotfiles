@@ -78,8 +78,14 @@
             owner = "tsukumo";
             mode = "400";
           };
-          "wifi-secrets" = {
-            file = ./secrets/wifi-secrets.age;
+          "wifi-pwds" = {
+            file = ./secrets/wifi/pwds.age;
+            owner = "wpa_supplicant";
+            group = "wpa_supplicant";
+            mode = "400";
+          };
+          "eduroam" = {
+            file = ./secrets/wifi/eduroam.age;
             owner = "wpa_supplicant";
             group = "wpa_supplicant";
             mode = "400";

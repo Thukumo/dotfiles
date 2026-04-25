@@ -16,7 +16,8 @@ in
 {
   "${globalSecrets}/passwd_tsukumo.age".publicKeys = systemKeys;
   "${globalSecrets}/home_manager_key.age".publicKeys = systemKeys;
-  "${globalSecrets}/wifi-secrets.age".publicKeys = systemKeys;
+  "${globalSecrets}/wifi/pwds.age".publicKeys = systemKeys;
+  "${globalSecrets}/wifi/eduroam.age".publicKeys = systemKeys;
 
   "${tsukumoSecrets}/ssh-key_tsukumo.age".publicKeys = allKeys;
   "${tsukumoSecrets}/gh_hosts_tsukumo.age".publicKeys = allKeys;
