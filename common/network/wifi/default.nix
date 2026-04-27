@@ -19,6 +19,7 @@ in
   ];
   networking.wireless = {
     enable = true;
+    userControlled.enable = true;
     secretsFile = config.age.secrets.wifi-pwds.path;
     extraConfigFiles = [
       # PR通るまで待つ
