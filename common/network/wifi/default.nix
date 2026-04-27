@@ -22,7 +22,7 @@
       networking.wireless = {
         enable = true;
         inherit (config.custom.networking.wifi) fallbackToWPA2;
-        userControlled.enable = true;
+        userControlled = true;
         secretsFile = config.age.secrets.wifi-pwds.path;
         extraConfigFiles = [
           # PR通るまで待つ
