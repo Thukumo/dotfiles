@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-26 04:51:41
+Generated on 2026-04-27 12:42:24
 
 - **custom**
   - **desktop**
@@ -63,6 +63,8 @@ Generated on 2026-04-26 04:51:41
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
     - **mycelium**
       - `enable` (Default: `true`): No description
+    - **wifi**
+      - `fallbackToWPA2` (Default: `false`) (Example: `true`): Whether to enable gen config for WPA2.
     - **zapret**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
