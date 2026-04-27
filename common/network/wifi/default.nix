@@ -14,12 +14,15 @@ let
   mkConf = essid: val: (val.f "ext:${val.name or essid}_pwd");
 in
 {
+  systemd.services."wpa_supplicant".serviceConfig.BindReadOnlyPaths = [
+    config.age.secrets.eduroam.path
+  ];
   networking.wireless = {
     enable = true;
     secretsFile = config.age.secrets.wifi-pwds.path;
     extraConfigFiles = [
       # PR通るまで待つ
-      # config.age.secrets.eduroam.path
+      config.age.secrets.eduroam.path
     ];
     networks = lib.mapAttrs mkConf wifiList;
   };
