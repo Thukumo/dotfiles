@@ -21,7 +21,6 @@
   ];
 
   home.shellAliases = {
-    pres = "${pkgs.gnutar}/bin/tar -I 'zstd -T0'";
     sl = "nix shell";
   };
 

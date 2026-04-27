@@ -4,7 +4,7 @@ _:
   imports = [
     ./what
     ./upscale
-    # ./pres
+    ./pres
     ./convd-md2pdf
   ];
 }
