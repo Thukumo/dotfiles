@@ -1,6 +1,6 @@
 { lib, config, ... }:
 {
-  options.custom.network.wifi.fallbackToWPA2 = lib.mkEnableOption "gen config for WPA2";
+  options.custom.networking.wifi.fallbackToWPA2 = lib.mkEnableOption "gen config for WPA2";
   config =
     let
       wifiList = {
