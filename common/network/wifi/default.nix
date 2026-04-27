@@ -1,6 +1,6 @@
 { lib, config, ... }:
 {
-  options.custom.networking.wifi.fallbackToWPA2 = lib.mkEnableOption "gen config for WPA2";
+  options.custom.network.wifi.fallbackToWPA2 = lib.mkEnableOption "gen config for WPA2";
   config =
     let
       wifiList = {
@@ -21,7 +21,7 @@
       ];
       networking.wireless = {
         enable = true;
-        inherit (config.custom.networking.wifi) fallbackToWPA2;
+        inherit (config.custom.network.wifi) fallbackToWPA2;
         userControlled = true;
         secretsFile = config.age.secrets.wifi-pwds.path;
         extraConfigFiles = [
