@@ -90,6 +90,11 @@
             group = "wpa_supplicant";
             mode = "400";
           };
+          "sras-vpn" = {
+            file = ./secrets/sras-vpn.age;
+            owner = "tsukumo";
+            mode = "400";
+          };
         };
       };
 

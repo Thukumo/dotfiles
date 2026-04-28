@@ -13,7 +13,10 @@
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
-    network.globalProtect.enable = true;
+    network = {
+      globalProtect.enable = true;
+      sstp.enable = true;
+    };
     network.dlna = {
       enable = false;
       mediaDirs = [ "V,Documents/mov" ];

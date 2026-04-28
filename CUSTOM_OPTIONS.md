@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-04-27 15:30:26
+Generated on 2026-04-28 15:36:49
 
 - **custom**
   - **desktop**
@@ -147,6 +147,10 @@ Generated on 2026-04-27 15:30:26
         - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): No description
         - `enable` (Default: `false`) (Example: `true`): Whether to enable GlobalProtect VPN.
         - `vpnPortal` (Default: `"gpvpn.sic.shibaura-it.ac.jp"`): No description
+      - **sstp**
+        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): No description
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable SSTP VPN.
+        - `vpnServer` (Default: `"srasvpn.sic.shibaura-it.ac.jp"`): No description
     - **persistence**
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user
