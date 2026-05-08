@@ -6,9 +6,13 @@
 {
   config = {
     home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.ime or null == "skk") (
-      user:
+      _:
       { pkgs, ... }:
       {
+        systemd.user.services."fcitx5-daemon".Services = {
+          WatchDogSec = "10s";
+          Restart = "always";
+        };
         i18n.inputMethod = {
           enable = true;
           type = "fcitx5";
