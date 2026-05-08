@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-08 13:22:46
+Generated on 2026-05-08 14:34:10
 
 - **custom**
   - **desktop**
@@ -48,7 +48,7 @@ Generated on 2026-05-08 13:22:46
       - **bpftune**
         - `enable` (Default: `true`): No description
       - **earlyoom**
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable earlyoom.
+        - `enable` (Default: `true`): No description
       - **ksm**
         - `enable` (Default: `true`): No description
         - `enableForAll` (Default: `false`) (Example: `true`): Whether to enable Enable ksm for all.

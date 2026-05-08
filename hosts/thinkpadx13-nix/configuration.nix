@@ -79,8 +79,6 @@
     ./hardware.nix
   ];
 
-  custom.hardware.tune.earlyoom.enable = true;
-
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
   environment.persistence."/persist".directories = [
