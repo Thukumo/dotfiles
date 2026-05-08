@@ -6,7 +6,7 @@ _:
 
   custom = {
     network = {
-      mycelium.enable = false;
+      mycelium.enable = true;
       cloudflare-warp.enable = false;
     };
     # hardware.keybind.enable = false;
