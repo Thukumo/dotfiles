@@ -1,6 +1,4 @@
-{
-  ...
-}:
+_:
 
 {
   boot.kernelParams = [
@@ -11,7 +9,7 @@
       mycelium.enable = false;
       cloudflare-warp.enable = false;
     };
-    keybind.enable = false;
+    # hardware.keybind.enable = false;
     users."tsukumo" = {
       network.dlna = {
         enable = true;
@@ -26,10 +24,6 @@
       };
     };
   };
-
-  imports = [
-    ./hardware.nix
-  ];
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
