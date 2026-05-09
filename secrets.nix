@@ -13,12 +13,14 @@ let
   systemKeys = builtins.attrValues systemKeysAttr;
 in
 {
+  # system
   "common/core/users/passwd_tsukumo.age".publicKeys = systemKeys;
   "common/core/users/home_manager_key.age".publicKeys = systemKeys;
   "common/network/wifi/pwds.age".publicKeys = systemKeys;
   "common/network/wifi/eduroam.age".publicKeys = systemKeys;
   "common/network/sras-vpn/sras-vpn.age".publicKeys = systemKeys;
 
+  # tsukumo
   "common/shell/ssh/ssh-key_tsukumo.age".publicKeys = allKeys;
   "common/shell/git/gh_hosts_tsukumo.age".publicKeys = allKeys;
 }
