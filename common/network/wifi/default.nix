@@ -31,5 +31,20 @@
         ];
         networks = lib.mapAttrs mkConf wifiList;
       };
+
+      age.secrets = {
+        "wifi-pwds" = {
+          file = ./pwds.age;
+          owner = "wpa_supplicant";
+          group = "wpa_supplicant";
+          mode = "400";
+        };
+        "eduroam" = {
+          file = ./eduroam.age;
+          owner = "wpa_supplicant";
+          group = "wpa_supplicant";
+          mode = "400";
+        };
+      };
     };
 }

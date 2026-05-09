@@ -2,7 +2,6 @@
   config,
   inputs,
   lib,
-  myLib,
   ...
 }:
 
@@ -69,40 +68,7 @@
         message = "age identity key '${path}' is not configured in environment.persistence. It must be listed in persistence directories or files.";
       }) config.custom.secrets.extraIdentityPaths;
 
-      age = {
-        identityPaths = map (p: "/persist" + p) config.custom.secrets.extraIdentityPaths;
-        secrets = {
-          "passwd_tsukumo".file = ./secrets/passwd_tsukumo.age;
-          "home-manager_key" = {
-            file = ./secrets/home_manager_key.age;
-            owner = "tsukumo";
-            mode = "400";
-          };
-          "wifi-pwds" = {
-            file = ./secrets/wifi/pwds.age;
-            owner = "wpa_supplicant";
-            group = "wpa_supplicant";
-            mode = "400";
-          };
-          "eduroam" = {
-            file = ./secrets/wifi/eduroam.age;
-            owner = "wpa_supplicant";
-            group = "wpa_supplicant";
-            mode = "400";
-          };
-          "sras-vpn" = {
-            file = ./secrets/sras-vpn.age;
-            owner = "tsukumo";
-            mode = "400";
-          };
-        };
-      };
-
-      home-manager.users = myLib.mkForEachUsers (u: u.name == "tsukumo") (_u: {
-        imports = [
-          ./home-ragenix
-        ];
-      });
+      age.identityPaths = map (p: "/persist" + p) config.custom.secrets.extraIdentityPaths;
 
       environment.shellAliases = userRekeyAliases;
     };

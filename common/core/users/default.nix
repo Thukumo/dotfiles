@@ -98,7 +98,7 @@
           ];
           shell = pkgs.nushell;
           openssh.authorizedKeys.keyFiles = [
-            ../secrets/home-ragenix/id_ed25519.pub
+            ../../shell/ssh/id_ed25519.pub
           ];
         };
 
@@ -124,7 +124,17 @@
           ime = lib.mkDefault "skk";
         };
 
+        shell.private.enable = lib.mkDefault true;
         dev.podman.enable = lib.mkDefault true;
+      };
+    };
+
+    age.secrets = {
+      "passwd_tsukumo".file = ./passwd_tsukumo.age;
+      "home-manager_key" = {
+        file = ./home_manager_key.age;
+        owner = "tsukumo";
+        mode = "400";
       };
     };
 
