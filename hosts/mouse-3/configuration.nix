@@ -8,6 +8,7 @@ _:
     network = {
       mycelium.enable = true;
       cloudflare-warp.enable = false;
+      ssh-server.enable = true;
     };
     # hardware.keybind.enable = false;
     users."tsukumo" = {
