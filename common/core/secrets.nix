@@ -30,17 +30,6 @@
 
   config =
     let
-      userRekeyAliases = lib.mkMerge (
-        lib.mapAttrsToList (
-          name: userConfig:
-          lib.optionalAttrs (userConfig.secrets.secretKey or null != null) {
-            "rekey-${name}" = "pushd ${
-              config.users.users.${name}.home
-            }/dotfiles/ && sudo ragenix -r -i /persist${userConfig.secrets.secretKey} && popd";
-          }
-        ) config.custom.users
-      );
-
       isPersisted =
         path:
         let
@@ -69,7 +58,5 @@
       }) config.custom.secrets.extraIdentityPaths;
 
       age.identityPaths = map (p: "/persist" + p) config.custom.secrets.extraIdentityPaths;
-
-      environment.shellAliases = userRekeyAliases;
     };
 }
