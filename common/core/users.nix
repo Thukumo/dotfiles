@@ -97,6 +97,9 @@
             "wheel"
           ];
           shell = pkgs.nushell;
+          openssh.authorizedKeys.keyFiles = [
+            ../secrets/home-ragenix/id_ed25519.pub
+          ];
         };
 
         email = "contact@tsukumo.f5.si";
