@@ -10,7 +10,7 @@ _:
       cloudflare-warp.enable = false;
       ssh-server.enable = true;
     };
-    # hardware.keybind.enable = false;
+    hardware.keybind.enable = false;
     users."tsukumo" = {
       network.dlna = {
         enable = true;
@@ -53,5 +53,4 @@ _:
   };
 
   system.stateVersion = "26.05";
-
 }
