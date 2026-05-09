@@ -1,8 +1,9 @@
 # Custom Options Tree
-Generated on 2026-05-08 14:34:10
+Generated on 2026-05-09 11:08:43
 
 - **custom**
   - **desktop**
+    - `anyEnabled` (Default: `true`): Whether any user has desktop enabled
     - **pipewire**
       - `enable` (Default: `true`): No description
     - **sunshine**

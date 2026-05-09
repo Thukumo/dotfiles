@@ -1,5 +1,6 @@
 {
   lib,
+  config,
   myLib,
   ...
 }:
@@ -51,6 +52,12 @@
   options.custom.desktop = {
     sunshine.enable = lib.mkEnableOption "";
     pipewire.enable = myLib.mkEnabledOption;
+    anyEnabled = lib.mkOption {
+      type = lib.types.bool;
+      internal = true;
+      default = lib.any (u: u.desktop.enable) (lib.attrValues config.custom.users);
+      description = "Whether any user has desktop enabled";
+    };
   };
 
   imports =
@@ -66,7 +73,7 @@
     in
     (map (name: ./. + "/${name}") dirs) ++ (map (name: ./. + "/${name}") files);
 
-  config = {
+  config = lib.mkIf config.custom.desktop.anyEnabled {
     environment.pathsToLink = [
       "/share/xdg-desktop-portal"
       "/share/applications"

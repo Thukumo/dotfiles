@@ -114,14 +114,14 @@
         };
 
         desktop = {
-          enable = true;
-          de = "niri";
-          terminal = "foot";
-          launcher = "fuzzel";
-          ime = "skk";
+          enable = lib.mkDefault true;
+          de = lib.mkDefault "niri";
+          terminal = lib.mkDefault "foot";
+          launcher = lib.mkDefault "fuzzel";
+          ime = lib.mkDefault "skk";
         };
 
-        dev.podman.enable = true;
+        dev.podman.enable = lib.mkDefault true;
       };
     };
 
