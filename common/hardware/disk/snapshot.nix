@@ -17,8 +17,8 @@
         "persist-snapshots" = {
           onCalendar = "hourly";
           settings = {
-            snapshot_preserve_min = "2h";
-            snapshot_preserve = "24h";
+            snapshot_preserve_min = "2d";
+            snapshot_preserve = "48h 7d 2w";
             volume."/persist" = {
               subvolume = ".";
               snapshot_dir = ".snapshots";
