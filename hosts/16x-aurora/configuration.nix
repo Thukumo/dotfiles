@@ -41,6 +41,7 @@
         prismLauncher.enable = true;
         localsend.enable = true;
         blender.enable = true;
+        slack.enable = true;
         mpv = {
           enable = true;
           gpu-api = "vulkan";
@@ -113,7 +114,9 @@
     variant = "";
   };
 
+  # hardware.enableRedistributableFirmware = true;
+  # boot.kernelModules = [ "mt7925e" ];
+
   hardware.bluetooth.enable = true;
   system.stateVersion = "26.05";
-
 }

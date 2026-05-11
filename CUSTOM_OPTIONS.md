@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-10 06:34:01
+Generated on 2026-05-11 17:46:53
 
 - **custom**
   - **desktop**
@@ -106,6 +106,8 @@ Generated on 2026-05-10 06:34:01
           - `enable` (Default: `false`) (Example: `true`): Whether to enable qutebrowser.
         - **rquickshare**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable RQuickShare.
+        - **slack**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Slack.
         - **steam**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Steam.
         - **thunar**
