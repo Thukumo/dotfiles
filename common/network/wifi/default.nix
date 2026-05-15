@@ -6,13 +6,14 @@
       wifiList = {
         "φ2" = {
           name = "phi2";
-          f = pwdVar: { pskRaw = pwdVar; };
+          f = p: { pskRaw = p; };
         };
         "X4S".f = p: { pskRaw = p; };
         "AP80211-5n" = {
           name = "5n";
           f = p: { pskRaw = p; };
         };
+        "DigicreWiFi".f = p: { pskRaw = p; };
       };
       mkConf = essid: val: (val.f "ext:${val.name or essid}_pwd");
     in
