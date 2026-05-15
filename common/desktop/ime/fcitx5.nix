@@ -38,6 +38,7 @@
                 skk = {
                   globalSection = {
                     # Rule = "azik";
+                    Rule = "custom-no-kuten";
                     InitialInputMode = "Latin";
                     EggLikeNewLine = true;
                   };
@@ -46,13 +47,28 @@
             };
           };
         };
-        home.file.".config/libskk/rules/default/keymap/default.json".text = builtins.toJSON {
-          define = {
-            keymap = {
-              "\\" = "direct";
-            };
+        home.file =
+          let
+            defaultRuleBase = "${pkgs.libskk}/share/libskk/rules/default";
+            customRuleName = "custom-no-kuten";
+            customRuleDir =
+              pkgs.runCommandLocal "libskk-rule-${customRuleName}" { nativeBuildInputs = [ pkgs.jq ]; }
+                ''
+                  cp -r --no-preserve=mode ${defaultRuleBase}/. "$out"
+                  ${pkgs.jq}/bin/jq 'del(.define.keymap["\\"])' "$out/keymap/default.json" > "$out/keymap/default.json.new"
+                  mv "$out/keymap/default.json.new" "$out/keymap/default.json"
+                  cat > "$out/metadata.json" <<'EOF'
+                  {
+                    "name": "${customRuleName}",
+                    "description": "Default rule without kuten on backslash"
+                  }
+                  EOF
+                '';
+            customRuleBase = ".config/libskk/rules/${customRuleName}";
+          in
+          {
+            "${customRuleBase}".source = customRuleDir;
           };
-        };
       }
     );
   };
