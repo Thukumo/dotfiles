@@ -18,6 +18,8 @@
     lua-language-server
     clang-tools
     gopls
+    pyright
+    ruff
 
     # その他ツール
     watchexec

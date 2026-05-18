@@ -63,6 +63,12 @@
             staticcheck = true;
           };
         };
+        pyright = {
+          enable = true;
+        };
+        ruff = {
+          enable = true;
+        };
       };
     };
     lazydev.enable = false;
