@@ -73,15 +73,24 @@
     in
     (map (name: ./. + "/${name}") dirs) ++ (map (name: ./. + "/${name}") files);
 
-  config = lib.mkIf config.custom.desktop.anyEnabled {
-    environment.pathsToLink = [
-      "/share/xdg-desktop-portal"
-      "/share/applications"
-    ];
+  config = lib.mkMerge [
+    {
+      _module.args.desktopLib = {
+        mkHome =
+          condition: content:
+          myLib.mkForEachUsers (user: user.custom.desktop.enable && (condition user)) content;
+      };
+    }
+    (lib.mkIf config.custom.desktop.anyEnabled {
+      environment.pathsToLink = [
+        "/share/xdg-desktop-portal"
+        "/share/applications"
+      ];
 
-    services.udisks2.enable = true;
-    services.gvfs.enable = true;
+      services.udisks2.enable = true;
+      services.gvfs.enable = true;
 
-    security.polkit.enable = true;
-  };
+      security.polkit.enable = true;
+    })
+  ];
 }

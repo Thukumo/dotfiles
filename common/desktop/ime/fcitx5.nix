@@ -1,11 +1,11 @@
 {
-  myLib,
+  desktopLib,
   ...
 }:
 
 {
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.ime or null == "skk") (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.ime or null == "skk") (
       _:
       { pkgs, ... }:
       {

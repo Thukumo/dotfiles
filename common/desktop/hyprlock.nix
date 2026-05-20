@@ -2,7 +2,7 @@
   config,
   pkgs,
   lib,
-  myLib,
+  desktopLib,
   ...
 }:
 
@@ -11,7 +11,7 @@
     lib.attrValues config.custom.users
   )) { };
 
-  home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.hyprlock.enable) (_: {
+  home-manager.users = desktopLib.mkHome (user: user.custom.desktop.hyprlock.enable) (_: {
     home.shellAliases = {
       insomnia = "touch /tmp/no-suspend";
       sleepy = "rm -f /tmp/no-suspend";

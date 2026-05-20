@@ -1,6 +1,6 @@
 {
   lib,
-  myLib,
+  desktopLib,
   ...
 }:
 {
@@ -13,7 +13,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.google-chrome.enable) (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.google-chrome.enable) (
       _:
       { pkgs, ... }:
       {

@@ -1,6 +1,6 @@
 {
   lib,
-  myLib,
+  desktopLib,
   ...
 }:
 {
@@ -13,7 +13,7 @@
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.slack.enable or false) (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.slack.enable or false) (
       _:
       { pkgs, ... }:
       {

@@ -1,6 +1,6 @@
 {
   lib,
-  myLib,
+  desktopLib,
   ...
 }:
 
@@ -14,7 +14,7 @@
   };
 
   config.home-manager.users =
-    myLib.mkForEachUsers (user: user.custom.desktop.apps.zoom.enable or false)
+    desktopLib.mkHome (user: user.custom.desktop.apps.zoom.enable or false)
       (
         _:
         { pkgs, ... }:

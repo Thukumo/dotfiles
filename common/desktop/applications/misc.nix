@@ -1,6 +1,6 @@
 {
   lib,
-  myLib,
+  desktopLib,
   ...
 }:
 
@@ -17,9 +17,10 @@
     );
   };
 
-  config.home-manager.users = myLib.mkForEachUsers (user: true) (
+  config.home-manager.users = desktopLib.mkHome (_user: true) (
     _:
     { pkgs, myConfig, ... }:
+
     {
       home.packages = lib.mkMerge [
         (lib.mkIf (myConfig.desktop.apps.libreoffice.enable or false) [ pkgs.libreoffice-still ])

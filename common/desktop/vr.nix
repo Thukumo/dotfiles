@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  myLib,
+  desktopLib,
   ...
 }:
 {
@@ -50,7 +50,7 @@
       services.avahi.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.userServices = lib.mkIf vrEnabled (lib.mkDefault true);
-      home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.vr.enable or false) (_: {
+      home-manager.users = desktopLib.mkHome (user: user.custom.desktop.vr.enable or false) (_: {
         home.persistence."/persist".directories = [
           ".config/wivrn"
           ".config/wayvr"

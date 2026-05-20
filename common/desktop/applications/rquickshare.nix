@@ -1,6 +1,6 @@
 {
   lib,
-  myLib,
+  desktopLib,
   config,
   ...
 }:
@@ -20,7 +20,7 @@
       );
     in
     {
-      home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.apps.rquickshare.enable) (
+      home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.rquickshare.enable) (
         _:
         { pkgs, ... }:
         {
