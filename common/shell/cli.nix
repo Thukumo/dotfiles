@@ -11,8 +11,6 @@
 
     gdu
 
-    cargo
-
     p7zip
 
     wiremix
