@@ -9,9 +9,9 @@
     "40f:4972:ada8:df1b:14d5:bfe:b7de:961d" = [ "mouse-3" ];
   };
   home-manager.users = myLib.mkForEachUsers (_: true) {
-    programs.ssh.matchBlocks = {
-      "f-51b" = {
-        port = 8022;
+    programs.ssh.settings = {
+      "Host f-51b" = {
+        Port = 8022;
       };
     };
   };
