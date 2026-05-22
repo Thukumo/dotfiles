@@ -20,6 +20,7 @@
 
   home.shellAliases = {
     sl = "nix shell";
+    dc = "cd";
   };
 
 }
