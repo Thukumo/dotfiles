@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-23 09:41:15
+Generated on 2026-05-23 11:03:26
 
 - **custom**
   - **desktop**
@@ -41,6 +41,7 @@ Generated on 2026-05-23 09:41:15
       - **tpm2-unlock**
         - `enable` (Default: `true`): Enable TPM2 LUKS unlocking
         - `luksDevice` (Default: `null`): The name of the LUKS device to apply TPM2 unlock settings to
+        - `pcrs` (Default: `[0,7]`): PCR list for TPM unlock
     - **tune**
       - **ananicy**
         - `enable` (Default: `true`): No description

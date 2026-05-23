@@ -8,7 +8,14 @@
 }:
 
 {
-  custom.hardware.secure-boot.enable = true;
+  custom.hardware.secure-boot = {
+    enable = true;
+    tpm2-unlock.pcrs = [
+      0
+      2
+      7
+    ];
+  };
   # # nanoKVM
   # services.udev.extraRules = ''
   #   SUBSYSTEM=="usb", ATTR{idVendor}=="345f", ATTR{idProduct}=="2131", MODE="0666", GROUP="plugdev"

@@ -23,13 +23,20 @@ in
           null;
       description = "The name of the LUKS device to apply TPM2 unlock settings to";
     };
+    pcrs = lib.mkOption {
+      type = lib.types.listOf lib.types.int;
+      default = [
+        0
+        7
+      ];
+      description = "PCR list for TPM unlock";
+    };
   };
 
   config = lib.mkIf (cfg.enable && cfg.luksDevice != null) {
     boot.initrd.luks.devices."${cfg.luksDevice}".crypttabExtraOpts = [
       "tpm2-device=auto"
-      "tpm2-pcrs=0+2+7"
-      "tpm2-pin=yes"
+      "tpm2-pcrs=${builtins.concatStringsSep "+" (builtins.map toString cfg.pcrs)}"
     ];
   };
 }
