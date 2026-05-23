@@ -1,5 +1,11 @@
 { lib, ... }:
 {
+  options.custom.desktop.sessionManager = lib.mkOption {
+    type = lib.types.nullOr (lib.types.enum [ "greetd" ]);
+    default = "greetd";
+    description = "Session manager to use";
+  };
+
   imports = map (name: ./. + "/${name}") (
     builtins.attrNames (
       lib.filterAttrs (

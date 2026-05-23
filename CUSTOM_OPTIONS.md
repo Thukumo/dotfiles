@@ -1,11 +1,12 @@
 # Custom Options Tree
-Generated on 2026-05-23 12:20:27
+Generated on 2026-05-23 13:08:01
 
 - **custom**
   - **desktop**
     - `anyEnabled` (Default: `true`): Whether any user has desktop enabled
     - **pipewire**
       - `enable` (Default: `true`): No description
+    - `sessionManager` (Default: `"greetd"`): Session manager to use
     - **sunshine**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable .
   - **hardware**
