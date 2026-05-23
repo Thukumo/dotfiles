@@ -1,34 +1,21 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 
 {
-  home.packages = with pkgs; [
-    nautilus # For GNOME portal file chooser
-
-    xwayland-satellite
-    # anyrun
-  ];
-
   imports = [
     ./home-activate-linux.nix
+    ./packages.nix
+    ./mako.nix
+    ./swayosd.nix
+    ./binds.nix
   ];
-
-  services.mako = {
-    enable = true;
-    settings = {
-      ignore-timeout = 1;
-      default-timeout = 5000;
-      max-visible = 10;
-    };
-  };
 
   programs.niri = {
     enable = true;
-    package = pkgs.niri.overrideAttrs (old: {
+    package = pkgs.niri.overrideAttrs (_old: {
       doCheck = false;
       checkPhase = "";
     });
@@ -63,72 +50,6 @@
         default-column-width.proportion = 0.5;
         gaps = 8;
       };
-      binds =
-        with config.lib.niri.actions;
-        lib.mapAttrs
-          (_: action: {
-            inherit action;
-            repeat = false;
-          })
-          (
-            let
-              normalBind = {
-                "Shift+P" = power-off-monitors;
-                "Escape" = spawn "${pkgs.hyprlock}/bin/hyprlock";
-
-                "Return" = spawn "foot";
-                "Space" = spawn "fuzzel";
-                # "Space" = spawn "anyrun";
-                "M" = spawn "mattermost-desktop";
-                "C" = spawn "chromium";
-                "Shift+C" = spawn "google-chrome-stable" "--new-window";
-                "X" = spawn "google-chrome-stable" "--new-window" "https://x.com/home";
-
-                "H" = focus-column-left;
-                "L" = focus-column-right;
-                "K" = focus-window-up;
-                "J" = focus-window-down;
-                "Shift+H" = move-column-left;
-                "Shift+L" = move-column-right;
-                "Shift+K" = move-column-to-workspace-up;
-                "Shift+J" = move-column-to-workspace-down;
-
-                "Q" = close-window;
-                "F" = maximize-column;
-                "Shift+F" = fullscreen-window;
-                "O" = toggle-overview;
-
-                "P" =
-                  spawn "sh" "-c"
-                    "${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy";
-
-                "A" =
-                  spawn "sh" "-c"
-                    "${pkgs.libnotify}/bin/notify-send \"$(date +%H:%M:%S)\" \"$(date +%Y/%m/%d)\n$(${pkgs.acpi}/bin/acpi -b | cut -d: -f2- | sed 's/^, //')\"";
-              };
-              worksp = builtins.listToAttrs (
-                map (n: {
-                  name = toString n;
-                  value = focus-workspace n;
-                }) (lib.range 0 9)
-              );
-              moveW = {
-                "Shift+F" = move-column-to-monitor-right;
-                "Shift+A" = move-column-to-monitor-left;
-                "Shift+S" = move-column-to-monitor-up;
-                "Shift+D" = move-column-to-monitor-down;
-              };
-              other = {
-                "XF86AudioRaiseVolume" = spawn "swayosd-client" "--output-volume" "raise";
-                "XF86AudioLowerVolume" = spawn "swayosd-client" "--output-volume" "lower";
-                "XF86AudioMute" = spawn "swayosd-client" "--output-volume" "mute-toggle";
-                "XF86AudioMicMute" = spawn "swayosd-client" "--input-volume" "mute-toggle";
-                "XF86MonBrightnessUp" = spawn "swayosd-client" "--brightness" "raise";
-                "XF86MonBrightnessDown" = spawn "swayosd-client" "--brightness" "lower";
-              };
-            in
-            (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (normalBind // worksp // moveW)) // other
-          );
       spawn-at-startup = [
         # fcitx5は、autostartにファイルがあるから不要っぽい
         {
@@ -146,5 +67,4 @@
     enable = true;
     extraArgs = [ "-p" ];
   };
-  services.swayosd.enable = true;
 }

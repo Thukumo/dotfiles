@@ -11,41 +11,7 @@
       lib.types.submodule {
         options.desktop = {
           enable = lib.mkEnableOption "desktop environment";
-
-          de = lib.mkOption {
-            type = lib.types.nullOr (
-              lib.types.enum [
-                "niri"
-                "gnome"
-              ]
-            );
-            default = null;
-            description = "Desktop environment or window manager to use";
-          };
-
-          launcher = lib.mkOption {
-            type = lib.types.nullOr (lib.types.enum [ "fuzzel" ]);
-            default = null;
-            description = "Application launcher to use";
-          };
-
-          terminal = lib.mkOption {
-            type = lib.types.nullOr (lib.types.enum [ "foot" ]);
-            default = null;
-            description = "Terminal emulator to use";
-          };
-
-          ime = lib.mkOption {
-            type = lib.types.nullOr (lib.types.enum [ "skk" ]);
-            default = null;
-            description = "Input method engine to use";
-          };
-
-          hyprlock.enable = myLib.mkEnabledOption;
-
           vr.enable = lib.mkEnableOption "VR support";
-
-          activate-linux.enable = lib.mkEnableOption "activate-linux watermark";
         };
       }
     );
