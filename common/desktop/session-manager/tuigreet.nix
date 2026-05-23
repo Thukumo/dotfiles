@@ -2,6 +2,7 @@
   lib,
   config,
   desktopLib,
+  pkgs,
   ...
 }:
 
@@ -12,15 +13,17 @@
   #   };
   # };
   config =
-    lib.mkIf (config.custom.desktop.anyEnabled && config.custom.desktop.sessionManager == "greetd")
+    lib.mkIf (config.custom.desktop.anyEnabled && config.custom.desktop.sessionManager == "tuigreet")
       {
         services.greetd = {
           enable = true;
           settings = {
             default_session.user = config.users.users."tsukumo".name;
-            default_session.command = config.custom.desktop.sessionCommand;
-            initial_session.user = config.users.users."tsukumo".name;
-            initial_session.command = config.custom.desktop.sessionCommand;
+            default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time ${
+              lib.optionalString (
+                config.custom.desktop.sessionCommand != null
+              ) "--cmd ${config.custom.desktop.sessionCommand}"
+            }";
           };
         };
         security.pam.services.greetd.enableGnomeKeyring = true;
