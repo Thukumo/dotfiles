@@ -1,8 +1,13 @@
 { lib, ... }:
 {
   options.custom.desktop.sessionManager = lib.mkOption {
-    type = lib.types.nullOr (lib.types.enum [ "greetd" ]);
-    default = "greetd";
+    type = lib.types.nullOr (
+      lib.types.enum [
+        "greetd"
+        "ly"
+      ]
+    );
+    default = "ly";
     description = "Session manager to use";
   };
 
