@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-23 08:45:34
+Generated on 2026-05-23 09:41:15
 
 - **custom**
   - **desktop**
@@ -124,8 +124,6 @@ Generated on 2026-05-23 08:45:34
       - **vr**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
     - **dev**
-      - **aider**
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable aider.
       - **antigravity**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Antigravity.
       - **gns3**

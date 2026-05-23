@@ -63,7 +63,6 @@
         enable = true;
         models = config.custom.users."tsukumo".dev.ollama.loadModels;
       };
-      aider.enable = true;
       antigravity.enable = true;
       unityhub.enable = true;
     };
