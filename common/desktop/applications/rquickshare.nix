@@ -5,14 +5,6 @@
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.apps.rquickshare.enable = lib.mkEnableOption "RQuickShare";
-      }
-    );
-  };
-
   config =
     let
       rqEnabled = builtins.any (userConfig: userConfig.desktop.apps.rquickshare.enable or false) (

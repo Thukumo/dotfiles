@@ -6,14 +6,6 @@
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.apps.steam.enable = lib.mkEnableOption "Steam";
-      }
-    );
-  };
-
   config =
     lib.mkIf
       (builtins.any (userConfig: userConfig.desktop.apps.steam.enable or false) (

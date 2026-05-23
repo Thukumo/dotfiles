@@ -6,14 +6,6 @@
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.vr.enable = lib.mkEnableOption "VR support";
-      }
-    );
-  };
-
   config =
     let
       vrEnabled = builtins.any (user: user.desktop.vr.enable or false) (

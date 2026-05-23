@@ -9,14 +9,6 @@ let
   );
 in
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.apps.localsend.enable = lib.mkEnableOption "LocalSend";
-      }
-    );
-  };
-
   config = lib.mkIf anyUserEnabled {
     programs.localsend = {
       enable = true;

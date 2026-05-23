@@ -1,17 +1,8 @@
 {
-  lib,
   desktopLib,
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.apps.mattermost-desktop.enable = lib.mkEnableOption "Mattermost Desktop";
-      }
-    );
-  };
-
   config = {
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.mattermost-desktop.enable) (
       _:

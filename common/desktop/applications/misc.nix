@@ -5,18 +5,6 @@
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.apps = {
-          libreoffice.enable = lib.mkEnableOption "LibreOffice";
-          gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
-          thunar.enable = lib.mkEnableOption "Thunar";
-        };
-      }
-    );
-  };
-
   config.home-manager.users = desktopLib.mkHome (_user: true) (
     _:
     { pkgs, myConfig, ... }:

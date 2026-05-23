@@ -43,6 +43,8 @@
 
           hyprlock.enable = myLib.mkEnabledOption;
 
+          vr.enable = lib.mkEnableOption "VR support";
+
           activate-linux.enable = lib.mkEnableOption "activate-linux watermark";
         };
       }

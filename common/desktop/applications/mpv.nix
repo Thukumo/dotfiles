@@ -4,26 +4,6 @@
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.apps.mpv = {
-          enable = lib.mkEnableOption "mpv with Anime4K shaders";
-          gpu-api = lib.mkOption {
-            type = lib.types.nullOr (
-              lib.types.enum [
-                "vulkan"
-                "opengl"
-              ]
-            );
-            default = null;
-            description = "GPU API for mpv (null for auto)";
-          };
-        };
-      }
-    );
-  };
-
   config = {
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.mpv.enable or false) (
       _:

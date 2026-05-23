@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-23 11:29:06
+Generated on 2026-05-23 12:20:27
 
 - **custom**
   - **desktop**
@@ -98,11 +98,11 @@ Generated on 2026-05-23 11:29:06
           - `enable` (Default: `false`) (Example: `true`): Whether to enable mpv with Anime4K shaders.
           - `gpu-api` (Default: `null`): GPU API for mpv (null for auto)
         - **prismLauncher**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable Discord.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Prism Launcher.
         - **qutebrowser**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable qutebrowser.
         - **rquickshare**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable RQuickShare.
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable rQuickShare.
         - **slack**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Slack.
         - **steam**
