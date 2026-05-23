@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -8,8 +8,6 @@
     device = "/dev/disk/by-uuid/d480d1df-a949-4d5a-8a3e-58214637b087";
     allowDiscards = true;
   };
-
-  custom.hardware.secure-boot.tpm2-unlock.luksDevice = "cryptroot";
 
   boot.kernelParams = [
     "resume=/dev/mapper/vg-swap"

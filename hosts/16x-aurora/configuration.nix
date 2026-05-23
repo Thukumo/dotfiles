@@ -5,11 +5,7 @@
 { pkgs, config, ... }:
 
 {
-  custom.hardware.secure-boot = {
-    enable = true;
-    tpm2-totp.enable = true;
-    tpm2-unlock.enable = true;
-  };
+  custom.hardware.secure-boot.enable = true;
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {

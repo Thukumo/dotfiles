@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-23 11:03:26
+Generated on 2026-05-23 11:29:06
 
 - **custom**
   - **desktop**
@@ -38,10 +38,6 @@ Generated on 2026-05-23 11:03:26
       - `init` (Default: `false`) (Example: `true`): Whether to enable use when init secure boot.
       - **tpm2-totp**
         - `enable` (Default: `true`): Enable TPM2 TOTP support
-      - **tpm2-unlock**
-        - `enable` (Default: `true`): Enable TPM2 LUKS unlocking
-        - `luksDevice` (Default: `null`): The name of the LUKS device to apply TPM2 unlock settings to
-        - `pcrs` (Default: `[0,7]`): PCR list for TPM unlock
     - **tune**
       - **ananicy**
         - `enable` (Default: `true`): No description
