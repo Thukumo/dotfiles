@@ -19,7 +19,7 @@
           enable = true;
           settings = {
             default_session.user = config.users.users."tsukumo".name;
-            default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time ${
+            default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --user-menu ${
               lib.optionalString (
                 config.custom.desktop.sessionCommand != null
               ) "--cmd ${config.custom.desktop.sessionCommand}"
