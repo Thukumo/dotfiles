@@ -1,4 +1,4 @@
-_:
+{ config, lib, ... }:
 
 {
   boot.kernelParams = [
@@ -51,6 +51,22 @@ _:
     layout = "jp106";
     variant = "";
   };
+
+  boot.initrd = {
+    availableKernelModules = [ "r8169" ];
+    secrets."/etc/ssh/ssh_host_ed25519_key" = lib.mkForce config.age.secrets.initrd_ssh_host_key.path;
+    network = {
+      enable = true;
+      ssh = {
+        enable = true;
+        authorizedKeyFiles = config.users.users.tsukumo.openssh.authorizedKeys.keyFiles;
+        hostKeys = [
+          "/etc/ssh/ssh_host_ed25519_key"
+        ];
+      };
+    };
+  };
+  age.secrets.initrd_ssh_host_key.file = ./initrd-ssh.age;
 
   system.stateVersion = "26.05";
 }

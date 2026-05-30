@@ -20,6 +20,8 @@ in
   "common/network/wifi/eduroam.age".publicKeys = systemKeys;
   "common/network/sras-vpn/sras-vpn.age".publicKeys = systemKeys;
 
+  "hosts/mouse-3/initrd-ssh.age".publicKeys = systemKeys;
+
   # tsukumo
   "common/shell/ssh/ssh-key_tsukumo.age".publicKeys = allKeys;
   "common/shell/git/gh_hosts_tsukumo.age".publicKeys = allKeys;
