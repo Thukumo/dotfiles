@@ -21,7 +21,7 @@
         { pkgs, ... }:
         {
           home.packages = [
-            pkgs.google-antigravity
+            pkgs.antigravity
           ];
           home.persistence."/persist".directories = [
             ".antigravity"

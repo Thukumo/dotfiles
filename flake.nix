@@ -29,11 +29,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    antigravity-nix = {
-      url = "github:jacopone/antigravity-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     lanzaboote = {
@@ -55,7 +50,6 @@
       ragenix,
       nix-index-database,
       disko,
-      antigravity-nix,
       lanzaboote,
       stylix,
       ...
@@ -71,9 +65,8 @@
         ./const
         {
           networking.hostName = name;
-          nixpkgs.overlays = [
-            antigravity-nix.overlays.default
-          ];
+          # nixpkgs.overlays = [
+          # ];
         }
 
         home-manager.nixosModules.home-manager
