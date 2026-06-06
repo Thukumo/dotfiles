@@ -18,6 +18,7 @@
           enable = true;
           extest.enable = true;
           package = pkgs.steam.override {
+            extraArgs = "-language japanese";
             extraEnv = {
               MANGOHUD = true;
             };
