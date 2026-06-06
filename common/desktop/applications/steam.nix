@@ -17,15 +17,14 @@
         programs.steam = {
           enable = true;
           extest.enable = true;
+          remotePlay.openFirewall = true;
+          fontPackages = with pkgs; [ ipaexfont ];
           package = pkgs.steam.override {
             extraArgs = "-language japanese";
             extraEnv = {
               MANGOHUD = true;
+              PROTON_ENABLE_NVAPI = 1;
             };
-            extraPkgs =
-              pkgs: with pkgs; [
-                ipaexfont
-              ];
           };
         };
         home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.steam.enable or false) (_: {
