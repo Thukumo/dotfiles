@@ -33,6 +33,7 @@
             enableSessionWide = true;
             settings = {
               full = true;
+              no_display = true;
             };
           };
           home.persistence."/persist".directories = [
