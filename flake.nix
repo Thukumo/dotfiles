@@ -36,7 +36,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix.url = "github:danth/stylix/pull/2351/head";
+    stylix.url = "github:danth/stylix";
   };
 
   outputs =
