@@ -24,6 +24,7 @@
               description = "GPU API for mpv (null for auto)";
             };
           };
+          osu.enable = lib.mkEnableOption "osu";
           prismLauncher.enable = lib.mkEnableOption "Prism Launcher";
           qutebrowser.enable = lib.mkEnableOption "qutebrowser";
           rquickshare.enable = lib.mkEnableOption "rQuickShare";

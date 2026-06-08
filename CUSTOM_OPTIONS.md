@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-06-08 13:20:45
+Generated on 2026-06-08 13:28:11
 
 - **custom**
   - **desktop**
@@ -99,6 +99,8 @@ Generated on 2026-06-08 13:20:45
         - **mpv**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable mpv with Anime4K shaders.
           - `gpu-api` (Default: `null`): GPU API for mpv (null for auto)
+        - **osu**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable osu.
         - **prismLauncher**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Prism Launcher.
         - **qutebrowser**
