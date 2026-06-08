@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-05-31 01:15:04
+Generated on 2026-06-08 13:20:45
 
 - **custom**
   - **desktop**
@@ -131,7 +131,7 @@ Generated on 2026-05-31 01:15:04
         - `enable` (Default: `false`) (Example: `true`): Whether to enable ollama.
         - `host` (Default: `"127.0.0.1"`): The host address to bind to.
         - `loadModels` (Default: `[]`): List of ollama models to pull on startup.
-        - `package` (Default: `"/nix/store/bywmdkxr9b3m8qqas2qfln3wwvjzkvh6-ollama-0.24.0"`): The ollama package to use.
+        - `package` (Default: `"/nix/store/y9sdkv1vkc1w04w1jkk7vvj9h7rf2cx3-ollama-0.30.5"`): The ollama package to use.
       - **opencode**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
         - `models` (Default: `[]`): No description
