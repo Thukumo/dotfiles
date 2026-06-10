@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+_:
 
 {
   programs.nixvim.plugins = {
@@ -55,9 +55,6 @@
       };
     };
 
-    # Copilot
-    copilot-vim.enable = false;
-
     # Cargo依存管理
     crates = {
       enable = true;
@@ -87,6 +84,7 @@
 
     # マークダウン
     markdown-preview.enable = true;
+    render-markdown.enable = true;
 
     # dial.nvim
     dial = {
