@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-06-12 15:43:37
+Generated on 2026-06-14 14:37:21
 
 - **custom**
   - **desktop**
@@ -71,6 +71,11 @@ Generated on 2026-06-12 15:43:37
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
+  - **style**
+    - **plymouth**
+      - `enable` (Default: `true`): No description
+      - `packages` (Default: `["/nix/store/lnlq4sl8d4p526wb4d0gf8idb0v017h3-hellonavi"]`): No description
+      - `theme` (Default: `"hellonavi"`): No description
   - **users** (User Options)
     - **account**
       - `userConfig` (Default: `{}`): Attribute set merged into users.users.<name>.

@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   boot.loader = {
@@ -9,10 +14,12 @@
 
   boot.kernelParams = [
     "quiet"
-    "loglevel=4"
-    "rd.udev.log_level=4"
+    "rd.udev.log_level=${toString config.boot.consoleLogLevel}"
+
+    "rd.systemd.show_status=false"
+    "systemd.show_status=false"
   ];
-  boot.consoleLogLevel = 4;
+  boot.consoleLogLevel = lib.mkDefault 4;
 
   boot.initrd.systemd.enable = true;
 

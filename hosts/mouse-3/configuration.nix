@@ -5,6 +5,7 @@
   ];
 
   custom = {
+    style.plymouth.enable = false;
     network = {
       mycelium.enable = true;
       cloudflare-warp.enable = false;
