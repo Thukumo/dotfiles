@@ -15,12 +15,18 @@ _:
     };
 
     # 診断設定
-    diagnostics = {
+    diagnostic.settings = {
       virtual_text = false;
     };
 
     performance = {
-      byteCompile = true;
+      byteCompileLua = {
+        enable = true;
+        configs = true;
+        luaLib = true;
+        nvimRuntime = true;
+        plugins = true;
+      };
     };
   };
 }
