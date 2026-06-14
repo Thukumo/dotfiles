@@ -27,6 +27,20 @@ in
           };
           patchPhase = ''
             sed -i 's/dialog_opacity (0);/&\n      navi.sprite.SetOpacity (1);/' hellonavi/hellonavi.script
+
+            sed -i '/indexnum = 0;/,/frame_count = indexnum;/c\
+              indexnum = 0;\
+              navi.sprite = SpriteNew();\
+              scale_ratio = 0.3;\
+              while (1){\
+                local.raw_img = ImageNew("img/navi"+ indexnum +".png");\
+                local.new_w = Window.GetWidth() * scale_ratio;\
+                local.new_h = raw_img.GetHeight() * (local.new_w / raw_img.GetWidth());\
+                navi.frames[indexnum] = raw_img.Scale(local.new_w, local.new_h);\
+                if (indexnum >= 9) break;\
+                indexnum++;\
+              }\
+              frame_count = indexnum;' hellonavi/hellonavi.script
           '';
           installPhase = ''
             THEME_DIR=$out/share/plymouth/themes

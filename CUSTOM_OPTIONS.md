@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-06-14 14:37:21
+Generated on 2026-06-15 01:24:52
 
 - **custom**
   - **desktop**
@@ -74,7 +74,7 @@ Generated on 2026-06-14 14:37:21
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): No description
-      - `packages` (Default: `["/nix/store/lnlq4sl8d4p526wb4d0gf8idb0v017h3-hellonavi"]`): No description
+      - `packages` (Default: `["/nix/store/266lfqzm0872yc88v27l8b86facv6ynh-hellonavi"]`): No description
       - `theme` (Default: `"hellonavi"`): No description
   - **users** (User Options)
     - **account**
