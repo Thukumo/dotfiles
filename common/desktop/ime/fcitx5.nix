@@ -47,27 +47,29 @@
             };
           };
         };
-        home.file =
+        xdg.configFile."libskk/rules/custom-no-kuten".source =
           let
             defaultRuleBase = "${pkgs.libskk}/share/libskk/rules/default";
+            baseKeyMap = builtins.fromJSON (builtins.readFile "${defaultRuleBase}/keymap/default.json");
+            fixedKeyMap = baseKeyMap // {
+              define = baseKeyMap.define // {
+                keymap = removeAttrs baseKeyMap.define.keymap [ "\\" ];
+              };
+            };
             customRuleName = "custom-no-kuten";
-            customRuleDir =
-              pkgs.runCommandLocal "libskk-rule-${customRuleName}" { nativeBuildInputs = [ pkgs.jq ]; }
-                ''
-                  cp -r --no-preserve=mode ${defaultRuleBase}/. "$out"
-                  ${pkgs.jq}/bin/jq 'del(.define.keymap["\\"])' "$out/keymap/default.json" > "$out/keymap/default.json.new"
-                  mv "$out/keymap/default.json.new" "$out/keymap/default.json"
-                  cat > "$out/metadata.json" <<'EOF'
-                  {
-                    "name": "${customRuleName}",
-                    "description": "Default rule without kuten on backslash"
-                  }
-                  EOF
-                '';
-            customRuleBase = ".config/libskk/rules/${customRuleName}";
+            meta = {
+              name = customRuleName;
+              description = "";
+            };
           in
-          {
-            "${customRuleBase}".source = customRuleDir;
+          pkgs.symlinkJoin {
+            name = "libskk-rule-${customRuleName}";
+            paths = [
+              (pkgs.writeTextDir "keymap/default.json" (builtins.toJSON fixedKeyMap))
+              (pkgs.writeTextDir "metadata.json" (builtins.toJSON meta))
+
+              defaultRuleBase
+            ];
           };
       }
     );
