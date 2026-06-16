@@ -17,7 +17,10 @@
 
     affinity-nix.url = "github:mrshmllow/affinity-nix";
 
-    nixvim.url = "github:nix-community/nixvim";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs"; # あとで消す
+    };
 
     niri.url = "github:sodiboo/niri-flake";
 
