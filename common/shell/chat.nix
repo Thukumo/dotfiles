@@ -2,9 +2,11 @@
 
 {
   home.packages = with pkgs; [
-    gemini-cli
     github-copilot-cli
   ];
+  programs.antigravity-cli = {
+    enable = true;
+  };
   home.persistence."/persist".directories = [
     ".gemini"
   ];
