@@ -40,6 +40,7 @@
         ) (lib.filterAttrs (_: user: user.isNormalUser) config.users.users)
       )
       ++ [
+        "z /var/lib/private 0700 root root -"
         "d /var/lib/private 0700 root root -"
       ];
 
