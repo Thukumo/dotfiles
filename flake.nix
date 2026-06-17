@@ -17,10 +17,7 @@
 
     affinity-nix.url = "github:mrshmllow/affinity-nix";
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs"; # あとで消す
-    };
+    nixvim.url = "github:nix-community/nixvim";
 
     niri.url = "github:sodiboo/niri-flake";
 
@@ -35,8 +32,9 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v1.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # url = "github:nix-community/lanzaboote/v1.0.0";
+      # https://github.com/nix-community/lanzaboote/issues/624
+      url = "github:nix-community/lanzaboote?rev=001e560fffc8f0235e9db20ebeb4ccde0ade1caf";
     };
 
     stylix.url = "github:danth/stylix";
