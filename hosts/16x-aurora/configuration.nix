@@ -58,6 +58,9 @@
           "gemma4:31b-it-qat"
           "lfm2.5:8b"
           "minicpm-v4.5:8b"
+          "qwen3.6:27b"
+          "qwen3.6:35b"
+          "qwen3.6:35b-a3b"
         ];
       };
       opencode = {
