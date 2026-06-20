@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-06-17 11:52:51
+Generated on 2026-06-20 14:57:38
 
 - **custom**
   - **desktop**
@@ -116,6 +116,8 @@ Generated on 2026-06-17 11:52:51
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Slack.
         - **steam**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Steam.
+        - **stirling-pdf**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable stirling-pdf.
         - **thunar**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Thunar.
         - **zoom**

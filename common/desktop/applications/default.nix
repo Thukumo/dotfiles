@@ -30,6 +30,7 @@
           rquickshare.enable = lib.mkEnableOption "rQuickShare";
           slack.enable = lib.mkEnableOption "Slack";
           steam.enable = lib.mkEnableOption "Steam";
+          stirling-pdf.enable = lib.mkEnableOption "stirling-pdf";
           zoom.enable = lib.mkEnableOption "Zoom";
 
           # From misc.nix
