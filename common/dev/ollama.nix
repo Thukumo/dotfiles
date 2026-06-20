@@ -49,6 +49,9 @@
       services.ollama = {
         enable = true;
         inherit (ollamaConfig) package host;
+        environmentVariables = {
+          "OLLAMA_CONTEXT_LENGTH" = builtins.toString (128 * 1000);
+        };
       };
       home.persistence."/persist".directories = [
         ".ollama/models"
