@@ -51,7 +51,6 @@
         enable = true;
         package = pkgs.ollama-cuda;
         loadModels = [
-          "gemma4:e2b-it-qat"
           "gemma4:e4b-it-qat"
           "gemma4:12b-it-qat"
           "gemma4:26b-a4b-it-qat"
@@ -59,8 +58,8 @@
           "lfm2.5:8b"
           "minicpm-v4.5:8b"
           "qwen3.6:27b"
-          "qwen3.6:35b"
           "qwen3.6:35b-a3b"
+          "glm-4.7-flash:q4_K_M"
         ];
       };
       opencode = {
@@ -71,7 +70,7 @@
       unityhub.enable = true;
     };
   };
-  services.open-webui.enable = false;
+  services.open-webui.enable = true;
   custom.network.cloudflare-warp.enable = true;
 
   custom.hardware.keybind.deviceIds = [ "0001:0001" ];
