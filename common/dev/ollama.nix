@@ -51,6 +51,8 @@
         inherit (ollamaConfig) package host;
         environmentVariables = {
           "OLLAMA_CONTEXT_LENGTH" = builtins.toString (128 * 1000);
+          "OLLAMA_FLUSH_ATTENTION" = "1";
+          "OLLAMA_NO_CLOUD" = "1";
         };
       };
       home.persistence."/persist".directories = [
