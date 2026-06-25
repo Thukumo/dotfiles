@@ -16,7 +16,7 @@
 
   # https://lix.systems/add-to-config/
   nixpkgs.overlays = [
-    (final: prev: {
+    (_: prev: {
       inherit (prev.lixPackageSets.stable)
         nixpkgs-review
         nix-eval-jobs
@@ -32,7 +32,6 @@
   home-manager.useUserPackages = false;
 
   # Inject each user's custom config into their home-manager module
-  # Single source of truth: iterate custom.users only (asserted in common/core/users.nix)
   home-manager.users = lib.mkMerge [
     (lib.mkMerge (
       lib.mapAttrsToList (name: _: {
@@ -45,11 +44,6 @@
       {
         home.persistence."/persist".directories = [ u.custom.dotfilesPath ];
 
-        # home.shellAliases = {
-        #   rebuild = "sudo nixos-rebuild switch --flake $HOME/${u.custom.dotfilesPath}/";
-        #   update = "pushd $HOME/${u.custom.dotfilesPath}/ && sudo nix flake update && popd";
-        #   check = "pushd $HOME/${u.custom.dotfilesPath}/ && nix flake check && popd";
-        # };
         systemd.user.services.git-pull-dotfiles = {
           Unit = {
             Description = "Pull dotfiles repository on login";
@@ -88,6 +82,15 @@
       programs.home-manager.enable = true;
     }
   ];
+
+  nix.settings = {
+    substituters = [
+      "https://tsukumo.cachix.org"
+    ];
+    trusted-public-keys = [
+      "tsukumo.cachix.org-1:qkC2tQg2tP1HVH6A45QzRwhFKgry6YPlE9CmBYl/Vmc="
+    ];
+  };
 
   home-manager.backupCommand = "rm -rf";
 }

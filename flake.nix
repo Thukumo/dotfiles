@@ -38,6 +38,11 @@
     };
 
     stylix.url = "github:danth/stylix";
+
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
