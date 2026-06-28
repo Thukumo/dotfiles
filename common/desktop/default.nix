@@ -8,12 +8,21 @@
 {
   options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop = {
-          enable = lib.mkEnableOption "desktop environment";
-          vr.enable = lib.mkEnableOption "VR support";
-        };
-      }
+      lib.types.submodule (
+        { config, ... }:
+        {
+          options.desktop = {
+            enable = lib.mkEnableOption "desktop environment";
+            vr = {
+              enable = lib.mkEnableOption "VR support";
+              immersed.enable = lib.mkOption {
+                type = lib.types.bool;
+                default = config.desktop.vr.enable;
+              };
+            };
+          };
+        }
+      )
     );
   };
 

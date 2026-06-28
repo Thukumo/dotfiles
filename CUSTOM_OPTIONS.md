@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-06-20 14:57:38
+Generated on 2026-06-29 08:06:30
 
 - **custom**
   - **desktop**
@@ -131,6 +131,8 @@ Generated on 2026-06-20 14:57:38
       - `terminal` (Default: `null`): Terminal emulator to use
       - **vr**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
+        - **immersed**
+          - `enable` (Default: `false`): No description
     - **dev**
       - **antigravity**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Antigravity.
