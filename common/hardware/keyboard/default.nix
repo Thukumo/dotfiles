@@ -4,26 +4,32 @@
   myLib,
   ...
 }:
+let
+  myConfig = config.custom.hardware.keyboard;
+in
 {
-  options.custom.hardware.keybind = {
-    enable = myLib.mkEnabledOption;
-    deviceIds = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.";
-      example = [ "0001:0001" ];
+  options.custom.hardware.keyboard = {
+    keybind = {
+      enable = myLib.mkEnabledOption;
+      deviceIds = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = "List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.";
+        example = [ "0001:0001" ];
+      };
     };
+    vialRule.enable = myLib.mkEnabledOption;
   };
-  config = lib.mkIf config.custom.hardware.keybind.enable {
+  config = {
     # for vial
-    services.udev.extraRules = ''
+    services.udev.extraRules = lib.mkIf myConfig.vialRule.enable ''
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0666", TAG+="uaccess", TAG+="udev-acl"
     '';
 
     services.keyd = {
-      enable = true;
+      enable = myConfig.keybind.enable;
       keyboards.default = {
-        ids = config.custom.hardware.keybind.deviceIds;
+        ids = myConfig.keybind.deviceIds;
         settings = {
           main = {
             capslock = "overload(meta, tab)";

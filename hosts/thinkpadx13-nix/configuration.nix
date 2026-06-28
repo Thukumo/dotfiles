@@ -73,7 +73,7 @@
   };
   custom.desktop.sunshine.enable = false;
 
-  custom.hardware.keybind.deviceIds = [ "0001:0001" ]; # Internal keyboard only
+  custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
 
   imports = [
     ./hardware.nix

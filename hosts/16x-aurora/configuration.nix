@@ -73,7 +73,7 @@
   services.open-webui.enable = true;
   custom.network.cloudflare-warp.enable = true;
 
-  custom.hardware.keybind.deviceIds = [ "0001:0001" ];
+  custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
 
   # agenix system key (for secrets not tied to a specific user)
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];

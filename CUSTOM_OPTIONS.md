@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-06-29 08:06:30
+Generated on 2026-06-29 08:14:42
 
 - **custom**
   - **desktop**
@@ -32,9 +32,12 @@ Generated on 2026-06-29 08:06:30
     - **gpu**
       - **nvidia**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable nvidia GPU.
-    - **keybind**
-      - `deviceIds` (Default: `[]`) (Example: `["0001:0001"]`): List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.
-      - `enable` (Default: `true`): No description
+    - **keyboard**
+      - **keybind**
+        - `deviceIds` (Default: `[]`) (Example: `["0001:0001"]`): List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.
+        - `enable` (Default: `true`): No description
+      - **vialRule**
+        - `enable` (Default: `true`): No description
     - **secure-boot**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Secure Boot with Lanzaboote.
       - `init` (Default: `false`) (Example: `true`): Whether to enable use when init secure boot.
