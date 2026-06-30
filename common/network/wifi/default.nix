@@ -18,10 +18,6 @@
       mkConf = essid: val: (val.f "ext:${val.name or essid}_pwd");
     in
     {
-      # PR通るまで待つ
-      systemd.services."wpa_supplicant".serviceConfig.BindReadOnlyPaths = [
-        config.age.secrets.eduroam.path
-      ];
       networking.wireless = {
         enable = true;
         inherit (config.custom.network.wifi) fallbackToWPA2;
