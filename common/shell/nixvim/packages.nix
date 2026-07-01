@@ -17,7 +17,6 @@
     nil
     lua-language-server
     clang-tools
-    gopls
     pyright
     ruff
 

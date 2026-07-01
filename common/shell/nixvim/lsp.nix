@@ -54,16 +54,6 @@ _:
             "--clang-tidy"
           ];
         };
-        gopls = {
-          enable = true;
-          settings = {
-            analyses = {
-              unusedparams = true;
-              shadow = true;
-            };
-            staticcheck = true;
-          };
-        };
         pyright = {
           enable = true;
         };
@@ -74,6 +64,7 @@ _:
     };
     lazydev.enable = false;
     lsp-format.enable = true;
+    lsp-signature.enable = true;
   };
   home.persistence."/persist".directories = [
     ".cache/nix"
