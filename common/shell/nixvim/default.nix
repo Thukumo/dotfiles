@@ -1,16 +1,13 @@
-{ ... }:
+{ lib, ... }:
 
 {
-  imports = [
-    ./options.nix
-    ./keymaps.nix
-    ./plugins.nix
-    ./lsp.nix
-    ./completion.nix
-    ./extra.nix
-    ./packages.nix
-  ];
-
+  imports = map (name: ./. + "/${name}") (
+    builtins.attrNames (
+      lib.filterAttrs (
+        name: type: (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
+      ) (builtins.readDir ./.)
+    )
+  );
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
