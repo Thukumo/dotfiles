@@ -1,5 +1,6 @@
 let
   systemKeysAttr = {
+    "yoga-book" = "age1u7eks62u4kj6y7v4hrcfumcvcwd3hlwkrw7su6l50x6ldreqpdnqsxjr2l";
     "mouse-3" = "age1sehvulwdla8lhrn6wqlrm4jnzjuy0vv59mc7q2t8y8vukdd293sqegcn0q";
     "16x-aurora" = "age1rq8eqfp4qsznzau3xla2ftq26d3wlhjk05l9c4tnwcpkj7ecxfqqfvtjad";
     "gf65" = "age1pw34dvuy3k0pmpas7ej4sy2d8mutvp724a5afylfr0rcknndpyrscdzeh8";

@@ -40,7 +40,8 @@
     stylix.url = "github:danth/stylix";
 
     nur = {
-      url = "github:nix-community/NUR";
+      # url = "github:nix-community/NUR";
+      url = "github:thukumo/nur";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -160,6 +161,7 @@
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             {
+              image.baseName = lib.mkForce "installer";
               networking.networkmanager.enable = lib.mkForce false;
               networking = {
                 nameservers = [
