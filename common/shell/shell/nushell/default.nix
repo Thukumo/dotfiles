@@ -11,6 +11,16 @@ in
 {
   programs.nushell = {
     enable = isEnabled;
+    extraEnv = ''
+      if (which gh | is-empty) == false {
+        try {
+          let token = (gh auth token | str trim)
+          if ($token | is-empty) == false {
+            $env.NIX_CONFIG = $"access-tokens = github.com=($token)"
+          }
+        }
+      }
+    '';
     settings = {
       history = {
         file_format = "sqlite";

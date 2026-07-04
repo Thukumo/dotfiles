@@ -37,6 +37,10 @@ in
     ];
 
     initContent = ''
+      if command -v gh >/dev/null 2>&1; then
+        export NIX_CONFIG="access-tokens = github.com=\$(gh auth token 2>/dev/null)"
+      fi
+
       # Add zsh-completions to fpath before compinit
       fpath+=(
         ${pkgs.zsh-completions}/share/zsh-completions
