@@ -1,7 +1,10 @@
 _:
 
 {
-  hardware.yogabook.enable = true;
+  hardware.yogabook = {
+    enable = true;
+    useCustomKernel = false;
+  };
 
   custom = {
     network = {
@@ -26,7 +29,7 @@ _:
     };
   };
 
-  custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
+  custom.hardware.keyboard.keybind.deviceIds = [ "18d1:00ff" ];
 
   custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
   environment.persistence."/persist".directories = [

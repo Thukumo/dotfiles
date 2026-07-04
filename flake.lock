@@ -1115,11 +1115,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783106102,
-        "narHash": "sha256-mZ59hHuFaytq+yUcg1Av81h1FwvAxHMtX516xJwz6Kg=",
+        "lastModified": 1783167589,
+        "narHash": "sha256-n+fExX2xhE9f/vjPPDl7Nod9A9k8Ofaxh+RfBHDXIQY=",
         "owner": "thukumo",
         "repo": "nur",
-        "rev": "1dc915b839d3baf7ec3989381236f5688ae3293f",
+        "rev": "0952536625c28821c2f7335749bbac668474b34e",
         "type": "github"
       },
       "original": {
