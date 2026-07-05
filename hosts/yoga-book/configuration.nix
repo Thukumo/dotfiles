@@ -3,7 +3,7 @@ _:
 {
   hardware.yogabook = {
     enable = true;
-    useCustomKernel = false;
+    keyboardLayout = "jp106";
   };
 
   custom = {
