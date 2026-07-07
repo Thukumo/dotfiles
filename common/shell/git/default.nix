@@ -2,23 +2,31 @@
   myConfig,
   config,
   lib,
+  pkgs,
   ...
 }:
 
 {
   programs.git = {
     enable = true;
-    settings = {
+    settings = rec {
       user = {
         name = config.home.username;
-        email = lib.mkDefault (myConfig.email or "${config.home.username}@localhost");
+        email = myConfig.email or "${config.home.username}@localhost";
+        signingkey = "~/.ssh/id_ed25519.pub";
       };
-      core = {
-        editor = "nvim";
+      gpg.format = "ssh";
+      "gpg \"ssh\"" = {
+        program = "ssh-keygen";
+        allowedSignersFile = "${pkgs.writeText "allowedSigners" ''
+          ${user.email} ${lib.trim (builtins.readFile ../ssh/id_ed25519.pub)}
+        ''}";
       };
-      push = {
-        autoSetupRemote = true;
-      };
+      commit.gpgsign = true;
+      tag.gpgsign = true;
+
+      core.editor = "nvim";
+      push.autoSetupRemote = true;
     };
   };
   programs.gh = {
