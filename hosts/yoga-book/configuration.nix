@@ -1,9 +1,13 @@
-_:
+{ myLib, ... }:
 
 {
   hardware.yogabook = {
     enable = true;
     keyboardLayout = "jp106";
+  };
+  services.keyd.keyboards.default.settings.main = {
+    fn = "leftcontrol";
+    leftcontrol = "fn";
   };
 
   custom = {
@@ -50,6 +54,17 @@ _:
     layout = "jp106";
     variant = "";
   };
+
+  home-manager.users = myLib.mkForEachUsers (_: true) (_: {
+    programs.niri.settings.input = {
+      touch = {
+        map-to-output = "DSI-1";
+      };
+      tablet = {
+        map-to-output = "DSI-1";
+      };
+    };
+  });
 
   system.stateVersion = "26.05";
 }
