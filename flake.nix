@@ -31,11 +31,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    lanzaboote = {
-      # url = "github:nix-community/lanzaboote/v1.0.0";
-      # https://github.com/nix-community/lanzaboote/issues/624
-      url = "github:nix-community/lanzaboote?rev=001e560fffc8f0235e9db20ebeb4ccde0ade1caf";
-    };
+    lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
 
     stylix.url = "github:danth/stylix";
 
