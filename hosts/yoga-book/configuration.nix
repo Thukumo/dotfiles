@@ -11,6 +11,10 @@
   };
 
   custom = {
+    security.clamav = {
+      enable = false;
+      realtime.enable = false;
+    };
     network = {
       mycelium.enable = true;
       cloudflare-warp.enable = true;

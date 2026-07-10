@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-10 22:09:11
+Generated on 2026-07-11 02:08:39
 
 - **custom**
   - **desktop**
@@ -74,6 +74,11 @@ Generated on 2026-07-10 22:09:11
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
+  - **security**
+    - **clamav**
+      - `enable` (Default: `true`): No description
+      - **realtime**
+        - `enable` (Default: `true`): No description
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): No description
