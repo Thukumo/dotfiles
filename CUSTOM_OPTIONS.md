@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-08 03:08:24
+Generated on 2026-07-10 22:09:11
 
 - **custom**
   - **desktop**
@@ -77,7 +77,7 @@ Generated on 2026-07-08 03:08:24
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): No description
-      - `packages` (Default: `["/nix/store/j93xlrbfzna6za07d792z8gr9m1kj5g6-hellonavi"]`): No description
+      - `packages` (Default: `["/nix/store/018w7l41azjl4schd96njx3i7a91skf5-hellonavi"]`): No description
       - `theme` (Default: `"hellonavi"`): No description
   - **users** (User Options)
     - **account**
@@ -145,7 +145,7 @@ Generated on 2026-07-08 03:08:24
         - `enable` (Default: `false`) (Example: `true`): Whether to enable ollama.
         - `host` (Default: `"127.0.0.1"`): The host address to bind to.
         - `loadModels` (Default: `[]`): List of ollama models to pull on startup.
-        - `package` (Default: `"/nix/store/63s9as26rp2g5i9dxxs1nkd6ng14gl5g-ollama-0.31.1"`): The ollama package to use.
+        - `package` (Default: `"/nix/store/q6zd3sdwiisr36nzc7vcvn0wa92mvfcm-ollama-0.31.1"`): The ollama package to use.
       - **opencode**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
         - `models` (Default: `[]`): No description

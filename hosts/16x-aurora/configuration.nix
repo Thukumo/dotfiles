@@ -70,7 +70,8 @@
       unityhub.enable = true;
     };
   };
-  services.open-webui.enable = true;
+  # 壊れていそう
+  # services.open-webui.enable = true;
   custom.network.cloudflare-warp.enable = true;
 
   custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
