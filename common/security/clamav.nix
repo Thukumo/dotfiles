@@ -19,7 +19,6 @@ in
       enable = myLib.mkEnabledOption;
     };
   };
-
   config = {
     services.clamav = lib.mkIf myCfg.enable {
       scanner.enable = true;
