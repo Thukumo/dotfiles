@@ -16,6 +16,8 @@
     wiremix
 
     wl-clipboard-rs
+
+    cargo
   ];
 
   home.shellAliases = {
