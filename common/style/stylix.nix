@@ -27,8 +27,8 @@ in
       };
 
       monospace = {
-        package = pkgs.nerd-fonts.adwaita-mono;
-        name = "Adwaita Mono Nerd Font";
+        package = pkgs.udev-gothic-nf;
+        name = "UDEV Gothic 35NF";
       };
 
       emoji = {
