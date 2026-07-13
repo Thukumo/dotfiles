@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-11 02:08:39
+Generated on 2026-07-14 00:33:11
 
 - **custom**
   - **desktop**
@@ -141,6 +141,19 @@ Generated on 2026-07-11 02:08:39
         - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
         - **immersed**
           - `enable` (Default: `false`): No description
+      - **winapps**
+        - `autopause` (Default: `false`) (Example: `true`): Whether to enable automatic pausing of Windows when inactive.
+        - `autopauseTime` (Default: `"300"`): Duration of inactivity (in seconds) to tolerate before Windows is automatically paused
+        - `cpuCores` (Default: `"4"`): CPU cores allocated to the Windows VM
+        - `diskSize` (Default: `"64G"`): Size of the primary hard disk
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable WinApps RDP support.
+        - `language` (Default: `"Japanese"`): Windows system language
+        - `password` (Default: `"MyWindowsPassword"`): Windows password
+        - `ramSize` (Default: `"4G"`): RAM size allocated to the Windows VM
+        - `rdpScale` (Default: `"140"`): Display scaling factor (e.g. '100', '140', '180')
+        - `sharedDir` (Default: `""`): Directory to share with the Windows container. If empty, defaults to ~/shared.
+        - `username` (Default: `"MyWindowsUser"`): Windows username
+        - `version` (Default: `"11"`): Windows version (e.g. 10, 11, tiny11)
     - **dev**
       - **antigravity**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Antigravity.

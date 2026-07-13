@@ -57,6 +57,19 @@
           condition: content:
           myLib.mkForEachUsers (user: user.custom.desktop.enable && (condition user)) content;
       };
+      home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.enable) (
+        _user:
+        { lib, config, ... }:
+        {
+          options.custom.desktop.persistDesktopEntries = lib.mkEnableOption "persistence for ~/.local/share/applications (Desktop Entries)";
+
+          config = lib.mkIf config.custom.desktop.persistDesktopEntries {
+            home.persistence."/persist".directories = [
+              ".local/share/applications"
+            ];
+          };
+        }
+      );
     }
     (lib.mkIf config.custom.desktop.anyEnabled {
       environment.pathsToLink = [

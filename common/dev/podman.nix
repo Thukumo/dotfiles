@@ -18,9 +18,9 @@
 
   config =
     lib.mkIf
-      (builtins.any (userConfig: userConfig.dev.podman.enable or false) (
-        builtins.attrValues config.custom.users
-      ))
+      (builtins.any (
+        userConfig: (userConfig.dev.podman.enable or false) || (userConfig.desktop.winapps.enable or false)
+      ) (builtins.attrValues config.custom.users))
       {
         virtualisation = {
           containers.enable = true;
@@ -32,18 +32,24 @@
           };
         };
 
-        home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.podman.enable or false) (
-          user:
-          { pkgs, ... }:
-          {
-            home.packages = with pkgs; [
-              podman-tui
-              podman-compose
-            ];
-            home.shellAliases = {
-              docker = "podman";
-            };
-          }
-        );
+        home-manager.users =
+          myLib.mkForEachUsers
+            (user: (user.custom.dev.podman.enable or false) || (user.custom.desktop.winapps.enable or false))
+            (
+              _user:
+              { pkgs, ... }:
+              {
+                home.packages = with pkgs; [
+                  podman-tui
+                  podman-compose
+                ];
+                home.shellAliases = {
+                  docker = "podman";
+                };
+                home.persistence."/persist".directories = [
+                  ".local/share/containers"
+                ];
+              }
+            );
       };
 }

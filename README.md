@@ -27,3 +27,8 @@ mDNS(Avahi)が動作している環境でないと、installer.localの名前解
 
 `EDITOR='cp /dev/stdin' ragenix -e <filename>.age`にパイプすると楽
 
+## WinApps
+
+`podman-compose --file .config/winapps/compose.yaml up -d`
+初回 or アプリの入れ消しの度に
+`winapps-setup --user --setupAllOfficiallySupportedApps`

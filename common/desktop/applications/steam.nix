@@ -36,9 +36,9 @@
               no_display = true;
             };
           };
+          custom.desktop.persistDesktopEntries = true;
           home.persistence."/persist".directories = [
             ".local/share/Steam"
-            ".local/share/applications" # たぶんアプリランチャーにゲームを表示するために入れてる
           ];
         });
       };
