@@ -6,7 +6,6 @@
     gotop
     bluetui
     zellij
-    ffmpeg-full
     wev
 
     gdu
