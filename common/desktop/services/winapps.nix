@@ -68,6 +68,11 @@ in
             default = "300";
             description = "Duration of inactivity (in seconds) to tolerate before Windows is automatically paused";
           };
+          jpKeyboard = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Whether to use Japanese keyboard layout (JIS) in RDP session";
+          };
         };
       }
     );
@@ -87,14 +92,25 @@ in
 
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.winapps.enable) (
       user:
-      { pkgs, config, ... }:
+      {
+        pkgs,
+        config,
+        lib,
+        ...
+      }:
       let
         cfg = user.custom.desktop.winapps;
         sharedPath = if cfg.sharedDir != "" then cfg.sharedDir else "${config.home.homeDirectory}/shared";
       in
       {
         home.packages = with inputs.winapps.packages."${pkgs.stdenv.hostPlatform.system}"; [
-          winapps
+          (winapps.overrideAttrs (oldAttrs: {
+            postFixup = (oldAttrs.postFixup or "") + ''
+              substituteInPlace $out/bin/.winapps-setup-wrapped \
+                --replace-fail "sed -i 's/\r//g' \"\$DETECTED_FILE_PATH\"" \
+                  "if ${pkgs.file}/bin/file \"\$DETECTED_FILE_PATH\" | grep -q 'Non-ISO'; then ${pkgs.glibc.bin}/bin/iconv -f CP932 -t UTF-8 \"\$DETECTED_FILE_PATH\" > \"\$DETECTED_FILE_PATH.tmp\" 2>/dev/null && mv \"\$DETECTED_FILE_PATH.tmp\" \"\$DETECTED_FILE_PATH\"; fi; sed -i 's/\r//g' \"\$DETECTED_FILE_PATH\""
+            '';
+          }))
           winapps-launcher
         ];
 
@@ -102,7 +118,6 @@ in
 
         home.persistence."/persist".directories = [
           ".local/share/winapps"
-          (lib.removePrefix "${config.home.homeDirectory}/" "${config.xdg.configHome}/winapps/oem")
           (lib.removePrefix "${config.home.homeDirectory}/" sharedPath)
         ];
 
@@ -163,7 +178,7 @@ in
           WAFLAVOR="podman"
           unset WAYLAND_DISPLAY
           RDP_SCALE="${cfg.rdpScale}"
-          RDP_FLAGS="/cert:tofu /sound /microphone"
+          RDP_FLAGS="/cert:tofu /sound /microphone${lib.optionalString cfg.jpKeyboard " /kbd:0x00000411"}"
           RDP_FLAGS_WINDOWS="/f"
           HIDEF="off"
           DEBUG="true"
@@ -207,24 +222,31 @@ in
           ];
         };
 
-        # Declaratively define registry tweaks in the OEM folder for automatic Windows setup
-        xdg.configFile."winapps/oem/apple_music_remoteapp.reg".text = ''
-          Windows Registry Editor Version 5.00
+        home.activation.copyWinappsOem = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          rm -rf ${config.xdg.configHome}/winapps/oem
+          mkdir -p ${config.xdg.configHome}/winapps/oem
 
-          [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList\Applications\AppleMusic]
-          "Name"="Apple Music"
-          "Path"="C:\\Windows\\System32\\cmd.exe"
-          "RequiredCommandLine"="/c start musics://"
-          "CommandLineSetting"=dword:00000002
-          "ShowInPortal"=dword:00000001
+          cp -f ${pkgs.writeText "apple_music_remoteapp.reg" ''
+            Windows Registry Editor Version 5.00
 
-          [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList]
-          "fDisabledAllowList"=dword:00000001
-        '';
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList\Applications\AppleMusic]
+            "Name"="Apple Music"
+            "Path"="C:\\Windows\\System32\\cmd.exe"
+            "RequiredCommandLine"="/c start musics://"
+            "CommandLineSetting"=dword:00000002
+            "ShowInPortal"=dword:00000001
 
-        xdg.configFile."winapps/oem/install.bat".text = ''
-          @echo off
-          reg import C:\OEM\apple_music_remoteapp.reg
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList]
+            "fDisabledAllowList"=dword:00000001
+          ''} ${config.xdg.configHome}/winapps/oem/apple_music_remoteapp.reg
+
+          cp -f ${pkgs.writeText "install.bat" ''
+            @echo off
+            reg import C:\OEM\apple_music_remoteapp.reg
+          ''} ${config.xdg.configHome}/winapps/oem/install.bat
+
+          chmod 644 ${config.xdg.configHome}/winapps/oem/apple_music_remoteapp.reg
+          chmod 644 ${config.xdg.configHome}/winapps/oem/install.bat
         '';
       }
     );

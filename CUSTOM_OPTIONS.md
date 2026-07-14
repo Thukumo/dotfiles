@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-14 00:33:11
+Generated on 2026-07-15 06:20:31
 
 - **custom**
   - **desktop**
@@ -147,6 +147,7 @@ Generated on 2026-07-14 00:33:11
         - `cpuCores` (Default: `"4"`): CPU cores allocated to the Windows VM
         - `diskSize` (Default: `"64G"`): Size of the primary hard disk
         - `enable` (Default: `false`) (Example: `true`): Whether to enable WinApps RDP support.
+        - `jpKeyboard` (Default: `true`): Whether to use Japanese keyboard layout (JIS) in RDP session
         - `language` (Default: `"Japanese"`): Windows system language
         - `password` (Default: `"MyWindowsPassword"`): Windows password
         - `ramSize` (Default: `"4G"`): RAM size allocated to the Windows VM
