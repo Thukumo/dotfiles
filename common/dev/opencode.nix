@@ -20,7 +20,7 @@
 
   config = {
     home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.opencode.enable or false) (
-      user:
+      _user:
       { myConfig, ... }:
       {
         programs.opencode = {
@@ -28,11 +28,11 @@
           settings = {
             "$schema" = "https://opencode.ai/config.json";
             "provider" = {
-              "ollama" = {
+              "llama" = {
                 "npm" = "@ai-sdk/openai-compatible";
-                "name" = "Ollama (local)";
+                "name" = "Llama (local)";
                 "options" = {
-                  "baseURL" = "http://localhost:11434/v1";
+                  "baseURL" = "http://${myConfig.dev.llama.host}:${toString myConfig.dev.llama.port}/v1";
                 };
                 "models" = builtins.listToAttrs (
                   builtins.map (model: {

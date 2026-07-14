@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-15 06:20:31
+Generated on 2026-07-15 08:08:56
 
 - **custom**
   - **desktop**
@@ -160,11 +160,16 @@ Generated on 2026-07-15 06:20:31
         - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Antigravity.
       - **gns3**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable gns3.
-      - **ollama**
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable ollama.
-        - `host` (Default: `"127.0.0.1"`): The host address to bind to.
-        - `loadModels` (Default: `[]`): List of ollama models to pull on startup.
-        - `package` (Default: `"/nix/store/q6zd3sdwiisr36nzc7vcvn0wa92mvfcm-ollama-0.31.1"`): The ollama package to use.
+      - **llama**
+        - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration.
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable llama.
+        - `host` (Default: `"127.0.0.1"`): No description
+        - `models` (Default: `[]`): No description
+        - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
+        - `package` (Default: `"/nix/store/jlfyly9wgj2iyz5rhbw8bs3iqm8v6wvi-llama-cpp-9925"`): No description
+        - `port` (Default: `11434`): No description
+        - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
+        - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
       - **opencode**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
         - `models` (Default: `[]`): No description

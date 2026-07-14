@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, config, ... }:
+{ config, ... }:
 
 {
   custom.hardware.secure-boot.enable = true;
@@ -48,24 +48,15 @@
       vr.enable = true;
     };
     dev = {
-      ollama = {
+      llama = {
         enable = true;
-        package = pkgs.ollama-cuda;
-        loadModels = [
-          "gemma4:e4b-it-qat"
-          "gemma4:12b-it-qat"
-          "gemma4:26b-a4b-it-qat"
-          "gemma4:31b-it-qat"
-          "lfm2.5:8b"
-          "minicpm-v4.5:8b"
-          "qwen3.6:27b"
-          "qwen3.6:35b-a3b"
-          "glm-4.7-flash:q4_K_M"
+        cudaSupport = true;
+        models = [
         ];
       };
       opencode = {
         enable = true;
-        models = config.custom.users."tsukumo".dev.ollama.loadModels;
+        models = map (m: m.name) config.custom.users."tsukumo".dev.llama.models;
       };
       antigravity.enable = true;
       unityhub.enable = true;
