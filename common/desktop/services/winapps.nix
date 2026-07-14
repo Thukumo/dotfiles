@@ -102,6 +102,8 @@ in
 
         home.persistence."/persist".directories = [
           ".local/share/winapps"
+          (lib.removePrefix "${config.home.homeDirectory}/" "${config.xdg.configHome}/winapps/oem")
+          (lib.removePrefix "${config.home.homeDirectory}/" sharedPath)
         ];
 
         programs.niri.settings.window-rules = [
@@ -159,8 +161,10 @@ in
           RDP_PASS="${cfg.password}"
           RDP_IP="127.0.0.1"
           WAFLAVOR="podman"
+          unset WAYLAND_DISPLAY
           RDP_SCALE="${cfg.rdpScale}"
-          RDP_FLAGS="/cert:tofu /sound /microphone +home-drive"
+          RDP_FLAGS="/cert:tofu /sound /microphone"
+          RDP_FLAGS_WINDOWS="/f"
           HIDEF="off"
           DEBUG="true"
           AUTOPAUSE="${if cfg.autopause then "on" else "off"}"
@@ -169,6 +173,58 @@ in
           RDP_TIMEOUT="120"
           APP_SCAN_TIMEOUT="180"
           BOOT_TIMEOUT="120"
+        '';
+
+        # Declaratively define Apple Music integration
+        home.file.".local/share/winapps/apps/applemusic/info".text = ''
+          # GNOME shortcut name
+          NAME="Apple Music"
+
+          # Used for descriptions and window class
+          FULL_NAME="Apple Music"
+
+          # The executable alias inside windows registry
+          WIN_EXECUTABLE="||AppleMusic"
+
+          # GNOME categories
+          CATEGORIES="WinApps;Windows;AudioVideo;Audio;Music"
+
+          # GNOME mimetypes
+          MIME_TYPES=""
+        '';
+
+        xdg.desktopEntries.applemusic = {
+          name = "Apple Music";
+          exec = "winapps applemusic %F";
+          terminal = false;
+          icon = "multimedia-audio-player";
+          comment = "Listen to Apple Music";
+          categories = [
+            "AudioVideo"
+            "Audio"
+            "Music"
+            "Player"
+          ];
+        };
+
+        # Declaratively define registry tweaks in the OEM folder for automatic Windows setup
+        xdg.configFile."winapps/oem/apple_music_remoteapp.reg".text = ''
+          Windows Registry Editor Version 5.00
+
+          [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList\Applications\AppleMusic]
+          "Name"="Apple Music"
+          "Path"="C:\\Windows\\System32\\cmd.exe"
+          "RequiredCommandLine"="/c start musics://"
+          "CommandLineSetting"=dword:00000002
+          "ShowInPortal"=dword:00000001
+
+          [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList]
+          "fDisabledAllowList"=dword:00000001
+        '';
+
+        xdg.configFile."winapps/oem/install.bat".text = ''
+          @echo off
+          reg import C:\OEM\apple_music_remoteapp.reg
         '';
       }
     );
