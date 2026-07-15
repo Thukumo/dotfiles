@@ -26,6 +26,16 @@
           rocmSupport = lib.mkEnableOption "ROCm GPU acceleration";
           vulkanSupport = lib.mkEnableOption "Vulkan GPU acceleration";
           openclSupport = lib.mkEnableOption "OpenCL GPU acceleration";
+          mlock = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Force system to keep model in RAM rather than swapping or compressing.";
+          };
+          cacheReuse = lib.mkOption {
+            type = lib.types.nullOr lib.types.int;
+            default = 256;
+            description = "Minimum chunk size to attempt reusing from the cache via KV shifting. Null to use default.";
+          };
           models = lib.mkOption {
             # String または AttrSet を受け取るハイブリッド型
             type = lib.types.listOf (
@@ -50,6 +60,45 @@
                           default = "auto";
                           description = "Number of layers to offload to GPU (-ngl). Can be an integer or 'auto'.";
                         };
+                        flashAttn = lib.mkOption {
+                          type = lib.types.bool;
+                          default = true;
+                          description = "Whether to enable Flash Attention.";
+                        };
+                        cacheTypeK = lib.mkOption {
+                          type = lib.types.nullOr (
+                            lib.types.enum [
+                              "f32"
+                              "f16"
+                              "bf16"
+                              "q8_0"
+                              "q4_0"
+                              "q4_1"
+                              "iq4_nl"
+                              "q5_0"
+                              "q5_1"
+                            ]
+                          );
+                          default = "q8_0";
+                          description = "KV cache data type for K. Set null to use llama.cpp defaults.";
+                        };
+                        cacheTypeV = lib.mkOption {
+                          type = lib.types.nullOr (
+                            lib.types.enum [
+                              "f32"
+                              "f16"
+                              "bf16"
+                              "q8_0"
+                              "q4_0"
+                              "q4_1"
+                              "iq4_nl"
+                              "q5_0"
+                              "q5_1"
+                            ]
+                          );
+                          default = "q8_0";
+                          description = "KV cache data type for V. Set null to use llama.cpp defaults.";
+                        };
                       };
                     in
                     {
@@ -72,6 +121,32 @@
                             }
                           );
                           default = null;
+                        };
+                        specType = lib.mkOption {
+                          type = lib.types.enum [
+                            "none"
+                            "draft-simple"
+                            "draft-eagle3"
+                            "draft-mtp"
+                            "draft-dflash"
+                            "ngram-simple"
+                            "ngram-map-k"
+                            "ngram-map-k4v"
+                            "ngram-mod"
+                            "ngram-cache"
+                          ];
+                          default = "none";
+                          description = "Speculative decoding type.";
+                        };
+                        specDraftNMax = lib.mkOption {
+                          type = lib.types.nullOr lib.types.int;
+                          default = null;
+                          description = "Max number of draft tokens for speculative decoding (MTP).";
+                        };
+                        extraArgs = lib.mkOption {
+                          type = lib.types.listOf lib.types.str;
+                          default = [ ];
+                          description = "Extra arguments to pass to llama-server.";
                         };
                       };
                     }
@@ -110,6 +185,10 @@
 
     in
     {
+      home.packages = [
+        llamaBackend
+      ];
+
       systemd.user.services.llama-swap = {
         Unit = {
           Description = "llama-swap proxy server";
@@ -135,6 +214,16 @@
                         "-md ${modelDir}/${m.draft.file} -ngld ${builtins.toString m.draft.gpuLayers} --draft 16"
                       else
                         "";
+                    specTypeArg = if m.specType != "none" then "--spec-type ${m.specType}" else "";
+                    specDraftNMaxArg =
+                      if m.specDraftNMax != null then "--spec-draft-n-max ${builtins.toString m.specDraftNMax}" else "";
+                    flashAttnArg = if m.flashAttn then "-fa on" else "-fa off";
+                    cacheKArg = if m.cacheTypeK != null then "-ctk ${m.cacheTypeK}" else "";
+                    cacheVArg = if m.cacheTypeV != null then "-ctv ${m.cacheTypeV}" else "";
+                    mlockArg = if cfg.mlock then "--mlock" else "";
+                    cacheReuseArg =
+                      if cfg.cacheReuse != null then "--cache-reuse ${builtins.toString cfg.cacheReuse}" else "";
+                    extraArgsStr = lib.concatStringsSep " " m.extraArgs;
                   in
                   {
                     name = modelName;
@@ -146,7 +235,15 @@
                           -m ${modelDir}/${m.file} \
                           -ngl ${builtins.toString m.gpuLayers} \
                           -c ${builtins.toString m.contextLength} \
+                          ${flashAttnArg} \
+                          ${cacheKArg} \
+                          ${cacheVArg} \
+                          ${mlockArg} \
+                          ${cacheReuseArg} \
+                          ${specTypeArg} \
+                          ${specDraftNMaxArg} \
                           ${speculativeArgs} \
+                          ${extraArgsStr} \
                           --host ${cfg.host}
                       '';
                     };
@@ -163,14 +260,15 @@
       };
 
       home.persistence."/persist".directories = [
-        ".local/share/llama/models"
+        (lib.removePrefix "${config.home.homeDirectory}/" modelDir)
       ];
 
       systemd.user.services.llama-model-sync = {
         Unit.Before = [ "llama-swap.service" ];
         Service = {
-          Type = "oneshot";
-          TimeoutStartSec = 0;
+          Type = "simple";
+          Restart = "on-failure";
+          RestartSec = "10s";
           ExecStart = pkgs.writeShellScript "llama-sync-files" ''
             set -e
             mkdir -p "${modelDir}"

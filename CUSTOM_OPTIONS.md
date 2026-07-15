@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-15 08:08:56
+Generated on 2026-07-15 14:25:50
 
 - **custom**
   - **desktop**
@@ -161,9 +161,11 @@ Generated on 2026-07-15 08:08:56
       - **gns3**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable gns3.
       - **llama**
+        - `cacheReuse` (Default: `256`): Minimum chunk size to attempt reusing from the cache via KV shifting. Null to use default.
         - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration.
         - `enable` (Default: `false`) (Example: `true`): Whether to enable llama.
         - `host` (Default: `"127.0.0.1"`): No description
+        - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): No description
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
         - `package` (Default: `"/nix/store/jlfyly9wgj2iyz5rhbw8bs3iqm8v6wvi-llama-cpp-9925"`): No description

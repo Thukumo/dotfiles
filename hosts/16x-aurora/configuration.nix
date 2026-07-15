@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, ... }:
 
 {
   custom.hardware.secure-boot.enable = true;
@@ -51,17 +51,12 @@
       llama = {
         enable = true;
         cudaSupport = true;
-        package = pkgs.llama-cpp.overrideAttrs (_oldAttrs: {
-          src = pkgs.fetchzip {
-            url = "https://github.com/PrismML-Eng/llama.cpp/archive/62061f91088281e65071cc38c5f69ee95c39f14e.tar.gz";
-            sha256 = "1cksxhkv186345kdyvihmb0nplisppccawv9dziknd5y0vd28zh8";
-          };
-          npmDepsHash = "sha256-pjdbI6NcZRlJVd62xhgbLhWrwFYwgsIwjORqvo1+VD8=";
-        });
         models = [
           {
-            repoId = "prism-ml/Ternary-Bonsai-27B-gguf";
-            file = "Ternary-Bonsai-27B-PQ2_0.gguf";
+            repoId = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
+            file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
+            specType = "draft-mtp";
+            specDraftNMax = 3;
           }
         ];
       };
