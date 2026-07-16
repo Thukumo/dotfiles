@@ -123,20 +123,34 @@
                           default = null;
                         };
                         specType = lib.mkOption {
-                          type = lib.types.enum [
-                            "none"
-                            "draft-simple"
-                            "draft-eagle3"
-                            "draft-mtp"
-                            "draft-dflash"
-                            "ngram-simple"
-                            "ngram-map-k"
-                            "ngram-map-k4v"
-                            "ngram-mod"
-                            "ngram-cache"
-                          ];
-                          default = "none";
-                          description = "Speculative decoding type.";
+                          type = lib.types.listOf (
+                            lib.types.enum [
+                              "none"
+                              "draft-simple"
+                              "draft-eagle3"
+                              "draft-mtp"
+                              "draft-dflash"
+                              "ngram-simple"
+                              "ngram-map-k"
+                              "ngram-map-k4v"
+                              "ngram-mod"
+                              "ngram-cache"
+                            ]
+                          );
+                          default = [ "none" ];
+                          description = ''
+                            Speculative decoding type (can specify multiple as a list for hybrid decoding):
+                            - none: Normal inference (default).
+                            - draft-simple: Traditional draft model speculative decoding (requires -md).
+                            - draft-eagle3: Eagle-3 speculative decoding with dedicated tree draft (requires -md).
+                            - draft-mtp: Multi-Token Prediction (MTP) using target model's internal heads (no external -md needed).
+                            - draft-dflash: DeepSeek-Flash speculative decoding.
+                            - ngram-simple: n-gram based model-less speculative decoding.
+                            - ngram-map-k: n-gram map (K) based speculative decoding.
+                            - ngram-map-k4v: n-gram map (K4V) based speculative decoding.
+                            - ngram-mod: Modified n-gram lookup speculative decoding.
+                            - ngram-cache: n-gram cache based speculative decoding.
+                          '';
                         };
                         specDraftNMax = lib.mkOption {
                           type = lib.types.nullOr lib.types.int;
@@ -211,12 +225,21 @@
                     # 投機サンプリング引数の組み立て
                     speculativeArgs =
                       if m.draft != null then
-                        "-md ${modelDir}/${m.draft.file} -ngld ${builtins.toString m.draft.gpuLayers} --draft 16"
+                        "-md ${modelDir}/${m.draft.file} -ngld ${builtins.toString m.draft.gpuLayers}"
                       else
                         "";
-                    specTypeArg = if m.specType != "none" then "--spec-type ${m.specType}" else "";
+                    specTypeArg =
+                      if m.specType != [ "none" ] && m.specType != [ ] then
+                        "--spec-type ${lib.concatStringsSep "," m.specType}"
+                      else
+                        "";
                     specDraftNMaxArg =
-                      if m.specDraftNMax != null then "--spec-draft-n-max ${builtins.toString m.specDraftNMax}" else "";
+                      if m.specDraftNMax != null then
+                        "--spec-draft-n-max ${builtins.toString m.specDraftNMax}"
+                      else if m.draft != null then
+                        "--spec-draft-n-max 16"
+                      else
+                        "";
                     flashAttnArg = if m.flashAttn then "-fa on" else "-fa off";
                     cacheKArg = if m.cacheTypeK != null then "-ctk ${m.cacheTypeK}" else "";
                     cacheVArg = if m.cacheTypeV != null then "-ctv ${m.cacheTypeV}" else "";
