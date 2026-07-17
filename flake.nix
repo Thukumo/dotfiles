@@ -6,6 +6,8 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nixpkgs-copilot-pr.url = "github:NixOS/nixpkgs/pull/534884/head";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -60,6 +62,7 @@
       disko,
       lanzaboote,
       stylix,
+      nixpkgs-copilot-pr,
       ...
     }@inputs:
     let
@@ -73,8 +76,19 @@
         ./const
         {
           networking.hostName = name;
-          # nixpkgs.overlays = [
-          # ];
+          nixpkgs.overlays = [
+            (_final: prev: {
+              inherit
+                (
+                  (import nixpkgs-copilot-pr {
+                    inherit (prev.stdenv.hostPlatform) system;
+                    config.allowUnfree = true;
+                  })
+                )
+                github-copilot-cli
+                ;
+            })
+          ];
         }
 
         home-manager.nixosModules.home-manager
