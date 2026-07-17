@@ -56,7 +56,7 @@
             repoId = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
             file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
             specType = [ "draft-mtp" ];
-            specDraftNMax = 3;
+            extraArgs = [ "--cpu-moe" ];
           }
           {
             repoId = "google/gemma-4-26B-A4B-it-qat-q4_0-gguf";
@@ -66,11 +66,19 @@
             repoId = "ggml-org/gemma-4-12B-it-GGUF";
             file = "gemma-4-12B-it-Q4_K_M.gguf";
             specType = [ "draft-mtp" ];
-            specDraftNMax = 3;
             contextLength = 64000;
             draft = {
               inherit repoId;
               file = "mtp-gemma-4-12B-it-Q4_0.gguf";
+            };
+          }
+          rec {
+            repoId = "ggml-org/gemma-4-E4B-it-GGUF";
+            file = "gemma-4-E4B-it-Q4_0.gguf";
+            specType = [ "draft-mtp" ];
+            draft = {
+              inherit repoId;
+              file = "mtp-gemma-4-E4B-it-Q4_0.gguf";
             };
           }
         ];

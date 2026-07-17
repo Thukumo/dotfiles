@@ -152,7 +152,7 @@
                             - ngram-cache: n-gram cache based speculative decoding.
                           '';
                         };
-                        specDraftNMax = lib.mkOption {
+                        specDefault = lib.mkOption {
                           type = lib.types.nullOr lib.types.int;
                           default = null;
                           description = "Max number of draft tokens for speculative decoding (MTP).";
@@ -229,15 +229,15 @@
                       else
                         "";
                     specTypeArg =
-                      if m.specType != [ "none" ] && m.specType != [ ] then
-                        "--spec-type ${lib.concatStringsSep "," m.specType}"
-                      else
-                        "";
-                    specDraftNMaxArg =
-                      if m.specDraftNMax != null then
-                        "--spec-draft-n-max ${builtins.toString m.specDraftNMax}"
-                      else if m.draft != null then
-                        "--spec-draft-n-max 16"
+                      let
+                        finalSpecType = if m.specType == [ ] then [ "none" ] else m.specType;
+                      in
+                      if finalSpecType != [ "none" ] then "--spec-type ${lib.concatStringsSep "," finalSpecType}" else "";
+                    specDefaultArg =
+                      if m.specDefault != null then
+                        "--spec-draft-n-max ${builtins.toString m.specDefault}"
+                      else if m.specType != [ ] then
+                        "--spec-default"
                       else
                         "";
                     flashAttnArg = if m.flashAttn then "-fa on" else "-fa off";
@@ -264,7 +264,7 @@
                           ${mlockArg} \
                           ${cacheReuseArg} \
                           ${specTypeArg} \
-                          ${specDraftNMaxArg} \
+                          ${specDefaultArg} \
                           ${speculativeArgs} \
                           ${extraArgsStr} \
                           --host ${cfg.host}
