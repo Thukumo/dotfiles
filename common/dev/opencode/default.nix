@@ -3,6 +3,9 @@
   myLib,
   ...
 }:
+let
+  authSecretFile = ./auth_tsukumo.age;
+in
 {
   options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
@@ -23,6 +26,13 @@
       _user:
       { myConfig, ... }:
       {
+        age.secrets = lib.mkIf (builtins.pathExists authSecretFile) {
+          "opencode_auth" = {
+            file = authSecretFile;
+            path = ".local/share/opencode/auth.json";
+          };
+        };
+
         programs.opencode = {
           enable = true;
           settings = {
