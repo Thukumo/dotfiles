@@ -63,6 +63,7 @@
         prismLauncher.enable = true;
         localsend.enable = true;
         blender.enable = true;
+        sidra.enable = true;
       };
     };
     dev = {

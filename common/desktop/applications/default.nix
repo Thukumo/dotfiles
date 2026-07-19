@@ -33,6 +33,8 @@
           stirling-pdf.enable = lib.mkEnableOption "stirling-pdf";
           zoom.enable = lib.mkEnableOption "Zoom";
 
+          sidra.enable = lib.mkEnableOption "Sidra (Apple Music desktop client)";
+
           # From misc.nix
           libreoffice.enable = lib.mkEnableOption "LibreOffice";
           gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";

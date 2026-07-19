@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-15 14:25:50
+Generated on 2026-07-19 19:03:50
 
 - **custom**
   - **desktop**
@@ -120,6 +120,8 @@ Generated on 2026-07-15 14:25:50
           - `enable` (Default: `false`) (Example: `true`): Whether to enable qutebrowser.
         - **rquickshare**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable rQuickShare.
+        - **sidra**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable Sidra (Apple Music desktop client).
         - **slack**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Slack.
         - **steam**

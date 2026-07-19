@@ -40,6 +40,7 @@
         localsend.enable = true;
         blender.enable = true;
         slack.enable = true;
+        sidra.enable = true;
         mpv = {
           enable = true;
           gpu-api = "vulkan";

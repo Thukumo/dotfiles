@@ -1288,6 +1288,7 @@
         "nixvim": "nixvim",
         "nur": "nur",
         "ragenix": "ragenix",
+        "sidra": "sidra",
         "stylix": "stylix",
         "winapps": "winapps"
       }
@@ -1348,6 +1349,26 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sidra": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784302039,
+        "narHash": "sha256-uRjqY4XymGneNy2Yyr58QWwjzn7QjgAWBHh4kLU6684=",
+        "owner": "wimpysworld",
+        "repo": "sidra",
+        "rev": "ead49318a80150a1e8e565ec236b6770b5c702d5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wimpysworld",
+        "repo": "sidra",
         "type": "github"
       }
     },
