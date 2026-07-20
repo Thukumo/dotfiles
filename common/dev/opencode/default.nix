@@ -37,6 +37,17 @@ in
           enable = true;
           settings = {
             "$schema" = "https://opencode.ai/config.json";
+
+            # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
+            "snapshot" = true;
+
+            # コンテキスト圧縮時の保持ターン数を増やして会話の文脈を維持
+            "compaction" = {
+              "auto" = true;
+              "tail_turns" = 10;
+              "prune" = true;
+            };
+
             "provider" = {
               "llama" = {
                 "npm" = "@ai-sdk/openai-compatible";
@@ -57,7 +68,8 @@ in
           };
         };
         home.persistence."/persist".directories = [
-          # ".local/share/opencode"
+          ".local/share/opencode"
+          ".local/state/opencode"
         ];
       }
     );
