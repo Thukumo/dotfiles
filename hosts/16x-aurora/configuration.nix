@@ -82,6 +82,10 @@
               file = "mtp-gemma-4-E4B-it-Q4_0.gguf";
             };
           }
+          {
+            repoId = "InternScience/Agents-A1-4B-Q4_K_M-GGUF";
+            file = "Agents-A1-4B-Q4_K_M.gguf";
+          }
         ];
       };
       opencode = {
@@ -92,8 +96,10 @@
       unityhub.enable = true;
     };
   };
-  # 壊れていそう
-  # services.open-webui.enable = true;
+  services.open-webui = {
+    enable = true;
+    port = 3000;
+  };
   custom.network.cloudflare-warp.enable = true;
 
   custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
@@ -124,6 +130,11 @@
       nvidiaBusId = "PCI:1:0:0";
     };
   };
+
+  # spd5118 (DDR5 SPD hub temp sensor) causes random system freezes
+  # on Arrow Lake-HX (Alienware 16X) due to I2C/SMBus communication
+  # failures (spd5118_resume: error -6). Blacklist to prevent lockups.
+  boot.blacklistedKernelModules = [ "spd5118" ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
