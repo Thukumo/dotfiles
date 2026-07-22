@@ -2,9 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, ... }:
+{ pkgs, config, ... }:
 
 {
+  environment.systemPackages = with pkgs; [
+    zip
+  ];
   custom.hardware.secure-boot.enable = true;
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
@@ -64,14 +67,19 @@
             file = "gemma-4-26B_q4_0-it.gguf";
           }
           rec {
-            repoId = "ggml-org/gemma-4-12B-it-GGUF";
-            file = "gemma-4-12B-it-Q4_K_M.gguf";
+            repoId = "unsloth/gemma-4-12b-it-GGUF";
+            file = "gemma-4-12b-it-Q4_K_M.gguf";
+
             specType = [ "draft-mtp" ];
             contextLength = 64000;
             draft = {
               inherit repoId;
-              file = "mtp-gemma-4-12B-it-Q4_0.gguf";
+              file = "mtp-gemma-4-12b-it.gguf";
             };
+          }
+          {
+            repoId = "prism-ml/Bonsai-27B-gguf";
+            file = "Bonsai-27B-Q1_0.gguf";
           }
           rec {
             repoId = "ggml-org/gemma-4-E4B-it-GGUF";
@@ -101,6 +109,10 @@
     port = 3000;
   };
   custom.network.cloudflare-warp.enable = true;
+
+  networking.dhcpcd.extraConfig = ''
+    metric 700
+  '';
 
   custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
 
