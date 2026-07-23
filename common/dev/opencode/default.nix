@@ -5,6 +5,10 @@
 }:
 let
   authSecretFile = ./auth_tsukumo.age;
+  agentsContent = ''
+    This system runs NixOS. If a required development tool or package is not installed, use `nix shell nixpkgs#<package>` to provision and execute it.
+  '';
+  agentsFile = builtins.toFile "opencode-agents.md" agentsContent;
 in
 {
   options.custom.users = lib.mkOption {
@@ -37,6 +41,8 @@ in
           enable = true;
           settings = {
             "$schema" = "https://opencode.ai/config.json";
+
+            "instructions" = [ "${agentsFile}" ];
 
             # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
             "snapshot" = true;
