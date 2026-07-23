@@ -77,25 +77,31 @@ in
                   if cfg.language == "auto" then throw "moonshine requires an explicit language" else cfg.language;
               in
               pkgs.writeShellScriptBin "voice-typing" ''
-                export LC_ALL=C.UTF-8
-                STATE_DIR="''${XDG_STATE_HOME:-$HOME/.local}/moonshine-typing"
-                PID_FILE="$STATE_DIR/rec.pid"; PIPE="$STATE_DIR/stream.pipe"
-                mkdir -p "$STATE_DIR"
+                  export LC_ALL=C.UTF-8
+                  STATE_DIR="''${XDG_STATE_HOME:-$HOME/.local}/moonshine-typing"
+                  PID_FILE="$STATE_DIR/rec.pid"; PIPE="$STATE_DIR/stream.pipe"
+                  mkdir -p "$STATE_DIR"
                 if [ -f "$PID_FILE" ]; then
-                  IFS=' ' read -r MPID RPID < "$PID_FILE"
-                  kill "$MPID" "$RPID" 2>/dev/null || true
-                  rm -f "$PID_FILE" "$PIPE"
+                  read -r GPID RPID < "$PID_FILE"
+                  kill -- -"$GPID" 2>/dev/null || kill "$RPID" 2>/dev/null || true
+                  wait "$RPID" 2>/dev/null || true
+                  rm -f "$PID_FILE" "$PIPE" "$STATE_DIR/log"
                   ${pkgs.libnotify}/bin/notify-send "音声入力" "終了"
                 else
                   ${pkgs.libnotify}/bin/notify-send "音声入力" "認識中..."
                   mkfifo "$PIPE"; export PYTHONUNBUFFERED=1
-                  ${moonshinePkg}/bin/moonshine-voice mic --language ${lib.escapeShellArg msLang} \
-                    2>"$STATE_DIR/log" > "$PIPE" &
-                  MPID=$!
+                  set -m
+                  ( ${moonshinePkg}/bin/moonshine-voice mic --language ${lib.escapeShellArg msLang} \
+                    2>"$STATE_DIR/log" > "$PIPE" ) &
+                  for _ in 1 2 3; do
+                    GPID=$(ps -o pgid= -p $! 2>/dev/null | tr -d ' ')
+                    [ -n "$GPID" ] && break
+                    sleep 0.01
+                  done
                   ( ${pkgs.gnused}/bin/sed -u '/^Listening/d;/^$/d' < "$PIPE" \
                     | while IFS= read -r line; do [ -n "$line" ] && ${pkgs.wtype}/bin/wtype -- "$line"; done ) &
                   RPID=$!
-                  echo "$MPID $RPID" > "$PID_FILE"
+                  echo "$GPID $RPID" > "$PID_FILE"
                 fi
               ''
             else
