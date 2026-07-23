@@ -2,12 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, config, ... }:
+{ config, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    zip
-  ];
   custom.hardware.secure-boot.enable = true;
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
@@ -50,6 +47,12 @@
         };
       };
       vr.enable = true;
+      voice-input = {
+        enable = true;
+        backend = "whisper-cpp";
+        cudaSupport = true;
+        language = "ja";
+      };
     };
     dev = {
       llama = {
@@ -104,6 +107,7 @@
       unityhub.enable = true;
     };
   };
+
   services.open-webui = {
     enable = true;
     port = 3000;

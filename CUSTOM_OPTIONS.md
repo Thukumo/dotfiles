@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-22 15:18:16
+Generated on 2026-07-24 00:33:07
 
 - **custom**
   - **desktop**
@@ -139,6 +139,13 @@ Generated on 2026-07-22 15:18:16
       - `ime` (Default: `null`): Input method engine to use
       - `launcher` (Default: `null`): Application launcher to use
       - `terminal` (Default: `null`): Terminal emulator to use
+      - **voice-input**
+        - `backend` (Default: `"moonshine"`): No description
+        - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration (whisper-cpp only).
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable voice input (speech-to-text).
+        - `language` (Default: `"auto"`): No description
+        - `model` (Default: `"large-v3-turbo"`): No description
+        - `server` (Default: `false`) (Example: `true`): Whether to enable persistent whisper-server (keeps model in VRAM).
       - **vr**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
         - **immersed**

@@ -65,6 +65,10 @@
         blender.enable = true;
         sidra.enable = true;
       };
+      voice-input = {
+        enable = true;
+        language = "ja";
+      };
     };
     dev = {
       antigravity.enable = true;
