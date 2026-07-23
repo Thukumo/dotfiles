@@ -9,9 +9,9 @@
       _:
       { pkgs, ... }:
       {
-        home.packages = [ inputs.sidra.packages.${pkgs.system}.default ];
+        home.packages = [ inputs.sidra.packages.${pkgs.stdenv.hostPlatform.system}.default ];
         home.persistence."/persist".directories = [
-          ".config/sidra"
+          ".config/Sidra"
         ];
       }
     );
