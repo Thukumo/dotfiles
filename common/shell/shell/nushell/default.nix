@@ -25,7 +25,7 @@ in
       history = {
         file_format = "sqlite";
         max_size = 1000000;
-        sync_on_enter = true;
+        sync_on_enter = false;
 
       };
       show_banner = false;
