@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-24 22:49:47
+Generated on 2026-07-25 02:53:29
 
 - **custom**
   - **desktop**
@@ -84,7 +84,7 @@ Generated on 2026-07-24 22:49:47
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): No description
-      - `packages` (Default: `["/nix/store/018w7l41azjl4schd96njx3i7a91skf5-hellonavi"]`): No description
+      - `packages` (Default: `["/nix/store/7r87vpnmcxwx70vdmsfjmk11ir82rkrq-hellonavi"]`): No description
       - `theme` (Default: `"hellonavi"`): No description
   - **users** (User Options)
     - **account**
@@ -179,7 +179,7 @@ Generated on 2026-07-24 22:49:47
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): No description
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/bq0dyay2q2anl5bkxa3jylzlxfkvlx9f-llama-cpp-10063"`): No description
+        - `package` (Default: `"/nix/store/izdas1nvrfjw9v2qrc7xpw1dqlkib7px-llama-cpp-10063"`): No description
         - `port` (Default: `11434`): No description
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
