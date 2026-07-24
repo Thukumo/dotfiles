@@ -27,9 +27,15 @@ _:
       environment = {
         "DOWNLOADER" = "tsukumo";
         "SELECTED_PROJECT" = "auto";
-        "CONCURRENT_ITEMS" = 3;
+        "CONCURRENT_ITEMS" = 2;
       };
+      extraPodmanArgs = [
+        "--tmpfs"
+        "/home/warrior/data/projects"
+      ];
       extraConfig.Service = {
+        # 実はsystemd側でAlwaysにされるから書く意味ない(明示したいだけ)
+        Restart = "always";
         TimeoutStopSec = 300;
         KillSignal = "SIGINT";
       };
