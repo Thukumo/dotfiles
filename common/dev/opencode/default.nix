@@ -4,7 +4,6 @@
   ...
 }:
 let
-  authSecretFile = ./auth_tsukumo.age;
   agentsContent = ''
     This system runs NixOS. If a required development tool or package is not installed, use `nix shell nixpkgs#<package>` to provision and execute it.
   '';
@@ -30,11 +29,9 @@ in
       _user:
       { myConfig, ... }:
       {
-        age.secrets = lib.mkIf (builtins.pathExists authSecretFile) {
-          "opencode_auth" = {
-            file = authSecretFile;
-            path = ".local/share/opencode/auth.json";
-          };
+        age.secrets."opencode_auth" = {
+          file = ./auth_tsukumo.age;
+          path = ".local/share/opencode/auth.json";
         };
 
         programs.opencode = {
