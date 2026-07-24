@@ -10,16 +10,28 @@ _:
     };
     hardware.keyboard.keybind.enable = false;
     users."tsukumo" = {
-      network.dlna = {
-        enable = true;
-        mediaDirs = [ "V,Documents/mov" ];
-      };
-      network.globalProtect.enable = true;
-      desktop = {
-        enable = false;
-      };
+      desktop.enable = false;
       dev = {
         podman.enable = true;
+        opencode.enable = true;
+      };
+    };
+  };
+
+  # https://stepney141.hatenablog.com/entry/2025/02/17/182148
+  home-manager.users."tsukumo" = {
+    services.podman.containers.archiveteam = {
+      image = "atdr.meo.ws/archiveteam/warrior-dockerfile";
+      ports = [ "127.0.0.1:8080:8001" ];
+      autoUpdate = "registry";
+      environment = {
+        "DOWNLOADER" = "tsukumo";
+        "SELECTED_PROJECT" = "auto";
+        "CONCURRENT_ITEMS" = 3;
+      };
+      extraConfig.Service = {
+        TimeoutStopSec = 300;
+        KillSignal = "SIGINT";
       };
     };
   };

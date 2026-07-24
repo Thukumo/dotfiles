@@ -29,6 +29,7 @@
             dockerCompat = true;
             dockerSocket.enable = true;
             defaultNetwork.settings.dns_enabled = true;
+            autoPrune.enable = true;
           };
         };
 
@@ -40,11 +41,16 @@
               { pkgs, ... }:
               {
                 home.packages = with pkgs; [
-                  podman-tui
                   podman-compose
                 ];
                 home.shellAliases = {
                   docker = "podman";
+                };
+                # なんかvirtualisation.podmanに依存しているっぽいので、virtualisation〜も要る
+                services.podman = {
+                  enable = true;
+                  enableTypeChecks = true;
+                  autoUpdate.onCalendar = "daily";
                 };
                 home.persistence."/persist".directories = [
                   ".local/share/containers"
