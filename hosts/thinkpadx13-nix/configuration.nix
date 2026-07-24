@@ -34,52 +34,54 @@
     programs.niri.settings.input.touchpad.enable = false;
   });
 
-  custom.network.mycelium.enable = false;
-  custom.network.cloudflare-warp.enable = false;
-  custom.users."tsukumo" = {
-    network.dlna = {
-      enable = true;
-      mediaDirs = [ "V,Documents/mov" ];
-    };
-    network.globalProtect.enable = true;
-    desktop = {
-      enable = true;
-      de = "niri";
-      launcher = "fuzzel";
-      terminal = "foot";
-      ime = "skk";
-      apps = {
-        chromium.enable = true;
-        discord.enable = true;
-        google-chrome.enable = true;
-        mattermost-desktop.enable = true;
-        libreoffice.enable = true;
-        zoom.enable = true;
-        gnome-disk-utility.enable = true;
-        rquickshare.enable = false;
-        thunar.enable = true;
-        steam.enable = true;
-        qutebrowser.enable = true;
-        prismLauncher.enable = true;
-        localsend.enable = true;
-        blender.enable = true;
-        sidra.enable = true;
-      };
-      voice-input = {
+  custom = {
+    network.mycelium.enable = true;
+    network.cloudflare-warp.enable = true;
+    users."tsukumo" = {
+      network.dlna = {
         enable = true;
-        language = "ja";
+        mediaDirs = [ "V,Documents/mov" ];
+      };
+      network.globalProtect.enable = true;
+      desktop = {
+        enable = true;
+        de = "niri";
+        launcher = "fuzzel";
+        terminal = "foot";
+        ime = "skk";
+        apps = {
+          chromium.enable = true;
+          discord.enable = true;
+          google-chrome.enable = true;
+          mattermost-desktop.enable = true;
+          libreoffice.enable = true;
+          zoom.enable = true;
+          gnome-disk-utility.enable = true;
+          rquickshare.enable = false;
+          thunar.enable = true;
+          steam.enable = true;
+          qutebrowser.enable = true;
+          prismLauncher.enable = true;
+          localsend.enable = true;
+          blender.enable = true;
+          sidra.enable = true;
+        };
+        voice-input = {
+          enable = true;
+          language = "ja";
+        };
+      };
+      dev = {
+        antigravity.enable = true;
+        gns3.enable = true;
+        unityhub.enable = true;
+        opencode.enable = true;
       };
     };
-    dev = {
-      antigravity.enable = true;
-      gns3.enable = true;
-      unityhub.enable = true;
-      opencode.enable = true;
-    };
-  };
-  custom.desktop.sunshine.enable = false;
+    desktop.sunshine.enable = false;
 
-  custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
+    hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
+  };
 
   imports = [
     ./hardware.nix
