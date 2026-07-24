@@ -55,7 +55,7 @@
 
   boot.initrd = {
     availableKernelModules = [ "r8169" ];
-    secrets."/etc/ssh/ssh_host_ed25519_key" = lib.mkForce config.age.secrets.initrd_ssh_host_key.path;
+    secrets."/etc/ssh/ssh_host_ed25519_key" = lib.mkForce "/persist/etc/ssh/ssh_host_ed25519_key";
     network = {
       enable = true;
       ssh = {
@@ -67,7 +67,6 @@
       };
     };
   };
-  age.secrets.initrd_ssh_host_key.file = ./initrd-ssh.age;
 
   system.stateVersion = "26.05";
 }

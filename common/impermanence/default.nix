@@ -47,7 +47,11 @@
     boot.initrd.systemd.services.rollback = lib.mkIf config.custom.hardware.disk.disko.enable {
       description = "Rollback Btrfs root subvolume";
       wantedBy = [ "initrd.target" ];
-      after = [ "dev-vg-root.device" ];
+      after = [
+        "dev-vg-root.device"
+        "systemd-cryptsetup@cryptedpart.service"
+      ];
+      wants = [ "systemd-cryptsetup@cryptedpart.service" ];
       before = [ "sysroot.mount" ];
       conflicts = [ "initrd-switch-root.target" ];
       unitConfig.DefaultDependencies = "no";
