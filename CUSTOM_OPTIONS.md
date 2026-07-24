@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-24 00:33:07
+Generated on 2026-07-24 22:49:47
 
 - **custom**
   - **desktop**
@@ -21,7 +21,9 @@ Generated on 2026-07-24 00:33:07
         - `ESPSize` (Default: `"2G"`): No description
         - `diskName` (Default: `No default`): No description
         - `enable` (Default: `true`): No description
-        - `luksDeviceName` (Default: `"cryptedpart"`): Name of the LUKS device
+        - **luks**
+          - `deviceName` (Default: `"cryptedpart"`): Name of the LUKS device
+          - `enable` (Default: `true`): Enable LUKS encryption
         - `swapSize` (Default: `No default`): No description
       - **fstrim**
         - `enable` (Default: `true`): No description

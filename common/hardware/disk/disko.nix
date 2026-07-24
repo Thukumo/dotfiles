@@ -17,10 +17,17 @@
       type = lib.types.str;
       default = "2G";
     };
-    luksDeviceName = lib.mkOption {
-      type = lib.types.str;
-      default = "cryptedpart";
-      description = "Name of the LUKS device";
+    luks = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable LUKS encryption";
+      };
+      deviceName = lib.mkOption {
+        type = lib.types.str;
+        default = "cryptedpart";
+        description = "Name of the LUKS device";
+      };
     };
   };
   config = lib.mkIf config.custom.hardware.disk.disko.enable {
@@ -44,15 +51,22 @@
               };
               luks = {
                 size = "100%";
-                content = {
-                  type = "luks";
-                  name = config.custom.hardware.disk.disko.luksDeviceName;
-                  settings.allowDiscards = true;
-                  content = {
-                    type = "lvm_pv";
-                    vg = "vg";
-                  };
-                };
+                content =
+                  let
+                    lvmPv = {
+                      type = "lvm_pv";
+                      vg = "vg";
+                    };
+                  in
+                  if config.custom.hardware.disk.disko.luks.enable then
+                    {
+                      type = "luks";
+                      name = config.custom.hardware.disk.disko.luks.deviceName;
+                      settings.allowDiscards = true;
+                      content = lvmPv;
+                    }
+                  else
+                    lvmPv;
               };
             };
           };

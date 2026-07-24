@@ -1,9 +1,6 @@
-{ config, lib, ... }:
+_:
 
 {
-  boot.kernelParams = [
-  ];
-
   custom = {
     style.plymouth.enable = false;
     network = {
@@ -43,6 +40,7 @@
       enable = true;
       diskName = "/dev/disk/by-id/ata-ADATA_SP550_2G1620018123";
       swapSize = "10G";
+      luks.enable = false;
     };
   };
 
@@ -51,21 +49,6 @@
   services.xserver.xkb = {
     layout = "jp106";
     variant = "";
-  };
-
-  boot.initrd = {
-    availableKernelModules = [ "r8169" ];
-    secrets."/etc/ssh/ssh_host_ed25519_key" = lib.mkForce "/persist/etc/ssh/ssh_host_ed25519_key";
-    network = {
-      enable = true;
-      ssh = {
-        enable = true;
-        authorizedKeyFiles = config.users.users.tsukumo.openssh.authorizedKeys.keyFiles;
-        hostKeys = [
-          "/etc/ssh/ssh_host_ed25519_key"
-        ];
-      };
-    };
   };
 
   system.stateVersion = "26.05";

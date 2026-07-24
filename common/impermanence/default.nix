@@ -4,6 +4,10 @@
   myLib,
   ...
 }:
+let
+  cfgLuks = config.custom.hardware.disk.disko.luks;
+  cryptsetupUnit = "systemd-cryptsetup@${cfgLuks.deviceName}.service";
+in
 
 {
   config = {
@@ -49,9 +53,9 @@
       wantedBy = [ "initrd.target" ];
       after = [
         "dev-vg-root.device"
-        "systemd-cryptsetup@cryptedpart.service"
-      ];
-      wants = [ "systemd-cryptsetup@cryptedpart.service" ];
+      ]
+      ++ lib.optionals cfgLuks.enable [ cryptsetupUnit ];
+      wants = lib.mkIf cfgLuks.enable [ cryptsetupUnit ];
       before = [ "sysroot.mount" ];
       conflicts = [ "initrd-switch-root.target" ];
       unitConfig.DefaultDependencies = "no";
