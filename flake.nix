@@ -52,6 +52,11 @@
       url = "github:wimpysworld/sidra";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -68,6 +73,7 @@
       lanzaboote,
       stylix,
       nixpkgs-copilot-pr,
+      microvm,
       ...
     }@inputs:
     let
@@ -114,6 +120,7 @@
         disko.nixosModules.disko
         lanzaboote.nixosModules.lanzaboote
         stylix.nixosModules.stylix
+        microvm.nixosModules.host
       ];
 
       mkHost =
