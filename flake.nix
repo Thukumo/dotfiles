@@ -35,7 +35,7 @@
 
     lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
 
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:nix-community/stylix/pull/2348/head";
 
     nur = {
       # url = "github:nix-community/NUR";
