@@ -22,7 +22,7 @@
       de = "niri";
       launcher = "fuzzel";
       terminal = "foot";
-      winapps.enable = true;
+      winapps.enable = false;
       ime = "skk";
       apps = {
         chromium.enable = true;
