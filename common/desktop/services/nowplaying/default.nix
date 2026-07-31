@@ -2,6 +2,7 @@
   lib,
   myLib,
   desktopLib,
+  inputs,
   ...
 }:
 
@@ -26,34 +27,17 @@
     { pkgs, ... }:
     let
       cfg = user.custom.desktop.nowplaying;
-      runtimePath = lib.makeBinPath (
-        with pkgs;
-        [
-          playerctl
-          jq
-          curl
-          coreutils
-        ]
-      );
+      client = inputs.nowplaying.packages.${pkgs.stdenv.hostPlatform.system}.client;
     in
     {
-      home.packages = with pkgs; [
-        playerctl
-        jq
-      ];
-
       age.secrets."nowplaying_token".file = ./nowplaying-token.age;
 
       systemd.user.services.nowplaying-bridge = {
         Unit.Description = "MPRIS to nowplaying server bridge";
         Service = {
-          ExecStart = "${pkgs.bash}/bin/bash ${./bridge.sh}";
-          Environment = [
-            "NOWPLAYING_SERVER=${cfg.server}"
-            # agenix default secret location, %t expands to $XDG_RUNTIME_DIR
-            "NOWPLAYING_TOKEN_FILE=%t/agenix/nowplaying_token"
-            "PATH=${runtimePath}"
-          ];
+          ExecStart = "${client}/bin/nowplaying-client";
+          EnvironmentFile = [ "%t/agenix/nowplaying_token" ];
+          Environment = [ "NOWPLAYING_SERVER=${cfg.server}" ];
           Restart = "on-failure";
           RestartSec = "5";
         };
