@@ -10,6 +10,7 @@ _:
     };
     hardware.keyboard.keybind.enable = false;
     users."tsukumo" = {
+      account.userConfig.linger = true;
       desktop.enable = false;
       dev = {
         podman.enable = true;
