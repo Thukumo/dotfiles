@@ -25,4 +25,5 @@ in
   "common/shell/git/gh_hosts_tsukumo.age".publicKeys = allKeys;
   "common/dev/opencode/auth_tsukumo.age".publicKeys = allKeys;
   "common/desktop/services/nowplaying/nowplaying-token.age".publicKeys = allKeys;
+  "hosts/mouse-3/cloudflared-nowplaying-credentials.age".publicKeys = systemKeys;
 }

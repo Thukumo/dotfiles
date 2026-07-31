@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-01 03:41:20
+Generated on 2026-08-01 05:09:51
 
 - **custom**
   - **desktop**
@@ -142,7 +142,7 @@ Generated on 2026-08-01 03:41:20
       - `launcher` (Default: `null`): Application launcher to use
       - **nowplaying**
         - `enable` (Default: `true`): No description
-        - `server` (Default: `"http://mouse-3:8181"`): Base URL of the nowplaying server. mouse-3 resolves via const/mycelium (networking.hosts).
+        - `server` (Default: `"https://api-nowplaying.tsukumo.f5.si"`): Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).
       - `terminal` (Default: `null`): Terminal emulator to use
       - **voice-input**
         - `backend` (Default: `"moonshine"`): No description

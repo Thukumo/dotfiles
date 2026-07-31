@@ -13,8 +13,8 @@
           enable = myLib.mkEnabledOption;
           server = lib.mkOption {
             type = lib.types.str;
-            default = "http://mouse-3:8181";
-            description = "Base URL of the nowplaying server. mouse-3 resolves via const/mycelium (networking.hosts).";
+            default = "https://api-nowplaying.tsukumo.f5.si";
+            description = "Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).";
           };
         };
       }

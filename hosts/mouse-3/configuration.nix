@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
 
 {
   custom = {
@@ -18,9 +18,6 @@
       };
     };
   };
-
-  # nowplaying
-  networking.firewall.interfaces.mycelium.allowedTCPPorts = [ 8181 ];
 
   # https://stepney141.hatenablog.com/entry/2025/02/17/182148
   home-manager.users."tsukumo" = {
@@ -51,7 +48,7 @@
       nowplaying = {
         image = "docker-archive:${inputs.nowplaying.packages.x86_64-linux.image}";
         network = "host";
-        environment.NOWPLAYING_BIND = "[::]:8181";
+        environment.NOWPLAYING_BIND = "127.0.0.1:8181";
         # agenix default secret location, %t expands to $XDG_RUNTIME_DIR
         environmentFile = [ "%t/agenix/nowplaying_token" ];
       };
@@ -63,6 +60,45 @@
   environment.persistence."/persist".directories = [
     "/etc/age"
   ];
+
+  age.secrets."cloudflared_nowplaying".file = ./cloudflared-nowplaying-credentials.age;
+  services.cloudflared = {
+    enable = true;
+    tunnels.mouse-3 = {
+      credentialsFile = config.age.secrets.cloudflared_nowplaying.path;
+      default = "http_status:404";
+      ingress."*.tsukumo.f5.si".service = "http://127.0.0.1:8182";
+    };
+  };
+
+  services.nginx = {
+    enable = true;
+    virtualHosts = {
+      "api-nowplaying.tsukumo.f5.si" = {
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 8182;
+          }
+        ];
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8181";
+        };
+      };
+      "_" = {
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 8182;
+          }
+        ];
+        default = true;
+        locations."/" = {
+          return = "404";
+        };
+      };
+    };
+  };
 
   custom.hardware.disk = {
     btrfs-autoScrub.enable = true;
