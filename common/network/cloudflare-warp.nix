@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 {
@@ -9,6 +10,7 @@
   };
 
   config = lib.mkIf config.custom.network.cloudflare-warp.enable {
+    nixpkgs.config.allowUnfreePackages = [ pkgs.cloudflare-warp.pname ];
     services.cloudflare-warp.enable = true;
   };
 }

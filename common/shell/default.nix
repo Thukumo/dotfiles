@@ -1,4 +1,9 @@
-{ lib, myLib, ... }:
+{
+  lib,
+  myLib,
+  pkgs,
+  ...
+}:
 
 {
   options.custom.users = lib.mkOption {
@@ -9,20 +14,27 @@
     );
   };
 
-  config.home-manager.users = lib.mkMerge [
-    (myLib.mkForEachUsers (_: true) (_: {
-      imports = map (name: ./. + "/${name}") (
-        builtins.attrNames (
-          lib.filterAttrs (
-            name: type:
-            (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
-            || (type == "directory" && name != "private")
-          ) (builtins.readDir ./.)
-        )
-      );
-    }))
-    (myLib.mkForEachUsers (user: user.custom.shell.private.enable or false) (_: {
-      imports = [ ./private ];
-    }))
-  ];
+  config = {
+    home-manager.users = lib.mkMerge [
+      (myLib.mkForEachUsers (_: true) (_: {
+        imports = map (name: ./. + "/${name}") (
+          builtins.attrNames (
+            lib.filterAttrs (
+              name: type:
+              (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
+              || (type == "directory" && name != "private")
+            ) (builtins.readDir ./.)
+          )
+        );
+      }))
+      (myLib.mkForEachUsers (user: user.custom.shell.private.enable or false) (_: {
+        imports = [ ./private ];
+      }))
+    ];
+
+    nixpkgs.config.allowUnfreePackages = [
+      pkgs.github-copilot-cli.pname
+      pkgs.antigravity-cli.pname
+    ];
+  };
 }

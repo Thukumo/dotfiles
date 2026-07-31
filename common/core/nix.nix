@@ -27,7 +27,6 @@
   ];
   nix.package = pkgs.lix;
 
-  nixpkgs.config.allowUnfree = true;
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
 

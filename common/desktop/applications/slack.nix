@@ -1,18 +1,27 @@
 {
+  lib,
+  config,
   desktopLib,
+  pkgs,
   ...
 }:
 {
-  config = {
-    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.slack.enable or false) (
-      _:
-      { pkgs, ... }:
+  config =
+    lib.mkIf
+      (builtins.any (user: user.desktop.apps.slack.enable or false) (
+        builtins.attrValues config.custom.users
+      ))
       {
-        home.packages = [ pkgs.slack ];
-        home.persistence."/persist".directories = [
-          ".config/Slack"
-        ];
-      }
-    );
-  };
+        nixpkgs.config.allowUnfreePackages = [ pkgs.slack.pname ];
+        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.slack.enable or false) (
+          _:
+          { pkgs, ... }:
+          {
+            home.packages = [ pkgs.slack ];
+            home.persistence."/persist".directories = [
+              ".config/Slack"
+            ];
+          }
+        );
+      };
 }

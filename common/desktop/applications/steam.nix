@@ -13,6 +13,10 @@
         builtins.attrValues config.custom.users
       ))
       {
+        nixpkgs.config.allowUnfreePackages = [
+          pkgs.steam.pname
+          pkgs.steam-unwrapped.pname
+        ];
         hardware.graphics.enable32Bit = true;
         programs.steam = {
           enable = true;

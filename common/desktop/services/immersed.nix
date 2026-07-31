@@ -12,6 +12,7 @@
       );
     in
     lib.mkIf isEnabled {
+      nixpkgs.config.allowUnfreePackages = [ pkgs.immersed.pname ];
       programs.immersed.enable = true;
       hardware.graphics = {
         enable = true;

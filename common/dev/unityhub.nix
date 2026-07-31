@@ -1,6 +1,8 @@
 {
   lib,
+  config,
   myLib,
+  pkgs,
   ...
 }:
 
@@ -13,21 +15,30 @@
     );
   };
 
-  config.home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.unityhub.enable or false) (
-    _:
-    { pkgs, ... }:
-    {
-      home.packages = with pkgs; [
-        unityhub
-      ];
-      home.persistence."/persist" = {
-        directories = [
-          "Unity"
-          ".config/unity3d"
-          ".config/unityhub"
-          ".local/share/unity3d"
+  config =
+    lib.mkIf
+      (builtins.any (user: user.dev.unityhub.enable or false) (builtins.attrValues config.custom.users))
+      {
+        nixpkgs.config.allowUnfreePackages = [
+          pkgs.unityhub.pname
+          pkgs.corefonts.pname
         ];
+        home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.unityhub.enable or false) (
+          _:
+          { pkgs, ... }:
+          {
+            home.packages = with pkgs; [
+              unityhub
+            ];
+            home.persistence."/persist" = {
+              directories = [
+                "Unity"
+                ".config/unity3d"
+                ".config/unityhub"
+                ".local/share/unity3d"
+              ];
+            };
+          }
+        );
       };
-    }
-  );
 }

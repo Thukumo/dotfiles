@@ -881,22 +881,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-copilot-pr": {
-      "locked": {
-        "lastModified": 1784741265,
-        "narHash": "sha256-wcQE3IeU6RGtL+BXHT91tQlItMjAzXodTQeXzbxBSQM=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "edfe37f3b4006444fbf40f375f75e3f6bdd53d66",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "pull/534884/head",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1782614948,
@@ -1306,7 +1290,6 @@
         "nixos-anywhere": "nixos-anywhere",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_11",
-        "nixpkgs-copilot-pr": "nixpkgs-copilot-pr",
         "nixvim": "nixvim",
         "nur": "nur",
         "ragenix": "ragenix",

@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-25 02:53:29
+Generated on 2026-07-31 23:38:49
 
 - **custom**
   - **desktop**
@@ -179,7 +179,7 @@ Generated on 2026-07-25 02:53:29
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): No description
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/izdas1nvrfjw9v2qrc7xpw1dqlkib7px-llama-cpp-10063"`): No description
+        - `package` (Default: `"/nix/store/pb06ad9g8navxkzs2c2w4knc17zalvsz-llama-cpp-10133"`): No description
         - `port` (Default: `11434`): No description
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
