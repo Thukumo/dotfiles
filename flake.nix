@@ -55,6 +55,8 @@
       url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nowplaying.url = "github:Thukumo/nowplaying";
   };
 
   outputs =

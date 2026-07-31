@@ -24,4 +24,5 @@ in
   "common/shell/ssh/ssh-key_tsukumo.age".publicKeys = allKeys;
   "common/shell/git/gh_hosts_tsukumo.age".publicKeys = allKeys;
   "common/dev/opencode/auth_tsukumo.age".publicKeys = allKeys;
+  "common/desktop/services/nowplaying/nowplaying-token.age".publicKeys = allKeys;
 }

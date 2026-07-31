@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-07-31 23:38:49
+Generated on 2026-08-01 03:41:20
 
 - **custom**
   - **desktop**
@@ -140,6 +140,9 @@ Generated on 2026-07-31 23:38:49
         - `enable` (Default: `true`): No description
       - `ime` (Default: `null`): Input method engine to use
       - `launcher` (Default: `null`): Application launcher to use
+      - **nowplaying**
+        - `enable` (Default: `true`): No description
+        - `server` (Default: `"http://mouse-3:8181"`): Base URL of the nowplaying server. mouse-3 resolves via const/mycelium (networking.hosts).
       - `terminal` (Default: `null`): Terminal emulator to use
       - **voice-input**
         - `backend` (Default: `"moonshine"`): No description
