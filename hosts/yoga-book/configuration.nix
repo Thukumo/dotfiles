@@ -27,11 +27,13 @@
         launcher = "fuzzel";
         terminal = "foot";
         ime = "skk";
+        browser = "chromium";
         apps = {
           chromium.enable = true;
           google-chrome.enable = true;
           mattermost-desktop.enable = true;
           libreoffice.enable = true;
+          librewolf.enable = true;
         };
       };
     };

@@ -24,12 +24,14 @@
       terminal = "foot";
       winapps.enable = false;
       ime = "skk";
+      browser = "chromium";
       apps = {
         chromium.enable = true;
         discord.enable = true;
         google-chrome.enable = true;
         mattermost-desktop.enable = true;
         libreoffice.enable = true;
+        librewolf.enable = true;
         zoom.enable = true;
         gnome-disk-utility.enable = false;
         osu.enable = true;

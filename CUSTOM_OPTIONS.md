@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-01 05:09:51
+Generated on 2026-08-01 22:20:27
 
 - **custom**
   - **desktop**
@@ -107,6 +107,8 @@ Generated on 2026-08-01 05:09:51
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Chrome.
         - **libreoffice**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreOffice.
+        - **librewolf**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreWolf.
         - **localsend**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LocalSend.
         - **mattermost-desktop**
@@ -134,6 +136,7 @@ Generated on 2026-08-01 05:09:51
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Thunar.
         - **zoom**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Zoom.
+      - `browser` (Default: `null`): Browser to set as the default MIME handler
       - `de` (Default: `null`): Desktop environment or window manager to use
       - `enable` (Default: `false`) (Example: `true`): Whether to enable desktop environment.
       - **hyprlock**
