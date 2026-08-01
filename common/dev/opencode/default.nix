@@ -6,6 +6,7 @@
 let
   agentsContent = ''
     This system runs NixOS. If a required development tool or package is not installed, use `nix shell nixpkgs#<package>` to provision and execute it.
+    If a necessary repository is not available locally, you may clone it into /tmp/opencode and use it from there.
   '';
   agentsFile = builtins.toFile "opencode-agents.md" agentsContent;
 in
