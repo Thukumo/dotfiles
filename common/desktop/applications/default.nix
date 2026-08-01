@@ -51,7 +51,14 @@
             libreoffice.enable = lib.mkEnableOption "LibreOffice";
 
             # From librewolf.nix
-            librewolf.enable = lib.mkEnableOption "LibreWolf";
+            librewolf = {
+              enable = lib.mkEnableOption "LibreWolf";
+              extensions = lib.mkOption {
+                type = lib.types.attrsOf lib.types.str;
+                default = { };
+                description = "LibreWolf extensions to auto-install from AMO (extension ID → slug)";
+              };
+            };
             gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
             thunar.enable = lib.mkEnableOption "Thunar";
           };

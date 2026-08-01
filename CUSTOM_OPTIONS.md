@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-01 22:20:27
+Generated on 2026-08-01 22:37:02
 
 - **custom**
   - **desktop**
@@ -109,6 +109,7 @@ Generated on 2026-08-01 22:20:27
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreOffice.
         - **librewolf**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreWolf.
+          - `extensions` (Default: `{}`): LibreWolf extensions to auto-install from AMO (extension ID → slug)
         - **localsend**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LocalSend.
         - **mattermost-desktop**
