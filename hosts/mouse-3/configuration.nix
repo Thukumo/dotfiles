@@ -52,6 +52,16 @@
         # agenix default secret location, %t expands to $XDG_RUNTIME_DIR
         environmentFile = [ "%t/agenix/nowplaying_token" ];
       };
+
+      dashboard = {
+        image = "docker-archive:${inputs.nowplaying.packages.x86_64-linux.image-dashboard}";
+        network = "host";
+        environment = {
+          HOST = "127.0.0.1";
+          PORT = "8183";
+          NOWPLAYING_API = "http://127.0.0.1:8181";
+        };
+      };
     };
   };
 
@@ -83,6 +93,17 @@
         ];
         locations."/" = {
           proxyPass = "http://127.0.0.1:8181";
+        };
+      };
+      "nowplaying.tsukumo.f5.si" = {
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 8182;
+          }
+        ];
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8183";
         };
       };
       "_" = {
