@@ -1174,11 +1174,11 @@
         "nixpkgs": "nixpkgs_13"
       },
       "locked": {
-        "lastModified": 1785544819,
-        "narHash": "sha256-xDx8uhrKlQ93p9BLCkmwyUUsjMAYGatq/S0tJ0Rsu4w=",
+        "lastModified": 1785581145,
+        "narHash": "sha256-43EwhYuEz8kj9tyIKyGsiqpX1OBKF7ymuBMlJ+c6PW8=",
         "owner": "Thukumo",
         "repo": "nowplaying",
-        "rev": "228d1c9a0149f5646c2d16202a2722fb565127b8",
+        "rev": "90e5db99af71ea65795cf2ea9e0f234f86d0bebf",
         "type": "github"
       },
       "original": {
