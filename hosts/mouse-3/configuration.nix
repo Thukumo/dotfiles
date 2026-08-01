@@ -124,7 +124,7 @@
   custom.hardware.disk = {
     btrfs-autoScrub.enable = true;
     beesd = {
-      enable = true;
+      enable = false;
       hashTableSizeMB = 256;
     };
     disko = {
