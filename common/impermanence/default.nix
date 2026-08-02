@@ -19,6 +19,7 @@ in
         "/var/lib/systemd/timers"
         "/var/lib/nixos"
         "/var/log"
+        "/var/lib/systemd/pstore"
       ];
       files = [ "/etc/machine-id" ];
     };
