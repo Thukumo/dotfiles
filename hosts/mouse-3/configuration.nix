@@ -9,6 +9,7 @@
       ssh-server.enable = true;
     };
     hardware.keyboard.keybind.enable = false;
+    security.clamav.realtime.enable = false;
     users."tsukumo" = {
       account.userConfig.linger = true;
       desktop.enable = false;
