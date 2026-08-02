@@ -22,9 +22,22 @@ in
   config = {
     services.clamav = lib.mkIf myCfg.enable {
       scanner.enable = true;
+      # /home is excluded: rclamonacc covers it in real-time, and scanning it
+      # here deadlocks on rclamonacc's fanotify (scan blocked until clamd
+      # responds, clamd busy serving the scan).
+      scanner.scanDirectories = [
+        "/var/lib"
+        "/tmp"
+        "/etc"
+        "/var/tmp"
+      ];
       updater.enable = true;
       daemon.enable = true;
     };
+
+    # clamdscan exits 2 when some files (e.g. sockets in /tmp) could not be
+    # scanned; treat that as success so the timer job is not marked failed.
+    systemd.services.clamdscan.serviceConfig.SuccessExitStatus = lib.mkIf myCfg.enable "2";
 
     services.rclamonacc = lib.mkIf myCfg.realtime.enable {
       enable = true;
