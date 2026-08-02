@@ -92,6 +92,7 @@
                 subvolumes = {
                   "root" = {
                     mountpoint = "/";
+                    mountOptions = [ "noatime" ];
                   };
                   "nix" = {
                     mountpoint = "/nix";
