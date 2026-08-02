@@ -1,6 +1,23 @@
-{ inputs, config, ... }:
+{
+  inputs,
+  config,
+  ...
+}:
 
 {
+  services.journald.storage = "volatile";
+  services.journald.extraConfig = ''
+    RuntimeMaxUse=64M
+    RuntimeKeepFree=64M
+    MaxRetentionSec=2days
+  '';
+
+  # "intel_pstate: Turbo disabled by BIOS"がdmesgに出続けるのを抑止
+  services.auto-cpufreq.settings = {
+    charger.turbo = "never";
+    battery.turbo = "never";
+  };
+
   custom = {
     style.plymouth.enable = false;
     network = {
@@ -20,11 +37,11 @@
     };
   };
 
-  # https://stepney141.hatenablog.com/entry/2025/02/17/182148
   home-manager.users."tsukumo" = {
     age.secrets."nowplaying_token".file = ../../common/desktop/services/nowplaying/nowplaying-token.age;
 
     services.podman.containers = {
+      # https://stepney141.hatenablog.com/entry/2025/02/17/182148
       archiveteam = {
         image = "atdr.meo.ws/archiveteam/warrior-dockerfile";
         ports = [ "127.0.0.1:8080:8001" ];
