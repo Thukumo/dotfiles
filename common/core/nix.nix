@@ -62,11 +62,13 @@
     ))
   ];
 
-  nix.gc = {
-    automatic = true;
-    dates = "00:00";
-    randomizedDelaySec = "45min";
-    options = "--delete-older-than 7d";
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      dates = "daily";
+      extraArgs = "--keep-since 14d";
+    };
   };
 
   nix.optimise = {
