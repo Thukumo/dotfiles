@@ -9,10 +9,9 @@
       _:
       { pkgs, ... }:
       {
-        systemd.user.services."fcitx5-daemon".Services = {
-          WatchDogSec = "10s";
-          Restart = "always";
-        };
+        # systemd.user.services."fcitx5-daemon".Service = {
+        #   Restart = "always";
+        # };
         i18n.inputMethod = {
           enable = true;
           type = "fcitx5";
