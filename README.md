@@ -32,3 +32,11 @@ mDNS(Avahi)が動作している環境でないと、installer.localの名前解
 `podman-compose --file .config/winapps/compose.yaml up -d`
 初回 or アプリの入れ消しの度に
 `winapps-setup --user --setupAllOfficiallySupportedApps`
+
+## 顔認証 (Gaze)
+
+```sh
+gaze add-face default   # 顔を登録
+gaze auth --verbose     # 動作確認
+```
+
