@@ -471,6 +471,26 @@
         "type": "github"
       }
     },
+    "gaze": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785695122,
+        "narHash": "sha256-FfEHqQ2y9/RhJDGWnVHBUGZ9Gh9M/K7bo0YNzTPljts=",
+        "owner": "GunduLabs",
+        "repo": "gaze",
+        "rev": "c3234eae367a6247a8fb1fa274f295b7e019f677",
+        "type": "github"
+      },
+      "original": {
+        "owner": "GunduLabs",
+        "repo": "gaze",
+        "type": "github"
+      }
+    },
     "git-hooks": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -1314,6 +1334,7 @@
       "inputs": {
         "affinity-nix": "affinity-nix",
         "disko": "disko",
+        "gaze": "gaze",
         "git-hooks": "git-hooks_2",
         "home-manager": "home-manager",
         "impermanence": "impermanence",

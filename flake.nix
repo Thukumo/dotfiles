@@ -19,6 +19,11 @@
 
     nixvim.url = "github:nix-community/nixvim";
 
+    gaze = {
+      url = "github:GunduLabs/gaze";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     niri.url = "github:sodiboo/niri-flake";
 
     ragenix.url = "github:yaxitech/ragenix";

@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-02 19:13:23
+Generated on 2026-08-03 21:48:51
 
 - **custom**
   - **desktop**
@@ -81,6 +81,10 @@ Generated on 2026-08-02 19:13:23
       - `enable` (Default: `true`): No description
       - **realtime**
         - `enable` (Default: `true`): No description
+    - **gaze**
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable Gaze facial authentication (face unlock).
+      - `gui` (Default: `true`) (Example: `true`): Whether to enable the Gaze GTK GUI for enrolling faces.
+      - `pamServices` (Default: `["sudo","polkit-1","login","hyprlock"]`): PAM services to enable Gaze face authentication for.
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): No description

@@ -6,6 +6,7 @@
 
 {
   custom.hardware.secure-boot.enable = true;
+  custom.security.gaze.enable = true;
   # for wivrn
   # networking.networkmanager.wifi.powersave = false;
   custom.users."tsukumo" = {
