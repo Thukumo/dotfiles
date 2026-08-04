@@ -9,7 +9,7 @@
 {
   config =
     lib.mkIf
-      (builtins.any (userConfig: userConfig.desktop.apps.steam.enable or false) (
+      (builtins.any (userConfig: userConfig.desktop.apps.steam.enable) (
         builtins.attrValues config.custom.users
       ))
       {
@@ -31,7 +31,7 @@
             };
           };
         };
-        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.steam.enable or false) (_: {
+        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.steam.enable) (_: {
           programs.mangohud = {
             enable = true;
             enableSessionWide = true;

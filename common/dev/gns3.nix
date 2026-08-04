@@ -19,7 +19,7 @@ in
     );
   };
 
-  config = lib.mkIf (builtins.any (user: user.dev.gns3.enable or false) (builtins.attrValues cfg)) {
+  config = lib.mkIf (builtins.any (user: user.dev.gns3.enable) (builtins.attrValues cfg)) {
     virtualisation.libvirtd.enable = true;
     programs.wireshark.enable = true;
 
@@ -36,7 +36,7 @@ in
     users.groups.ubridge = { };
 
     users.users = lib.mapAttrs (_: userConfig: {
-      extraGroups = lib.optionals (userConfig.dev.gns3.enable or false) [
+      extraGroups = lib.optionals userConfig.dev.gns3.enable [
         "gns3"
         "ubridge"
         "libvirtd"
@@ -45,7 +45,7 @@ in
       ];
     }) cfg;
 
-    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.gns3.enable or false) (_: {
+    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.gns3.enable) (_: {
       home.packages = with pkgs; [
         gns3-gui
         gns3-server

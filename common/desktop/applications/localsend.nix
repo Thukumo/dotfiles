@@ -4,7 +4,7 @@
   ...
 }:
 let
-  anyUserEnabled = lib.any (user: user.desktop.apps.localsend.enable or false) (
+  anyUserEnabled = lib.any (user: user.desktop.apps.localsend.enable) (
     builtins.attrValues config.custom.users
   );
 in

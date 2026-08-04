@@ -66,7 +66,7 @@ in
 
     encryptTemplates = lib.mkOption {
       type = lib.types.bool;
-      default = config.security.tpm2.enable;
+      default = false;
       description = ''
         Encrypt enrolled face templates at rest with a TPM 2.0-sealed key.
         Defaults to `security.tpm2.enable`. Fail-closed: if no usable
@@ -119,40 +119,45 @@ in
     };
   };
 
-  config = lib.mkIf myCfg.enable {
-    services.gaze = {
-      enable = true;
-      gui.enable = myCfg.gui;
-      mutableConfig = false;
-      pam.defaultServices = myCfg.pamServices;
+  config = lib.mkMerge [
+    {
+      custom.security.gaze.encryptTemplates = lib.mkDefault config.security.tpm2.enable;
+    }
+    (lib.mkIf myCfg.enable {
+      services.gaze = {
+        enable = true;
+        gui.enable = myCfg.gui;
+        mutableConfig = false;
+        pam.defaultServices = myCfg.pamServices;
 
-      settings = {
-        security =
-          if myCfg.securityLevel == "custom" then
-            {
-              level = "custom";
-              detector = myCfg.customSecurity.detector;
-              recognizer = myCfg.customSecurity.recognizer;
-              threshold = myCfg.customSecurity.threshold;
-              hybrid_policy = myCfg.customSecurity.hybridPolicy;
-            }
-          else
-            {
-              level = myCfg.securityLevel;
-            };
-        storage.encrypt_templates = myCfg.encryptTemplates;
-        cameras = {
-          inherit (myCfg) rgb;
-        }
-        // lib.optionalAttrs (myCfg.ir != null) {
-          inherit (myCfg) ir;
+        settings = {
+          security =
+            if myCfg.securityLevel == "custom" then
+              {
+                level = "custom";
+                detector = myCfg.customSecurity.detector;
+                recognizer = myCfg.customSecurity.recognizer;
+                threshold = myCfg.customSecurity.threshold;
+                hybrid_policy = myCfg.customSecurity.hybridPolicy;
+              }
+            else
+              {
+                level = myCfg.securityLevel;
+              };
+          storage.encrypt_templates = myCfg.encryptTemplates;
+          cameras = {
+            inherit (myCfg) rgb;
+          }
+          // lib.optionalAttrs (myCfg.ir != null) {
+            inherit (myCfg) ir;
+          };
         };
       };
-    };
 
-    environment.persistence."/persist".directories = [
-      "/var/lib/gaze"
-      "/var/cache/gaze"
-    ];
-  };
+      environment.persistence."/persist".directories = [
+        "/var/lib/gaze"
+        "/var/cache/gaze"
+      ];
+    })
+  ];
 }

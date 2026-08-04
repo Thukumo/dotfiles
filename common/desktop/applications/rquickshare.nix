@@ -7,7 +7,7 @@
 {
   config =
     let
-      rqEnabled = builtins.any (userConfig: userConfig.desktop.apps.rquickshare.enable or false) (
+      rqEnabled = builtins.any (userConfig: userConfig.desktop.apps.rquickshare.enable) (
         builtins.attrValues config.custom.users
       );
     in

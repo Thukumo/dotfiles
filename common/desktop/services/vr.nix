@@ -8,9 +8,7 @@
 {
   config =
     let
-      vrEnabled = builtins.any (user: user.desktop.vr.enable or false) (
-        builtins.attrValues config.custom.users
-      );
+      vrEnabled = builtins.any (user: user.desktop.vr.enable) (builtins.attrValues config.custom.users);
     in
     {
       environment.systemPackages = lib.mkIf vrEnabled [
@@ -42,7 +40,7 @@
       services.avahi.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.enable = lib.mkIf vrEnabled (lib.mkDefault true);
       services.avahi.publish.userServices = lib.mkIf vrEnabled (lib.mkDefault true);
-      home-manager.users = desktopLib.mkHome (user: user.custom.desktop.vr.enable or false) (_: {
+      home-manager.users = desktopLib.mkHome (user: user.custom.desktop.vr.enable) (_: {
         home.persistence."/persist".directories = [
           ".config/wivrn"
           ".config/wayvr"

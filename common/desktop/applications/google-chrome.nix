@@ -8,7 +8,7 @@
 {
   config =
     lib.mkIf
-      (builtins.any (user: user.desktop.apps.google-chrome.enable or false) (
+      (builtins.any (user: user.desktop.apps.google-chrome.enable) (
         builtins.attrValues config.custom.users
       ))
       {

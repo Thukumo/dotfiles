@@ -32,7 +32,7 @@
     anyEnabled = lib.mkOption {
       type = lib.types.bool;
       internal = true;
-      default = lib.any (u: u.desktop.enable) (lib.attrValues config.custom.users);
+      default = false;
       description = "Whether any user has desktop enabled";
     };
   };
@@ -41,6 +41,10 @@
 
   config = lib.mkMerge [
     {
+      custom.desktop.anyEnabled = lib.mkDefault (
+        lib.any (u: u.desktop.enable) (lib.attrValues config.custom.users)
+      );
+
       _module.args.desktopLib = {
         mkHome =
           condition: content:

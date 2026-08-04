@@ -4,7 +4,7 @@
 }:
 {
   config = {
-    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.chromium.enable or false) (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.chromium.enable) (
       _: _: {
         programs.chromium = {
           enable = true;

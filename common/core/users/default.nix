@@ -51,14 +51,14 @@
 
     assertions =
       let
-        normalUsers = lib.filterAttrs (_: u: u.isNormalUser or false) config.users.users;
+        normalUsers = lib.filterAttrs (_: u: u.isNormalUser) config.users.users;
         normalNames = lib.attrNames normalUsers;
         customNames = lib.attrNames config.custom.users;
 
         missingInCustom = lib.filter (n: !(builtins.hasAttr n config.custom.users)) normalNames;
         missingInUsers = lib.filter (n: !(builtins.hasAttr n config.users.users)) customNames;
         customNotNormal = lib.filter (
-          n: (builtins.hasAttr n config.users.users) && !(config.users.users.${n}.isNormalUser or false)
+          n: (builtins.hasAttr n config.users.users) && !config.users.users.${n}.isNormalUser
         ) customNames;
       in
       [
@@ -139,12 +139,20 @@
     };
 
     # for shell
-    programs.fish.enable = lib.any (u: u.account.userConfig.shell == pkgs.fish) (
+    # `account.userConfig` is a free-form attrset, so `or null` guards users
+    # that don't set a shell.
+    programs.fish.enable = lib.any (u: (u.account.userConfig.shell or null) == pkgs.fish) (
       lib.attrValues config.custom.users
     );
-    programs.zsh.enable = lib.any (u: u.account.userConfig.shell == pkgs.zsh) (
+    programs.zsh.enable = lib.any (u: (u.account.userConfig.shell or null) == pkgs.zsh) (
       lib.attrValues config.custom.users
     );
+    # nixpkgs' `programs.nushell` does not register the shell in `/etc/shells`
+    # (unlike `programs.fish`/`programs.zsh`), so add it manually when any
+    # user logs in with nushell.
+    environment.shells = lib.mkIf (lib.any (u: (u.account.userConfig.shell or null) == pkgs.nushell) (
+      lib.attrValues config.custom.users
+    )) [ pkgs.nushell ];
 
     security.sudo.enable = false;
     security.sudo-rs = {

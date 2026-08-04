@@ -7,7 +7,7 @@
 }:
 
 let
-  anyWinappsEnabled = lib.any (user: user.desktop.winapps.enable or false) (
+  anyWinappsEnabled = lib.any (user: user.desktop.winapps.enable) (
     lib.attrValues config.custom.users
   );
 in

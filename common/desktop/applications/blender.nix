@@ -4,7 +4,7 @@
 }:
 {
   config = {
-    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.blender.enable or false) (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.blender.enable) (
       _:
       { pkgs, ... }:
       {

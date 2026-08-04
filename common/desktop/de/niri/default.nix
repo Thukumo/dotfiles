@@ -22,7 +22,7 @@
           ];
         };
 
-        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.de or null == "niri") (_: {
+        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.de == "niri") (_: {
           imports = [
             ./home.nix
           ];

@@ -1,9 +1,9 @@
 # Custom Options Tree
-Generated on 2026-08-04 22:22:31
+Generated on 2026-08-05 04:59:11
 
 - **custom**
   - **desktop**
-    - `anyEnabled` (Default: `true`): Whether any user has desktop enabled
+    - `anyEnabled` (Default: `false`): Whether any user has desktop enabled
     - **pipewire**
       - `enable` (Default: `true`): No description
     - `sessionCommand` (Default: `null`): Command to start the desktop session
@@ -44,7 +44,7 @@ Generated on 2026-08-04 22:22:31
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Secure Boot with Lanzaboote.
       - `init` (Default: `false`) (Example: `true`): Whether to enable use when init secure boot.
       - **tpm2-totp**
-        - `enable` (Default: `true`): Enable TPM2 TOTP support
+        - `enable` (Default: `false`): Enable TPM2 TOTP support
     - **tune**
       - **ananicy**
         - `enable` (Default: `true`): No description
@@ -88,7 +88,7 @@ Generated on 2026-08-04 22:22:31
         - `recognizer` (Default: `"accurate"`): Embedding model for 'securityLevel = "custom"'. 'accurate' = ResNet50.
         - `threshold` (Default: `0.4`): Match threshold (0-1) for 'securityLevel = "custom"'.
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Gaze facial authentication (face unlock).
-      - `encryptTemplates` (Default: `true`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. Defaults to 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
+      - `encryptTemplates` (Default: `false`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. Defaults to 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
       - `gui` (Default: `true`) (Example: `true`): Whether to enable the Gaze GTK GUI for enrolling faces.
       - `ir` (Default: `null`): Infrared (Windows Hello) camera source, e.g. '"usb:0bda:558b"' or '"/dev/video3"'. Resolved by VID:PID to the mono/IR node. 'null' disables the IR camera. 
       - `pamServices` (Default: `["sudo","polkit-1","login","hyprlock"]`): PAM services to enable Gaze face authentication for.

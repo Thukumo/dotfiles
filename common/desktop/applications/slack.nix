@@ -8,12 +8,10 @@
 {
   config =
     lib.mkIf
-      (builtins.any (user: user.desktop.apps.slack.enable or false) (
-        builtins.attrValues config.custom.users
-      ))
+      (builtins.any (user: user.desktop.apps.slack.enable) (builtins.attrValues config.custom.users))
       {
         nixpkgs.config.allowUnfreePackages = [ pkgs.slack.pname ];
-        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.slack.enable or false) (
+        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.slack.enable) (
           _:
           { pkgs, ... }:
           {

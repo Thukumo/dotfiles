@@ -16,14 +16,13 @@
   };
 
   config =
-    lib.mkIf
-      (builtins.any (user: user.dev.unityhub.enable or false) (builtins.attrValues config.custom.users))
+    lib.mkIf (builtins.any (user: user.dev.unityhub.enable) (builtins.attrValues config.custom.users))
       {
         nixpkgs.config.allowUnfreePackages = [
           pkgs.unityhub.pname
           pkgs.corefonts.pname
         ];
-        home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.unityhub.enable or false) (
+        home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.unityhub.enable) (
           _:
           { pkgs, ... }:
           {

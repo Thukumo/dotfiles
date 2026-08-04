@@ -12,7 +12,7 @@
     settings = rec {
       user = {
         name = config.home.username;
-        email = myConfig.email or "${config.home.username}@localhost";
+        email = if myConfig.email != null then myConfig.email else "${config.home.username}@localhost";
         signingkey = "~/.ssh/id_ed25519.pub";
       };
       gpg.format = "ssh";

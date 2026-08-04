@@ -4,7 +4,7 @@
 }:
 {
   config = {
-    home-manager.users = desktopLib.mkHome (user: (user.custom.desktop.browser or null) != null) (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.browser != null) (
       user:
       let
         desktopFile =
@@ -13,7 +13,7 @@
             google-chrome = "google-chrome.desktop";
             librewolf = "librewolf.desktop";
           }
-          .${user.custom.desktop.browser or null};
+          .${user.custom.desktop.browser};
       in
       {
         xdg.mimeApps = {

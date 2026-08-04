@@ -9,12 +9,10 @@
 {
   config =
     lib.mkIf
-      (builtins.any (user: user.desktop.apps.zoom.enable or false) (
-        builtins.attrValues config.custom.users
-      ))
+      (builtins.any (user: user.desktop.apps.zoom.enable) (builtins.attrValues config.custom.users))
       {
         nixpkgs.config.allowUnfreePackages = [ pkgs.zoom-us.pname ];
-        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.zoom.enable or false) (
+        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.zoom.enable) (
           _:
           { pkgs, ... }:
           {

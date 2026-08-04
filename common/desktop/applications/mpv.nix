@@ -5,12 +5,12 @@
 }:
 {
   config = {
-    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.mpv.enable or false) (
-      _:
-      { pkgs, myConfig, ... }:
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.mpv.enable) (
+      user:
+      { pkgs, ... }:
       let
         inherit (pkgs) anime4k;
-        mpvConfig = myConfig.desktop.apps.mpv;
+        mpvConfig = user.custom.desktop.apps.mpv;
       in
       {
         programs.mpv = {

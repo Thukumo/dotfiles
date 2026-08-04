@@ -8,12 +8,10 @@
 {
   config =
     lib.mkIf
-      (builtins.any (user: user.desktop.apps.discord.enable or false) (
-        builtins.attrValues config.custom.users
-      ))
+      (builtins.any (user: user.desktop.apps.discord.enable) (builtins.attrValues config.custom.users))
       {
         nixpkgs.config.allowUnfreePackages = [ pkgs.discord.pname ];
-        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.discord.enable or false) (
+        home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.discord.enable) (
           _:
           { pkgs, ... }:
           {

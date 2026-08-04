@@ -18,25 +18,21 @@
   };
   config =
     lib.mkIf
-      (builtins.any (user: user.dev.antigravity.enable or false) (
-        builtins.attrValues config.custom.users
-      ))
+      (builtins.any (user: user.dev.antigravity.enable) (builtins.attrValues config.custom.users))
       {
         nixpkgs.config.allowUnfreePackages = [ pkgs.antigravity-ide.pname ];
-        home-manager.users =
-          myLib.mkForEachUsers config (user: user.custom.dev.antigravity.enable or false)
-            (
-              _:
-              { pkgs, ... }:
-              {
-                home.packages = [
-                  pkgs.antigravity-ide
-                ];
-                home.persistence."/persist".directories = [
-                  ".antigravity"
-                  ".config/Antigravity"
-                ];
-              }
-            );
+        home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.antigravity.enable) (
+          _:
+          { pkgs, ... }:
+          {
+            home.packages = [
+              pkgs.antigravity-ide
+            ];
+            home.persistence."/persist".directories = [
+              ".antigravity"
+              ".config/Antigravity"
+            ];
+          }
+        );
       };
 }

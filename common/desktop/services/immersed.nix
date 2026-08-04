@@ -7,7 +7,7 @@
 {
   config =
     let
-      isEnabled = builtins.any (user: user.desktop.vr.immersed.enable or false) (
+      isEnabled = builtins.any (user: user.desktop.vr.immersed.enable) (
         builtins.attrValues config.custom.users
       );
     in

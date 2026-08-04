@@ -20,7 +20,7 @@
       (myLib.mkForEachUsers config (_: true) (_: {
         imports = myLib.mkImportModules ./. [ "private" ];
       }))
-      (myLib.mkForEachUsers config (user: user.custom.shell.private.enable or false) (_: {
+      (myLib.mkForEachUsers config (user: user.custom.shell.private.enable) (_: {
         imports = [ ./private ];
       }))
     ];
