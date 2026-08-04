@@ -82,6 +82,7 @@
     }@inputs:
     let
       inherit (nixpkgs) lib;
+      myLib = import ./helper/myLib.nix { inherit lib; };
       hostDirectories = lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts);
       hosts = lib.mapAttrs (name: _: import (./hosts + "/${name}") inputs) hostDirectories;
 
@@ -119,7 +120,7 @@
         lib.nixosSystem {
           inherit (host) system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs myLib;
           }
           // (host.specialArgs or { });
           modules = (commonModules name) ++ (host.modules or [ ]);

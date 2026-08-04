@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 usage() {
@@ -33,6 +34,24 @@ require_arg() {
   if [[ -z "$value" ]]; then
     echo "Missing value for $flag" >&2
     exit 1
+  fi
+}
+
+ANIME4K_SHADER_DIR="__ANIME4K_SHADER_DIR__"
+FFMPEG_BIN="__FFMPEG_BIN__"
+FFPROBE_BIN="__FFPROBE_BIN__"
+
+list_available_anime4k_shaders() {
+  local shader_file
+  local found=0
+  shopt -s nullglob
+  for shader_file in "$ANIME4K_SHADER_DIR"/*.glsl; do
+    found=1
+    basename "$shader_file"
+  done
+  shopt -u nullglob
+  if [[ "$found" == "0" ]]; then
+    echo "(none found under $ANIME4K_SHADER_DIR)"
   fi
 }
 
@@ -171,18 +190,8 @@ if [[ "$USE_PRIME_OFFLOAD" == "1" ]]; then
   export __GLX_VENDOR_LIBRARY_NAME="${__GLX_VENDOR_LIBRARY_NAME:-nvidia}"
 fi
 
-ANIME4K_SHADER_DIR="__ANIME4K_SHADER_DIR__"
 if [[ "$CLI_LIST_SHADERS" == "1" ]]; then
-  found=0
-  shopt -s nullglob
-  for shader_file in "$ANIME4K_SHADER_DIR"/*.glsl; do
-    found=1
-    basename "$shader_file"
-  done
-  shopt -u nullglob
-  if [[ "$found" == "0" ]]; then
-    echo "(none found under $ANIME4K_SHADER_DIR)"
-  fi
+  list_available_anime4k_shaders
   exit 0
 fi
 
@@ -199,8 +208,6 @@ fi
 ANIME4K_SHADER="${CLI_SHADER:-Anime4K_Upscale_CNN_x2_M.glsl}"
 SHADER_PATH="${ANIME4K_SHADER_DIR}/${ANIME4K_SHADER}"
 CQ="${CLI_CQ:-24}"
-FFMPEG_BIN="__FFMPEG_BIN__"
-FFPROBE_BIN="__FFPROBE_BIN__"
 UPSCALE_MODE="${CLI_UPSCALE_MODE:-auto}"   # anime4k | fast | auto
 NVENC_CODEC="${CLI_NVENC_CODEC:-hevc_nvenc}"
 NVENC_PRESET="${CLI_NVENC_PRESET:-p3}"
@@ -209,38 +216,10 @@ TARGET_W="${CLI_TARGET_W:-3840}"
 TARGET_H="${CLI_TARGET_H:-2160}"
 VULKAN_DEVICE_INDEX="${CLI_VULKAN_DEVICE_INDEX:-1}"
 DECODE_HW="${CLI_DECODE_HW:-auto}" # auto | sw | vulkan | cuda
-JOBS=1
 FILTERS_OUTPUT=""
 RUN_USED_DECODE=""
 RUN_USED_BIT_DEPTH=""
 RUN_USED_PIX_FMT=""
-
-list_available_anime4k_shaders() {
-  local shader_file
-  local found=0
-  shopt -s nullglob
-  for shader_file in "$ANIME4K_SHADER_DIR"/*.glsl; do
-    found=1
-    basename "$shader_file"
-  done
-  shopt -u nullglob
-  if [[ "$found" == "0" ]]; then
-    echo "(none found under $ANIME4K_SHADER_DIR)"
-  fi
-}
-
-validate_anime4k_shader_selection() {
-  if [[ "$ANIME4K_SHADER" == */* ]]; then
-    echo "--shader expects a file name only (no path): $ANIME4K_SHADER" >&2
-    exit 1
-  fi
-  if [[ -n "$CLI_SHADER" && ! -f "$SHADER_PATH" ]]; then
-    echo "Unknown Anime4K shader: $ANIME4K_SHADER" >&2
-    echo "Available shaders:" >&2
-    list_available_anime4k_shaders >&2
-    exit 1
-  fi
-}
 
 has_filter() {
   local filter_name="$1"
@@ -273,6 +252,14 @@ is_valid_video() {
     -show_entries stream=codec_name,width,height \
     -of default=noprint_wrappers=1:nokey=1 \
     "$path" >/dev/null 2>&1
+}
+
+mux_flags_for() {
+  local temp_output="$1"
+  MUX_FLAGS=()
+  if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
+    MUX_FLAGS=(-movflags +faststart)
+  fi
 }
 
 validate_decode_hw() {
@@ -310,6 +297,19 @@ validate_bit_depth_mode() {
       exit 1
       ;;
   esac
+}
+
+validate_anime4k_shader_selection() {
+  if [[ "$ANIME4K_SHADER" == */* ]]; then
+    echo "--shader expects a file name only (no path): $ANIME4K_SHADER" >&2
+    exit 1
+  fi
+  if [[ -n "$CLI_SHADER" && ! -f "$SHADER_PATH" ]]; then
+    echo "Unknown Anime4K shader: $ANIME4K_SHADER" >&2
+    echo "Available shaders:" >&2
+    list_available_anime4k_shaders >&2
+    exit 1
+  fi
 }
 
 get_input_bit_depth() {
@@ -368,10 +368,6 @@ bit_depth_from_pix_fmt() {
       echo "unknown"
       ;;
   esac
-}
-
-resolve_ffmpeg_binary() {
-  refresh_filters_output
 }
 
 select_backend() {
@@ -453,7 +449,6 @@ print_runtime_config() {
 
   echo "Backend:  $BACKEND"
   echo "Mode:     $mode_display"
-  echo "Jobs:     $JOBS"
   echo "FFmpeg:   $FFMPEG_BIN"
   echo "Prime:    $USE_PRIME_OFFLOAD"
   echo "Codec:    $NVENC_CODEC"
@@ -465,15 +460,98 @@ print_runtime_config() {
   echo "DecodePl: $decode_plan"
 }
 
+# Build the full ffmpeg command line for the active backend into ENCODE_ARGS.
+build_encode_cmd() {
+  local input_path="$1"
+  local temp_output="$2"
+  local decode_mode="$3"
+  local filter pre_filter
+
+  ENCODE_ARGS=()
+  mux_flags_for "$temp_output"
+
+  case "$BACKEND" in
+    libplacebo)
+      ENCODE_ARGS+=(-init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk)
+      if [[ "$decode_mode" == "vulkan" ]]; then
+        ENCODE_ARGS+=(-hwaccel vulkan -hwaccel_output_format vulkan)
+      fi
+      filter="libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH"
+      ;;
+    cuda)
+      if [[ "$RUN_USED_PIX_FMT" == "p010le" ]]; then
+        pre_filter="format=p010le,hwupload_cuda"
+      else
+        pre_filter="format=nv12,hwupload_cuda"
+      fi
+      if [[ "$decode_mode" == "cuda" ]]; then
+        ENCODE_ARGS+=(-hwaccel cuda -hwaccel_output_format cuda)
+      fi
+      filter="${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}"
+      ;;
+  esac
+
+  ENCODE_ARGS+=(
+    -i "$input_path"
+    -vf "$filter"
+    -pix_fmt "$RUN_USED_PIX_FMT"
+    -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ"
+    -c:a copy
+  )
+  ENCODE_ARGS+=("${MUX_FLAGS[@]}" "$temp_output")
+}
+
+run_ffmpeg() {
+  local decode_label="$1"
+  shift
+  if "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y "$@"; then
+    RUN_USED_DECODE="$decode_label"
+    return 0
+  fi
+  return 1
+}
+
+encode_file() {
+  local input_path="$1"
+  local temp_output="$2"
+  local decode_mode
+
+  RUN_USED_PIX_FMT="$(choose_pix_fmt_for_input "$input_path")"
+  RUN_USED_BIT_DEPTH="$(bit_depth_from_pix_fmt "$RUN_USED_PIX_FMT")"
+  RUN_USED_DECODE=""
+
+  decode_mode="$DECODE_HW"
+  if [[ "$decode_mode" == "auto" ]]; then
+    if [[ "$BACKEND" == "libplacebo" ]]; then
+      decode_mode="vulkan"
+    else
+      decode_mode="cuda"
+    fi
+  fi
+
+  if [[ "$decode_mode" == "sw" ]]; then
+    build_encode_cmd "$input_path" "$temp_output" "sw"
+    run_ffmpeg "sw" "${ENCODE_ARGS[@]}"
+    return $?
+  fi
+
+  build_encode_cmd "$input_path" "$temp_output" "$decode_mode"
+  if ! run_ffmpeg "$decode_mode" "${ENCODE_ARGS[@]}"; then
+    if [[ "$DECODE_HW" != "auto" ]]; then
+      return 1
+    fi
+    echo "$decode_mode decode failed; retrying with software decode: $input_path"
+    build_encode_cmd "$input_path" "$temp_output" "sw"
+    run_ffmpeg "sw" "${ENCODE_ARGS[@]}"
+  fi
+}
+
 remux_if_no_upscale_needed() {
   local input_path="$1"
   local temp_output="$2"
   local input_dims input_w input_h
-  local mux_flags=()
 
-  if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
-    mux_flags=(-movflags +faststart)
-  fi
+  mux_flags_for "$temp_output"
 
   input_dims="$("$FFPROBE_BIN" -v error -select_streams v:0 \
     -show_entries stream=width,height -of csv=p=0:s=x "$input_path" 2>/dev/null || true)"
@@ -483,7 +561,7 @@ remux_if_no_upscale_needed() {
   if [[ "$input_w" =~ ^[0-9]+$ && "$input_h" =~ ^[0-9]+$ ]] && (( input_w >= TARGET_W && input_h >= TARGET_H )); then
     echo "No upscale needed (${input_w}x${input_h} >= ${TARGET_W}x${TARGET_H}), remuxing: $input_path"
     if "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
-      -map 0 -c copy "${mux_flags[@]}" \
+      -map 0 -c copy "${MUX_FLAGS[@]}" \
       "$temp_output"; then
       RUN_USED_DECODE="copy"
       RUN_USED_PIX_FMT="copy"
@@ -497,130 +575,17 @@ remux_if_no_upscale_needed() {
   return 1
 }
 
-encode_libplacebo() {
-  local input_path="$1"
+finalize_output() {
+  local output="$1"
   local temp_output="$2"
-  local mux_flags=()
-  local output_pix_fmt
-  local decode_mode="$DECODE_HW"
-  output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
-  RUN_USED_PIX_FMT="$output_pix_fmt"
-  RUN_USED_BIT_DEPTH="$(bit_depth_from_pix_fmt "$output_pix_fmt")"
-
-  if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
-    mux_flags=(-movflags +faststart)
+  local kind="$3"
+  if ! is_valid_video "$temp_output"; then
+    echo "Invalid ${kind} output: $temp_output" >&2
+    exit 1
   fi
-
-  if [[ "$decode_mode" == "auto" ]]; then
-    decode_mode="vulkan"
-  fi
-
-  if [[ "$decode_mode" == "vulkan" ]]; then
-    if ! "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y \
-      -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
-      -hwaccel vulkan -hwaccel_output_format vulkan \
-      -i "$input_path" \
-      -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
-      -pix_fmt "$output_pix_fmt" \
-      -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-        -c:a copy \
-        "${mux_flags[@]}" \
-        "$temp_output"; then
-      if [[ "$DECODE_HW" != "auto" ]]; then
-        return 1
-      fi
-      if [[ ! -f "$input_path" ]]; then
-        echo "Input disappeared before software-decode retry: $input_path" >&2
-        return 1
-      fi
-      echo "Vulkan decode failed; retrying with software decode: $input_path"
-      "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
-        -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
-        -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
-        -pix_fmt "$output_pix_fmt" \
-        -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-        -c:a copy \
-        "${mux_flags[@]}" \
-        "$temp_output"
-      RUN_USED_DECODE="sw"
-    else
-      RUN_USED_DECODE="vulkan"
-    fi
-  else
-    "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
-      -init_hw_device "vulkan=vk:${VULKAN_DEVICE_INDEX}" -filter_hw_device vk \
-      -vf "libplacebo=w=$TARGET_W:h=$TARGET_H:custom_shader_path=$SHADER_PATH" \
-      -pix_fmt "$output_pix_fmt" \
-      -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-      -c:a copy \
-      "${mux_flags[@]}" \
-      "$temp_output"
-    RUN_USED_DECODE="sw"
-  fi
-}
-
-encode_cuda() {
-  local input_path="$1"
-  local temp_output="$2"
-  local mux_flags=()
-  local output_pix_fmt pre_filter
-  local decode_mode="$DECODE_HW"
-  output_pix_fmt="$(choose_pix_fmt_for_input "$input_path")"
-  RUN_USED_PIX_FMT="$output_pix_fmt"
-  RUN_USED_BIT_DEPTH="$(bit_depth_from_pix_fmt "$output_pix_fmt")"
-  if [[ "$output_pix_fmt" == "p010le" ]]; then
-    pre_filter="format=p010le,hwupload_cuda"
-  else
-    pre_filter="format=nv12,hwupload_cuda"
-  fi
-
-  if [[ "$temp_output" == *.mp4 || "$temp_output" == *.m4v || "$temp_output" == *.mov ]]; then
-    mux_flags=(-movflags +faststart)
-  fi
-
-  if [[ "$decode_mode" == "auto" ]]; then
-    decode_mode="cuda"
-  fi
-
-  if [[ "$decode_mode" == "cuda" ]]; then
-    if ! "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y \
-      -hwaccel cuda -hwaccel_output_format cuda \
-      -i "$input_path" \
-      -vf "scale_cuda=${TARGET_W}:${TARGET_H}" \
-      -pix_fmt "$output_pix_fmt" \
-      -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-        -c:a copy \
-        "${mux_flags[@]}" \
-        "$temp_output"; then
-      if [[ "$DECODE_HW" != "auto" ]]; then
-        return 1
-      fi
-      if [[ ! -f "$input_path" ]]; then
-        echo "Input disappeared before software-decode retry: $input_path" >&2
-        return 1
-      fi
-      echo "CUDA decode failed; retrying with software decode: $input_path"
-      "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
-        -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
-        -pix_fmt "$output_pix_fmt" \
-        -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-        -c:a copy \
-        "${mux_flags[@]}" \
-        "$temp_output"
-      RUN_USED_DECODE="sw"
-    else
-      RUN_USED_DECODE="cuda"
-    fi
-  else
-    "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -stats -y -i "$input_path" \
-      -vf "${pre_filter},scale_cuda=${TARGET_W}:${TARGET_H}" \
-      -pix_fmt "$output_pix_fmt" \
-      -c:v "$NVENC_CODEC" -preset "$NVENC_PRESET" -rc vbr -cq "$CQ" \
-      -c:a copy \
-      "${mux_flags[@]}" \
-      "$temp_output"
-    RUN_USED_DECODE="sw"
-  fi
+  mv -f "$temp_output" "$output"
+  echo "RunUsed: decode=${RUN_USED_DECODE:-unknown}, bitdepth=${RUN_USED_BIT_DEPTH:-unknown}, pix_fmt=${RUN_USED_PIX_FMT:-unknown}"
+  echo "Done: $output"
 }
 
 process_file() {
@@ -674,36 +639,12 @@ process_file() {
   rm -f "$temp_output"
 
   if remux_if_no_upscale_needed "$input" "$temp_output"; then
-    if ! is_valid_video "$temp_output"; then
-      echo "Invalid remux output: $temp_output" >&2
-      exit 1
-    fi
-    mv -f "$temp_output" "$output"
-    echo "RunUsed: decode=${RUN_USED_DECODE:-unknown}, bitdepth=${RUN_USED_BIT_DEPTH:-unknown}, pix_fmt=${RUN_USED_PIX_FMT:-unknown}"
-    echo "Done: $output"
+    finalize_output "$output" "$temp_output" "remux"
     return 0
   fi
 
-  case "$BACKEND" in
-    libplacebo)
-      encode_libplacebo "$input" "$temp_output"
-      ;;
-    cuda)
-      encode_cuda "$input" "$temp_output"
-      ;;
-    *)
-      echo "Unknown backend: $BACKEND" >&2
-      exit 1
-      ;;
-  esac
-
-  if ! is_valid_video "$temp_output"; then
-    echo "Invalid encoded output: $temp_output" >&2
-    exit 1
-  fi
-  mv -f "$temp_output" "$output"
-  echo "RunUsed: decode=${RUN_USED_DECODE:-unknown}, bitdepth=${RUN_USED_BIT_DEPTH:-unknown}, pix_fmt=${RUN_USED_PIX_FMT:-unknown}"
-  echo "Done: $output"
+  encode_file "$input" "$temp_output"
+  finalize_output "$output" "$temp_output" "encoded"
 }
 
 if [[ "$SINGLE_FILE_MODE" == "1" ]]; then
@@ -723,7 +664,7 @@ fi
 validate_decode_hw
 validate_bit_depth_mode
 validate_anime4k_shader_selection
-resolve_ffmpeg_binary
+refresh_filters_output
 BACKEND="$(select_backend)"
 validate_decode_hw_for_backend
 
@@ -741,6 +682,6 @@ else
   while IFS= read -r rel_path; do
     process_file "$rel_path"
   done < <(
-    fd -j "$JOBS" -t f -e mp4 -e mkv -e avi --base-directory "$IN_DIR" .
+    fd -t f -e mp4 -e mkv -e avi --base-directory "$IN_DIR" .
   )
 fi

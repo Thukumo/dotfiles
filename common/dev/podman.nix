@@ -34,7 +34,7 @@
         };
 
         home-manager.users =
-          myLib.mkForEachUsers
+          myLib.mkForEachUsers config
             (user: (user.custom.dev.podman.enable or false) || (user.custom.desktop.winapps.enable or false))
             (
               _user:

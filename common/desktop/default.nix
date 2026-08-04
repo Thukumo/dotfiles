@@ -37,27 +37,16 @@
     };
   };
 
-  imports =
-    let
-      # Import all subdirectories
-      dirs = lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.));
-      # Import all .nix files except default.nix
-      files = lib.attrNames (
-        lib.filterAttrs (
-          name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
-        ) (builtins.readDir ./.)
-      );
-    in
-    (map (name: ./. + "/${name}") dirs) ++ (map (name: ./. + "/${name}") files);
+  imports = myLib.mkImportModules ./. [ ];
 
   config = lib.mkMerge [
     {
       _module.args.desktopLib = {
         mkHome =
           condition: content:
-          myLib.mkForEachUsers (user: user.custom.desktop.enable && (condition user)) content;
+          myLib.mkForEachUsers config (user: user.custom.desktop.enable && (condition user)) content;
       };
-      home-manager.users = myLib.mkForEachUsers (user: user.custom.desktop.enable) (
+      home-manager.users = myLib.mkForEachUsers config (user: user.custom.desktop.enable) (
         _user:
         { lib, config, ... }:
         {

@@ -24,7 +24,7 @@ in
       files = [ "/etc/machine-id" ];
     };
 
-    home-manager.users = myLib.mkForEachUsers (_: true) (user: {
+    home-manager.users = myLib.mkForEachUsers config (_: true) (user: {
       home.persistence."/persist" = {
         directories = user.custom.persistence.directories or [ ];
         files = user.custom.persistence.files or [ ];

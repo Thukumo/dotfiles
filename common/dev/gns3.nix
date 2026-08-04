@@ -35,7 +35,7 @@ in
     };
     users.groups.ubridge = { };
 
-    users.users = lib.mapAttrs (name: userConfig: {
+    users.users = lib.mapAttrs (_: userConfig: {
       extraGroups = lib.optionals (userConfig.dev.gns3.enable or false) [
         "gns3"
         "ubridge"
@@ -45,21 +45,19 @@ in
       ];
     }) cfg;
 
-    home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.gns3.enable or false) (
-      user: _: {
-        home.packages = with pkgs; [
-          gns3-gui
-          gns3-server
-          xterm
-          dynamips
-          vpcs
-          qemu_kvm
-        ];
-        home.persistence."/persist".directories = [
-          "GNS3"
-          ".config/GNS3"
-        ];
-      }
-    );
+    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.gns3.enable or false) (_: {
+      home.packages = with pkgs; [
+        gns3-gui
+        gns3-server
+        xterm
+        dynamips
+        vpcs
+        qemu_kvm
+      ];
+      home.persistence."/persist".directories = [
+        "GNS3"
+        ".config/GNS3"
+      ];
+    });
   };
 }

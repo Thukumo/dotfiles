@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }:
 {
@@ -41,14 +40,12 @@
             val:
             let
               parts = lib.splitString "," val;
-              _ =
-                assert lib.assertMsg (
-                  lib.length parts >= 2
-                ) "DLNA mediaDir '${val}' must be in 'PREFIX,PATH' format (e.g. 'V,Documents/mov')";
-                parts;
 
               prefix = lib.head parts;
-              path = lib.concatStringsSep "," (lib.tail parts);
+              path =
+                lib.throwIfNot (lib.length parts >= 2)
+                  "DLNA mediaDir '${val}' must be in 'PREFIX,PATH' format (e.g. 'V,Documents/mov')"
+                  (lib.concatStringsSep "," (lib.tail parts));
               resolvedPath = if lib.hasPrefix "/" path then path else "${homeDir}/${path}";
               # サービス内部での中立なマウント先（親の 700 権限をバイパスするため）
               warpPath = "/run/minidlna/warp_${

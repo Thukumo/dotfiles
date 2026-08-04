@@ -1,6 +1,7 @@
 {
   lib,
   myLib,
+  config,
   ...
 }:
 {
@@ -31,7 +32,7 @@
       mode = "400";
     };
 
-    home-manager.users = myLib.mkForEachUsers (user: user.custom.network.sstp.enable or false) (
+    home-manager.users = myLib.mkForEachUsers config (user: user.custom.network.sstp.enable or false) (
       user:
       { pkgs, osConfig, ... }:
       let

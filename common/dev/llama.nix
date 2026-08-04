@@ -2,6 +2,7 @@
   lib,
   pkgs,
   myLib,
+  config,
   ...
 }:
 {
@@ -174,168 +175,170 @@
     );
   };
 
-  config.home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.llama.enable or false) (
-    _:
-    { myConfig, config, ... }:
-    let
-      cfg = myConfig.dev.llama;
-      llamaBackend = cfg.package.override {
-        inherit (cfg)
-          cudaSupport
-          rocmSupport
-          vulkanSupport
-          openclSupport
-          ;
-      };
-      modelDir = "${config.home.homeDirectory}/.local/share/llama/models";
-
-      allDownloads = lib.flatten (
-        builtins.map (
-          m:
-          [ { inherit (m) repoId file; } ]
-          ++ (if m.draft != null then [ { inherit (m.draft) repoId file; } ] else [ ])
-        ) cfg.models
-      );
-
-    in
-    {
-      home.packages = [
-        llamaBackend
-      ];
-
-      systemd.user.services.llama-swap = {
-        Unit = {
-          Description = "llama-swap proxy server";
-          After = [
-            "network.target"
-            "llama-model-sync.service"
-          ];
-          Wants = [ "llama-model-sync.service" ];
-        };
-        Service =
-          let
-            yamlFormat = pkgs.formats.yaml { };
-            configFile = yamlFormat.generate "llama-swap-config.yaml" {
-              healthCheckTimeout = 120;
-              models = builtins.listToAttrs (
-                builtins.map (
-                  m:
-                  let
-                    modelName = m.name;
-                    # 投機サンプリング引数の組み立て
-                    speculativeArgs =
-                      if m.draft != null then
-                        "-md ${modelDir}/${m.draft.file} -ngld ${builtins.toString m.draft.gpuLayers}"
-                      else
-                        "";
-                    specTypeArg =
-                      let
-                        finalSpecType = if m.specType == [ ] then [ "none" ] else m.specType;
-                      in
-                      if finalSpecType != [ "none" ] then "--spec-type ${lib.concatStringsSep "," finalSpecType}" else "";
-                    specDefaultArg =
-                      if m.specDefault != null then
-                        "--spec-draft-n-max ${builtins.toString m.specDefault}"
-                      else if m.specType != [ ] then
-                        "--spec-default"
-                      else
-                        "";
-                    flashAttnArg = if m.flashAttn then "-fa on" else "-fa off";
-                    cacheKArg = if m.cacheTypeK != null then "-ctk ${m.cacheTypeK}" else "";
-                    cacheVArg = if m.cacheTypeV != null then "-ctv ${m.cacheTypeV}" else "";
-                    mlockArg = if cfg.mlock then "--mlock" else "";
-                    cacheReuseArg =
-                      if cfg.cacheReuse != null then "--cache-reuse ${builtins.toString cfg.cacheReuse}" else "";
-                    extraArgsStr = lib.concatStringsSep " " m.extraArgs;
-                  in
-                  {
-                    name = modelName;
-                    value = {
-                      cmd = ''
-                        # ''${PORT} is a macro placeholder replaced dynamically by llama-swap at launch
-                        ${lib.getExe' llamaBackend "llama-server"} \
-                          --port ''${PORT} \
-                          -m ${modelDir}/${m.file} \
-                          -ngl ${builtins.toString m.gpuLayers} \
-                          -c ${builtins.toString m.contextLength} \
-                          ${flashAttnArg} \
-                          ${cacheKArg} \
-                          ${cacheVArg} \
-                          ${mlockArg} \
-                          ${cacheReuseArg} \
-                          ${specTypeArg} \
-                          ${specDefaultArg} \
-                          ${speculativeArgs} \
-                          ${extraArgsStr} \
-                          --host ${cfg.host}
-                      '';
-                    };
-                  }
-                ) cfg.models
-              );
-            };
-          in
-          {
-            ExecStart = "${pkgs.llama-swap}/bin/llama-swap --listen=${cfg.host}:${toString cfg.port} --config=${configFile}";
-            Restart = "on-failure";
+  config.home-manager.users =
+    myLib.mkForEachUsers config (user: user.custom.dev.llama.enable or false)
+      (
+        _:
+        { myConfig, config, ... }:
+        let
+          cfg = myConfig.dev.llama;
+          llamaBackend = cfg.package.override {
+            inherit (cfg)
+              cudaSupport
+              rocmSupport
+              vulkanSupport
+              openclSupport
+              ;
           };
-        Install.WantedBy = [ "default.target" ];
-      };
+          modelDir = "${config.home.homeDirectory}/.local/share/llama/models";
 
-      home.persistence."/persist".directories = [
-        (lib.removePrefix "${config.home.homeDirectory}/" modelDir)
-      ];
+          allDownloads = lib.flatten (
+            builtins.map (
+              m:
+              [ { inherit (m) repoId file; } ]
+              ++ (if m.draft != null then [ { inherit (m.draft) repoId file; } ] else [ ])
+            ) cfg.models
+          );
 
-      systemd.user.services.llama-model-sync = {
-        Unit.Before = [ "llama-swap.service" ];
-        Service = {
-          Type = "simple";
-          Restart = "on-failure";
-          RestartSec = "10s";
-          ExecStart = pkgs.writeShellScript "llama-sync-files" ''
-            set -e
-            mkdir -p "${modelDir}"
-            cd "${modelDir}"
+        in
+        {
+          home.packages = [
+            llamaBackend
+          ];
 
-            # 1. 宣言されたファイルをダウンロード
-            ${lib.concatMapStringsSep "\n" (d: ''
-              if [ ! -f "${d.file}" ]; then
-                echo "Downloading ${d.file} from ${d.repoId}..."
-                ${pkgs.python3Packages.huggingface-hub}/bin/hf download "${d.repoId}" "${d.file}" --local-dir .
-              fi
-            '') allDownloads}
+          systemd.user.services.llama-swap = {
+            Unit = {
+              Description = "llama-swap proxy server";
+              After = [
+                "network.target"
+                "llama-model-sync.service"
+              ];
+              Wants = [ "llama-model-sync.service" ];
+            };
+            Service =
+              let
+                yamlFormat = pkgs.formats.yaml { };
+                configFile = yamlFormat.generate "llama-swap-config.yaml" {
+                  healthCheckTimeout = 120;
+                  models = builtins.listToAttrs (
+                    builtins.map (
+                      m:
+                      let
+                        modelName = m.name;
+                        # 投機サンプリング引数の組み立て
+                        speculativeArgs =
+                          if m.draft != null then
+                            "-md ${modelDir}/${m.draft.file} -ngld ${builtins.toString m.draft.gpuLayers}"
+                          else
+                            "";
+                        specTypeArg =
+                          let
+                            finalSpecType = if m.specType == [ ] then [ "none" ] else m.specType;
+                          in
+                          if finalSpecType != [ "none" ] then "--spec-type ${lib.concatStringsSep "," finalSpecType}" else "";
+                        specDefaultArg =
+                          if m.specDefault != null then
+                            "--spec-draft-n-max ${builtins.toString m.specDefault}"
+                          else if m.specType != [ ] then
+                            "--spec-default"
+                          else
+                            "";
+                        flashAttnArg = if m.flashAttn then "-fa on" else "-fa off";
+                        cacheKArg = if m.cacheTypeK != null then "-ctk ${m.cacheTypeK}" else "";
+                        cacheVArg = if m.cacheTypeV != null then "-ctv ${m.cacheTypeV}" else "";
+                        mlockArg = if cfg.mlock then "--mlock" else "";
+                        cacheReuseArg =
+                          if cfg.cacheReuse != null then "--cache-reuse ${builtins.toString cfg.cacheReuse}" else "";
+                        extraArgsStr = lib.concatStringsSep " " m.extraArgs;
+                      in
+                      {
+                        name = modelName;
+                        value = {
+                          cmd = ''
+                            # ''${PORT} is a macro placeholder replaced dynamically by llama-swap at launch
+                            ${lib.getExe' llamaBackend "llama-server"} \
+                              --port ''${PORT} \
+                              -m ${modelDir}/${m.file} \
+                              -ngl ${builtins.toString m.gpuLayers} \
+                              -c ${builtins.toString m.contextLength} \
+                              ${flashAttnArg} \
+                              ${cacheKArg} \
+                              ${cacheVArg} \
+                              ${mlockArg} \
+                              ${cacheReuseArg} \
+                              ${specTypeArg} \
+                              ${specDefaultArg} \
+                              ${speculativeArgs} \
+                              ${extraArgsStr} \
+                              --host ${cfg.host}
+                          '';
+                        };
+                      }
+                    ) cfg.models
+                  );
+                };
+              in
+              {
+                ExecStart = "${pkgs.llama-swap}/bin/llama-swap --listen=${cfg.host}:${toString cfg.port} --config=${configFile}";
+                Restart = "on-failure";
+              };
+            Install.WantedBy = [ "default.target" ];
+          };
 
-            # 2. 不要な古いモデルのクリーンアップ
-            ${
-              if allDownloads == [ ] then
-                ''
-                  # 必要なモデルが空の場合、存在するすべての .gguf を削除する
-                  for file in *.gguf; do
-                    [ -e "$file" ] || continue
-                    echo "Cleaning up obsolete model file: $file"
-                    rm "$file"
-                  done
-                ''
-              else
-                ''
-                  # 必要なモデルがある場合、マッチしないものを削除する
-                  for file in *.gguf; do
-                    [ -e "$file" ] || continue
-                    case "$file" in
-                      ${lib.concatMapStringsSep "|" (d: lib.escapeShellArg d.file) allDownloads})
-                        ;;
-                      *)
+          home.persistence."/persist".directories = [
+            (lib.removePrefix "${config.home.homeDirectory}/" modelDir)
+          ];
+
+          systemd.user.services.llama-model-sync = {
+            Unit.Before = [ "llama-swap.service" ];
+            Service = {
+              Type = "simple";
+              Restart = "on-failure";
+              RestartSec = "10s";
+              ExecStart = pkgs.writeShellScript "llama-sync-files" ''
+                set -e
+                mkdir -p "${modelDir}"
+                cd "${modelDir}"
+
+                # 1. 宣言されたファイルをダウンロード
+                ${lib.concatMapStringsSep "\n" (d: ''
+                  if [ ! -f "${d.file}" ]; then
+                    echo "Downloading ${d.file} from ${d.repoId}..."
+                    ${pkgs.python3Packages.huggingface-hub}/bin/hf download "${d.repoId}" "${d.file}" --local-dir .
+                  fi
+                '') allDownloads}
+
+                # 2. 不要な古いモデルのクリーンアップ
+                ${
+                  if allDownloads == [ ] then
+                    ''
+                      # 必要なモデルが空の場合、存在するすべての .gguf を削除する
+                      for file in *.gguf; do
+                        [ -e "$file" ] || continue
                         echo "Cleaning up obsolete model file: $file"
                         rm "$file"
-                        ;;
-                    esac
-                  done
-                ''
-            }
-          '';
-        };
-        Install.WantedBy = [ "default.target" ];
-      };
-    }
-  );
+                      done
+                    ''
+                  else
+                    ''
+                      # 必要なモデルがある場合、マッチしないものを削除する
+                      for file in *.gguf; do
+                        [ -e "$file" ] || continue
+                        case "$file" in
+                          ${lib.concatMapStringsSep "|" (d: lib.escapeShellArg d.file) allDownloads})
+                            ;;
+                          *)
+                            echo "Cleaning up obsolete model file: $file"
+                            rm "$file"
+                            ;;
+                        esac
+                      done
+                    ''
+                }
+              '';
+            };
+            Install.WantedBy = [ "default.target" ];
+          };
+        }
+      );
 }

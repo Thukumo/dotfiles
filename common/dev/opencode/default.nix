@@ -1,6 +1,7 @@
 {
   lib,
   myLib,
+  config,
   ...
 }:
 let
@@ -26,7 +27,7 @@ in
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.opencode.enable or false) (
+    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.opencode.enable or false) (
       _user:
       { myConfig, ... }:
       {

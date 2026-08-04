@@ -4,6 +4,7 @@
 
 {
   myLib,
+  config,
   ...
 }:
 
@@ -30,7 +31,7 @@
     "w /sys/class/power_supply/BAT0/charge_control_end_threshold - - - - 80"
   ];
 
-  home-manager.users = myLib.mkForEachUsers (_: true) (_: {
+  home-manager.users = myLib.mkForEachUsers config (_: true) (_: {
     programs.niri.settings.input.touchpad.enable = false;
   });
 

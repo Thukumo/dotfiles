@@ -1,6 +1,7 @@
 {
   lib,
   myLib,
+  config,
   pkgs,
   ...
 }:
@@ -16,18 +17,10 @@
 
   config = {
     home-manager.users = lib.mkMerge [
-      (myLib.mkForEachUsers (_: true) (_: {
-        imports = map (name: ./. + "/${name}") (
-          builtins.attrNames (
-            lib.filterAttrs (
-              name: type:
-              (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
-              || (type == "directory" && name != "private")
-            ) (builtins.readDir ./.)
-          )
-        );
+      (myLib.mkForEachUsers config (_: true) (_: {
+        imports = myLib.mkImportModules ./. [ "private" ];
       }))
-      (myLib.mkForEachUsers (user: user.custom.shell.private.enable or false) (_: {
+      (myLib.mkForEachUsers config (user: user.custom.shell.private.enable or false) (_: {
         imports = [ ./private ];
       }))
     ];

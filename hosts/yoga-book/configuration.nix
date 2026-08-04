@@ -1,4 +1,4 @@
-{ myLib, ... }:
+{ myLib, config, ... }:
 
 {
   security.tpm2.enable = false;
@@ -63,7 +63,7 @@
     variant = "";
   };
 
-  home-manager.users = myLib.mkForEachUsers (_: true) (_: {
+  home-manager.users = myLib.mkForEachUsers config (_: true) (_: {
     programs.niri.settings.input = {
       touch = {
         map-to-output = "DSI-1";

@@ -23,7 +23,7 @@
           pkgs.unityhub.pname
           pkgs.corefonts.pname
         ];
-        home-manager.users = myLib.mkForEachUsers (user: user.custom.dev.unityhub.enable or false) (
+        home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.unityhub.enable or false) (
           _:
           { pkgs, ... }:
           {

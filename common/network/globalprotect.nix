@@ -1,6 +1,7 @@
 {
   lib,
   myLib,
+  config,
   ...
 }:
 {
@@ -23,7 +24,7 @@
   };
 
   config.home-manager.users =
-    myLib.mkForEachUsers (user: user.custom.network.globalProtect.enable or false)
+    myLib.mkForEachUsers config (user: user.custom.network.globalProtect.enable or false)
       (
         user:
         { pkgs, ... }:

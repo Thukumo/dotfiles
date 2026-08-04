@@ -37,7 +37,7 @@
         ${name}._module.args.myConfig = config.custom.users.${name};
       }) config.custom.users
     ))
-    (myLib.mkForEachUsers (u: u.custom.dotfilesPath != null) (
+    (myLib.mkForEachUsers config (u: u.custom.dotfilesPath != null) (
       u:
       { pkgs, ... }:
       {

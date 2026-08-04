@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, myLib, ... }:
 {
   options.custom.users = lib.mkOption {
     type = lib.types.attrsOf (
@@ -12,7 +12,5 @@
     );
   };
 
-  imports = map (name: ./. + "/${name}") (
-    builtins.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.))
-  );
+  imports = myLib.mkImportSubdirs ./.;
 }
