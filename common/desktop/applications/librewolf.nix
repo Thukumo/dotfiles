@@ -11,10 +11,15 @@
         programs.librewolf = {
           enable = true;
           languagePacks = [ "ja" ];
-          policies.ExtensionSettings = lib.mapAttrs (_id: slug: {
-            installation_mode = "normal_installed";
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
-          }) (user.custom.desktop.apps.librewolf.extensions or { });
+          policies = {
+            RequestedLocales = [ "ja" ];
+            Preferences."intl.accept_languages" = "ja,ja-JP";
+
+            ExtensionSettings = lib.mapAttrs (_id: slug: {
+              installation_mode = "normal_installed";
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
+            }) (user.custom.desktop.apps.librewolf.extensions or { });
+          };
         };
         home.persistence."/persist".directories = [
           ".config/librewolf"
