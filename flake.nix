@@ -62,6 +62,13 @@
     };
 
     nowplaying.url = "github:Thukumo/nowplaying";
+
+    # nixpkgs PR #526315 (ONLYOFFICE DesktopEditors: updates) の未マージ分。
+    # programs.onlyoffice モジュールと extraFontPackages 対応パッケージを取り込む。
+    onlyoffice-nixpkgs = {
+      url = "github:emmanuelrosa/nixpkgs/b277334482fb40a176b6fc1403c9b809ccf50e6b";
+      flake = false;
+    };
   };
 
   outputs =
@@ -113,6 +120,18 @@
         lanzaboote.nixosModules.lanzaboote
         stylix.nixosModules.stylix
         microvm.nixosModules.host
+
+        (import "${inputs.onlyoffice-nixpkgs}/nixos/modules/programs/onlyoffice.nix")
+
+        {
+          nixpkgs.overlays = [
+            (final: _prev: {
+              onlyoffice-desktopeditors = final.callPackage (
+                inputs.onlyoffice-nixpkgs + "/pkgs/by-name/on/onlyoffice-desktopeditors/package.nix"
+              ) { };
+            })
+          ];
+        }
       ];
 
       mkHost =

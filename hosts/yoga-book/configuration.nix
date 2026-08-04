@@ -34,7 +34,7 @@
         apps = {
           google-chrome.enable = true;
           mattermost-desktop.enable = true;
-          libreoffice.enable = true;
+          onlyoffice.enable = true;
         };
       };
     };

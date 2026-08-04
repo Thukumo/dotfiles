@@ -75,6 +75,7 @@
 
               # From misc.nix
               libreoffice.enable = lib.mkEnableOption "LibreOffice";
+              onlyoffice.enable = lib.mkEnableOption "OnlyOffice";
 
               # From librewolf.nix
               librewolf = {

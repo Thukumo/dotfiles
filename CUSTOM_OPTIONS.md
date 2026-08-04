@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-05 05:37:01
+Generated on 2026-08-05 06:08:54
 
 - **custom**
   - **desktop**
@@ -130,6 +130,8 @@ Generated on 2026-08-05 05:37:01
         - **mpv**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable mpv with Anime4K shaders.
           - `gpu-api` (Default: `null`): GPU API for mpv (null for auto)
+        - **onlyoffice**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable OnlyOffice.
         - **osu**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable osu.
         - **prismLauncher**

@@ -38,7 +38,7 @@
         discord.enable = true;
         google-chrome.enable = true;
         mattermost-desktop.enable = true;
-        libreoffice.enable = true;
+        onlyoffice.enable = true;
         zoom.enable = true;
         gnome-disk-utility.enable = false;
         osu.enable = true;

@@ -1268,6 +1268,23 @@
         "type": "github"
       }
     },
+    "onlyoffice-nixpkgs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783694392,
+        "narHash": "sha256-lf2AVMaTJ1/D50zgJiahxl9PQFmEw5ZG+V7Nex/8/fY=",
+        "owner": "emmanuelrosa",
+        "repo": "nixpkgs",
+        "rev": "b277334482fb40a176b6fc1403c9b809ccf50e6b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emmanuelrosa",
+        "repo": "nixpkgs",
+        "rev": "b277334482fb40a176b6fc1403c9b809ccf50e6b",
+        "type": "github"
+      }
+    },
     "plugin-loader-src": {
       "flake": false,
       "locked": {
@@ -1348,6 +1365,7 @@
         "nixvim": "nixvim",
         "nowplaying": "nowplaying",
         "nur": "nur",
+        "onlyoffice-nixpkgs": "onlyoffice-nixpkgs",
         "ragenix": "ragenix",
         "sidra": "sidra",
         "stylix": "stylix",
