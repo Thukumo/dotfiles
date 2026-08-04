@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, ... }:
 
 {
   custom.hardware.secure-boot.enable = true;
@@ -117,11 +117,6 @@
     };
   };
 
-  services.open-webui = {
-    enable = true;
-    port = 3000;
-  };
-  nixpkgs.config.allowUnfreePackages = [ pkgs.open-webui.pname ];
   custom.network.cloudflare-warp.enable = true;
 
   networking.dhcpcd.extraConfig = ''
