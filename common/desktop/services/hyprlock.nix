@@ -43,7 +43,7 @@
       enable = true;
       settings = {
         general = {
-          lock_cmd = "pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
+          lock_cmd = "${pkgs.procps}/bin/pkill -x hyprlock 2>/dev/null; ${pkgs.hyprlock}/bin/hyprlock";
           before_sleep_cmd = "loginctl lock-session";
         };
 
