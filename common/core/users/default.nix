@@ -146,6 +146,10 @@
       lib.attrValues config.custom.users
     );
 
-    security.sudo.wheelNeedsPassword = false;
+    security.sudo.enable = false;
+    security.sudo-rs = {
+      enable = true;
+      wheelNeedsPassword = lib.mkDefault false;
+    };
   };
 }
