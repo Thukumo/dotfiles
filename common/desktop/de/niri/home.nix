@@ -59,6 +59,12 @@
             config.stylix.image
           ];
         }
+        # polkit認証エージェント。
+        {
+          command = [
+            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+          ];
+        }
       ];
     };
   };

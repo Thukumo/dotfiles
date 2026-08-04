@@ -5,6 +5,8 @@
 }:
 
 {
+  security.tpm2.enable = false;
+
   services.journald.storage = "volatile";
   services.journald.extraConfig = ''
     RuntimeMaxUse=64M

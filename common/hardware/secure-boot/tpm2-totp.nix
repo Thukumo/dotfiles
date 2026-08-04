@@ -11,7 +11,7 @@ in
   options.custom.hardware.secure-boot.tpm2-totp = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = config.custom.hardware.secure-boot.enable;
+      default = config.custom.hardware.secure-boot.enable && config.security.tpm2.enable;
       description = "Enable TPM2 TOTP support";
     };
   };

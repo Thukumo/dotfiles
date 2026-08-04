@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-03 21:48:51
+Generated on 2026-08-04 22:22:31
 
 - **custom**
   - **desktop**
@@ -82,9 +82,18 @@ Generated on 2026-08-03 21:48:51
       - **realtime**
         - `enable` (Default: `true`): No description
     - **gaze**
+      - **customSecurity** (Submodule)
+        - `detector` (Default: `"accurate"`): Face detector quality for 'securityLevel = "custom"'.
+        - `hybridPolicy` (Default: `"fallback_on_dark"`): How RGB and IR results combine when both cameras are set.
+        - `recognizer` (Default: `"accurate"`): Embedding model for 'securityLevel = "custom"'. 'accurate' = ResNet50.
+        - `threshold` (Default: `0.4`): Match threshold (0-1) for 'securityLevel = "custom"'.
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Gaze facial authentication (face unlock).
+      - `encryptTemplates` (Default: `true`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. Defaults to 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
       - `gui` (Default: `true`) (Example: `true`): Whether to enable the Gaze GTK GUI for enrolling faces.
+      - `ir` (Default: `null`): Infrared (Windows Hello) camera source, e.g. '"usb:0bda:558b"' or '"/dev/video3"'. Resolved by VID:PID to the mono/IR node. 'null' disables the IR camera. 
       - `pamServices` (Default: `["sudo","polkit-1","login","hyprlock"]`): PAM services to enable Gaze face authentication for.
+      - `rgb` (Default: `"primary"`): RGB camera source for Gaze. A GStreamer source, 'primary' (PipeWire), a 'usb:VVVV:PPPP' VID:PID, or a '/dev/video*' node. Set to "" to disable RGB and use the IR camera only. 
+      - `securityLevel` (Default: `"maximum"`): Gaze security level. 'low'/'medium' use MobileFaceNet (faster), 'high'/'maximum' use ResNet50 (more accurate, stricter). Ignored when 'securityLevel = "custom"' (set thresholds via 'services.gaze.settings.security' directly). 
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): No description

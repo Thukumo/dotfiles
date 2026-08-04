@@ -1,6 +1,8 @@
 { myLib, ... }:
 
 {
+  security.tpm2.enable = false;
+
   hardware.yogabook = {
     enable = true;
     keyboardLayout = "jp106";
