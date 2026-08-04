@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-05 04:59:11
+Generated on 2026-08-05 05:37:01
 
 - **custom**
   - **desktop**
@@ -111,17 +111,17 @@ Generated on 2026-08-05 04:59:11
         - **bottles**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Bottles.
         - **chromium**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable Chromium.
+          - `enable` (Default: `false`): Chromium
         - **discord**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Discord.
         - **gnome-disk-utility**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable GNOME Disk Utility.
         - **google-chrome**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable Google Chrome.
+          - `enable` (Default: `false`): Google Chrome
         - **libreoffice**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreOffice.
         - **librewolf**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable LibreWolf.
+          - `enable` (Default: `false`): LibreWolf
           - `extensions` (Default: `{}`): LibreWolf extensions to auto-install from AMO (extension ID → slug)
         - **localsend**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LocalSend.
@@ -150,13 +150,14 @@ Generated on 2026-08-05 04:59:11
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Thunar.
         - **zoom**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Zoom.
-      - `browser` (Default: `null`): Browser to set as the default MIME handler
+      - `browser` (Default: `null`): Browser opened by desktop shortcuts (e.g. Mod+Shift+C). Shortcut binds are not created when unset.
       - `de` (Default: `null`): Desktop environment or window manager to use
       - `enable` (Default: `false`) (Example: `true`): Whether to enable desktop environment.
       - **hyprlock**
         - `enable` (Default: `true`): No description
       - `ime` (Default: `null`): Input method engine to use
       - `launcher` (Default: `null`): Application launcher to use
+      - `mimeBrowser` (Default: `null`): Browser to set as the default MIME handler
       - **nowplaying**
         - `enable` (Default: `true`): No description
         - `server` (Default: `"https://api-nowplaying.tsukumo.f5.si"`): Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).

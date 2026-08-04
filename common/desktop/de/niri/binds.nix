@@ -2,6 +2,8 @@
   config,
   pkgs,
   lib,
+  desktopLib,
+  myConfig,
   ...
 }:
 {
@@ -14,6 +16,23 @@
       })
       (
         let
+          # `desktop.browser` が未設定ならブラウザ系のキーバインドは作らない。
+          browserBinds =
+            let
+              browser = myConfig.desktop.browser;
+            in
+            if browser == null then
+              { }
+            else
+              let
+                b = desktopLib.browserInfo browser;
+              in
+              {
+                "C" = spawn b.command b.newWindow;
+                "Shift+C" = spawn b.command b.privateWindow;
+                "X" = spawn b.command b.newWindow "https://x.com/home";
+              };
+
           normalBind = {
             "Shift+P" = power-off-monitors;
             "Escape" = spawn "${pkgs.hyprlock}/bin/hyprlock";
@@ -22,9 +41,6 @@
             "Space" = spawn "fuzzel";
             # "Space" = spawn "anyrun";
             "M" = spawn "mattermost-desktop";
-            "C" = spawn "chromium";
-            "Shift+C" = spawn "google-chrome-stable" "--new-window";
-            "X" = spawn "google-chrome-stable" "--new-window" "https://x.com/home";
 
             "H" = focus-column-left;
             "L" = focus-column-right;
@@ -69,6 +85,9 @@
             "XF86MonBrightnessDown" = spawn "swayosd-client" "--brightness" "lower";
           };
         in
-        (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (normalBind // worksp // moveW)) // other
+        (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (
+          browserBinds // normalBind // worksp // moveW
+        ))
+        // other
       );
 }
