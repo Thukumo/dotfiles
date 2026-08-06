@@ -1,4 +1,4 @@
-_:
+{ lib, ... }:
 
 {
   programs.starship = {
@@ -21,4 +21,8 @@ _:
       };
     };
   };
+  # 内部でwhenを叩く時nuよりshを使わせた方が、全体として25msくらい早い
+  programs.nushell.extraConfig = lib.mkAfter ''
+    $env.STARSHIP_SHELL = "sh"
+  '';
 }
