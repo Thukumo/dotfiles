@@ -17,6 +17,8 @@
     wl-clipboard-rs
 
     cargo
+
+    hyperfine
   ];
 
   home.shellAliases = {
