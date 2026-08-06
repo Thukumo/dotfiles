@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-07 00:50:10
+Generated on 2026-08-07 08:00:45
 
 - **custom**
   - **desktop**
@@ -87,6 +87,8 @@ Generated on 2026-08-07 00:50:10
         - `hybridPolicy` (Default: `"fallback_on_dark"`): How RGB and IR results combine when both cameras are set.
         - `recognizer` (Default: `"accurate"`): Embedding model for 'securityLevel = "custom"'. 'accurate' = ResNet50.
         - `threshold` (Default: `0.4`): Match threshold (0-1) for 'securityLevel = "custom"'.
+      - `darkLumaThreshold` (Default: `null`): Override '[cameras] dark_luma_threshold'. IR cameras produce inherently dim frames, so a low value (or 0) prevents spurious 'TooDark' rejections. 'null' leaves the upstream default (20). 
+      - `emitterEnabled` (Default: `false`): Drive the IR emitter (IR LED) during authentication. Needed when the camera does not auto-light its infrared LED on streaming start (otherwise IR frames come out black and are rejected as too dark). Requires 'ir' to be set. 
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Gaze facial authentication (face unlock).
       - `encryptTemplates` (Default: `false`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. Defaults to 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
       - `gui` (Default: `true`) (Example: `true`): Whether to enable the Gaze GTK GUI for enrolling faces.

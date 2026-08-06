@@ -47,6 +47,27 @@ in
       '';
     };
 
+    emitterEnabled = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Drive the IR emitter (IR LED) during authentication. Needed when the
+        camera does not auto-light its infrared LED on streaming start
+        (otherwise IR frames come out black and are rejected as too dark).
+        Requires `ir` to be set.
+      '';
+    };
+
+    darkLumaThreshold = lib.mkOption {
+      type = lib.types.nullOr lib.types.int;
+      default = null;
+      description = ''
+        Override `[cameras] dark_luma_threshold`. IR cameras produce
+        inherently dim frames, so a low value (or 0) prevents spurious
+        `TooDark` rejections. `null` leaves the upstream default (20).
+      '';
+    };
+
     securityLevel = lib.mkOption {
       type = lib.types.enum [
         "low"
@@ -150,6 +171,10 @@ in
           }
           // lib.optionalAttrs (myCfg.ir != null) {
             inherit (myCfg) ir;
+            emitter_enabled = myCfg.emitterEnabled;
+          }
+          // lib.optionalAttrs (myCfg.darkLumaThreshold != null) {
+            dark_luma_threshold = myCfg.darkLumaThreshold;
           };
         };
       };
