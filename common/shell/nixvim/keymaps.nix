@@ -1,4 +1,7 @@
-_:
+{
+  config,
+  ...
+}:
 
 {
   programs.nixvim.keymaps = [
@@ -33,7 +36,7 @@ _:
     {
       mode = "n";
       key = "gD";
-      action = "<cmd>lua vim.lsp.buf.declaration()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.declaration";
       options = {
         silent = true;
         desc = "Go to declaration";
@@ -42,7 +45,7 @@ _:
     {
       mode = "n";
       key = "gd";
-      action = "<cmd>lua vim.lsp.buf.definition()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.definition";
       options = {
         silent = true;
         desc = "Go to definition";
@@ -51,7 +54,7 @@ _:
     {
       mode = "n";
       key = "<C-h>";
-      action = "<cmd>lua vim.lsp.buf.hover()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.hover";
       options = {
         silent = true;
         desc = "Hover";
@@ -60,7 +63,7 @@ _:
     {
       mode = "n";
       key = "gi";
-      action = "<cmd>lua vim.lsp.buf.implementation()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.implementation";
       options = {
         silent = true;
         desc = "Go to implementation";
@@ -69,7 +72,7 @@ _:
     {
       mode = "n";
       key = "<C-k>";
-      action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.signature_help";
       options = {
         silent = true;
         desc = "Signature help";
@@ -78,7 +81,7 @@ _:
     {
       mode = "n";
       key = "<space>wa";
-      action = "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.add_workspace_folder";
       options = {
         silent = true;
         desc = "Add workspace folder";
@@ -87,7 +90,7 @@ _:
     {
       mode = "n";
       key = "<space>wr";
-      action = "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.remove_workspace_folder";
       options = {
         silent = true;
         desc = "Remove workspace folder";
@@ -105,7 +108,7 @@ _:
     {
       mode = "n";
       key = "<space>D";
-      action = "<cmd>lua vim.lsp.buf.type_definition()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.type_definition";
       options = {
         silent = true;
         desc = "Type definition";
@@ -114,7 +117,7 @@ _:
     {
       mode = "n";
       key = "<space>rn";
-      action = "<cmd>lua vim.lsp.buf.rename()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.rename";
       options = {
         silent = true;
         desc = "Rename";
@@ -123,7 +126,7 @@ _:
     {
       mode = "n";
       key = "<space>ca";
-      action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.lsp.buf.code_action";
       options = {
         silent = true;
         desc = "Code action";
@@ -141,7 +144,7 @@ _:
     {
       mode = "n";
       key = "<space>e";
-      action = "<cmd>lua vim.diagnostic.open_float()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.diagnostic.open_float";
       options = {
         silent = true;
         desc = "Open diagnostic";
@@ -150,7 +153,7 @@ _:
     {
       mode = "n";
       key = "[d";
-      action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.diagnostic.goto_prev";
       options = {
         silent = true;
         desc = "Previous diagnostic";
@@ -159,7 +162,7 @@ _:
     {
       mode = "n";
       key = "]d";
-      action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.diagnostic.goto_next";
       options = {
         silent = true;
         desc = "Next diagnostic";
@@ -168,7 +171,7 @@ _:
     {
       mode = "n";
       key = "<space>q";
-      action = "<cmd>lua vim.diagnostic.setloclist()<cr>";
+      action = config.lib.nixvim.mkRaw "vim.diagnostic.setloclist";
       options = {
         silent = true;
         desc = "Set loclist";
