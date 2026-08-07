@@ -1,0 +1,34 @@
+--- a/lua/cmp_ai/backends/openai.lua
++++ b/lua/cmp_ai/backends/openai.lua
+@@ -34,6 +34,31 @@
+     end)
+     return
+   end
++
++  -- FIM (fill-in-the-middle) モード: llama.cpp の /infill エンドポイントを使う。
++  -- chat 形式の marker プロトコルより小さいモデルでも追従しやすい。
++  -- llama-swap 経由で使う場合、ルーティングに model フィールドが必要。
++  if self.params.fim then
++    local url = self.params.url:gsub('/v1/chat/completions$', '/infill')
++    url = url:gsub('/chat/completions$', '/infill')
++    local data = {
++      model = self.params.model,
++      input_prefix = lines_before,
++      input_suffix = lines_after,
++      n_predict = tonumber(self.params.max_tokens) or 64,
++      temperature = self.params.temperature or 0.1,
++      repeat_penalty = 1.2,
++    }
++    self:Get(url, self.headers, data, function(answer)
++      local new_data = {}
++      if answer.content then
++        table.insert(new_data, answer.content)
++      end
++      cb(new_data)
++    end)
++    return
++  end
++
+   local data = {
+     messages = {
+       {

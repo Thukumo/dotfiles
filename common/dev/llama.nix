@@ -111,6 +111,7 @@
                       default = lib.removeSuffix ".gguf" config.file;
                       description = "Name of the model. Defaults to the file name without the .gguf suffix.";
                     };
+                    fim = lib.mkEnableOption "use this model as a FIM (fill-in-the-middle) completion candidate for nvim cmp-ai (pick the active one via dev.llama.fimModel)";
                     contextLength = lib.mkOption {
                       type = lib.types.int;
                       default = 128000;
@@ -171,6 +172,14 @@
             )
         );
         default = [ ];
+      };
+      fimModel = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = ''
+          Name of the model used for FIM (fill-in-the-middle) completion in nvim cmp-ai.
+          Must be the name of a model marked with the `fim` flag. `null` disables cmp-ai.
+        '';
       };
     };
   };

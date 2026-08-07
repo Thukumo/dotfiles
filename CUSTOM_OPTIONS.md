@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-07 11:33:59
+Generated on 2026-08-08 07:05:49
 
 - **custom**
   - **desktop**
@@ -209,6 +209,7 @@ Generated on 2026-08-07 11:33:59
         - `cacheReuse` (Default: `256`): Minimum chunk size to attempt reusing from the cache via KV shifting. Null to use default.
         - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration.
         - `enable` (Default: `false`) (Example: `true`): Whether to enable llama.
+        - `fimModel` (Default: `null`): Name of the model used for FIM (fill-in-the-middle) completion in nvim cmp-ai. Must be the name of a model marked with the 'fim' flag. 'null' disables cmp-ai. 
         - `host` (Default: `"127.0.0.1"`): Host of the llama-server
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): Models to serve ("owner/repo/file.gguf" or submodule)

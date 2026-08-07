@@ -68,7 +68,34 @@
       llama = {
         enable = true;
         cudaSupport = true;
+        fimModel = "qwen2.5-coder-7b";
         models = [
+          {
+            repoId = "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF";
+            file = "qwen2.5-coder-7b-instruct-q4_k_m.gguf";
+            name = "qwen2.5-coder-7b";
+            contextLength = 32768;
+            fim = true;
+          }
+          {
+            repoId = "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF";
+            file = "qwen2.5-coder-3b-instruct-q4_k_m.gguf";
+            name = "qwen2.5-coder-3b";
+            contextLength = 32768;
+            fim = true;
+          }
+          {
+            repoId = "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF";
+            file = "Qwopus3.6-35B-A3B-Coder-MTP-Q4_K_M.gguf";
+            name = "qwopus3.6-35b-coder-mtp";
+            specType = [ "draft-mtp" ];
+            extraArgs = [ "--cpu-moe" ];
+          }
+          {
+            repoId = "bartowski/Kwaipilot_KAT-Coder-V2.5-Dev-GGUF";
+            file = "Kwaipilot_KAT-Coder-V2.5-Dev-Q4_K_M.gguf";
+            name = "kat-coder-v2.5-dev";
+          }
           {
             repoId = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
             file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";

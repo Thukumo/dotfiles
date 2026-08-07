@@ -43,6 +43,11 @@ _:
         "<Down>" = "cmp.mapping.scroll_docs(4)";
         "<Up>" = "cmp.mapping.scroll_docs(-4)";
       };
+      experimental = {
+        ghost_text = {
+          hl_group = "Comment";
+        };
+      };
       # コマンドライン補完設定
       cmdline = {
         "/" = {
