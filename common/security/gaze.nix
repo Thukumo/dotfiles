@@ -16,12 +16,12 @@ in
       default = true;
     };
 
+    # greetdがmlockall(MCL_CURRENT|MCL_FUTURE)するので、ここにloginを入れると物理メモリをいっぱい食われる
     pamServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
         "sudo"
         "polkit-1"
-        "login"
         "hyprlock"
       ];
       description = "PAM services to enable Gaze face authentication for.";
