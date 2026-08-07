@@ -14,11 +14,8 @@
     MaxRetentionSec=2days
   '';
 
-  # "intel_pstate: Turbo disabled by BIOS"がdmesgに出続けるのを抑止
-  services.auto-cpufreq.settings = {
-    charger.turbo = "never";
-    battery.turbo = "never";
-  };
+  # どうせクロック周波数が変動しないので
+  custom.hardware.tune.auto-cpufreq.enable = false;
 
   custom = {
     style.plymouth.enable = false;
