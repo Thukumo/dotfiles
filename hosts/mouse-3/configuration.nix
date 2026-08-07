@@ -94,6 +94,8 @@
     tunnels.mouse-3 = {
       credentialsFile = config.age.secrets.cloudflared_nowplaying.path;
       default = "http_status:404";
+      # https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/troubleshoot-tunnels/common-errors/#my-tunnel-randomly-disconnects
+      protocol = "http2";
       ingress."*.tsukumo.f5.si".service = "http://127.0.0.1:8182";
     };
   };
