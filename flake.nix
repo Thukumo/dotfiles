@@ -178,7 +178,20 @@
                       gnused
                       coreutils
                     ];
-                    text = builtins.readFile ./gen-docs.sh;
+                    # レンダリング本体は flake の genDocs 出力 (gen-docs-render.nix) にある
+                    text = ''
+                      TEMP_FILE=$(mktemp)
+                      trap 'rm -f "$TEMP_FILE"' EXIT
+
+                      # 一時ファイルに生成
+                      nix eval --raw --apply 'x: x.render x.options' .#genDocs > "$TEMP_FILE"
+
+                      # 日付行(2行目)を除いて比較。変わっていなければ何もしない
+                      if ! diff <(sed '2d' CUSTOM_OPTIONS.md) <(sed '2d' "$TEMP_FILE") > /dev/null 2>&1; then
+                        sed "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" "$TEMP_FILE" > CUSTOM_OPTIONS.md
+                        git add CUSTOM_OPTIONS.md
+                      fi
+                    '';
                   }
                 }/bin/gen-docs";
               };
@@ -242,5 +255,17 @@
           ];
         };
       };
+
+      # CUSTOM_OPTIONS.md の生成用:
+      #   nix eval --raw --apply 'x: x.render x.options' .#genDocs
+      # ドキュメント対象ホストは自動選択する (custom オプションのツリーは全ホスト共通)
+      genDocs =
+        let
+          docHost = lib.head (lib.sort (a: b: a < b) (builtins.attrNames hosts));
+        in
+        {
+          render = import ./gen-docs-render.nix { inherit lib; };
+          options = (lib.mapAttrs mkHost hosts).${docHost}.options.custom;
+        };
     };
 }
