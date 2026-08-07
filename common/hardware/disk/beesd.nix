@@ -4,9 +4,11 @@
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
+      description = "Whether to enable beesd (btrfs deduplication)";
     };
     hashTableSizeMB = lib.mkOption {
       type = lib.types.int;
+      description = "Size of the beesd hash table in MiB";
     };
   };
   config = lib.mkMerge [

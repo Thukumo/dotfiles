@@ -11,12 +11,14 @@
       vpnServer = lib.mkOption {
         type = lib.types.str;
         default = "srasvpn.sic.shibaura-it.ac.jp";
+        description = "SSTP VPN server address";
       };
       dnsDomains = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [
           "shibaura-it.ac.jp"
         ];
+        description = "DNS domains routed through the VPN";
       };
     };
   });

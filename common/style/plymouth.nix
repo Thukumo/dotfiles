@@ -10,13 +10,15 @@ let
 in
 {
   options.custom.style.plymouth = {
-    enable = myLib.mkEnabledOption;
+    enable = myLib.mkEnabledOption "plymouth";
     theme = lib.mkOption {
       type = lib.types.str;
       default = "hellonavi";
+      description = "Plymouth theme name";
     };
     packages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
+      description = "Extra Plymouth theme packages";
       default = with pkgs; [
         (stdenvNoCC.mkDerivation {
           name = "hellonavi";

@@ -11,10 +11,12 @@
       vpnPortal = lib.mkOption {
         type = lib.types.str;
         default = "gpvpn.sic.shibaura-it.ac.jp";
+        description = "GlobalProtect portal address";
       };
       dnsDomains = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ "shibaura-it.ac.jp" ];
+        description = "DNS domains routed through the VPN";
       };
     };
   });

@@ -6,7 +6,7 @@
   ...
 }:
 {
-  options.custom.hardware.tune.ananicy.enable = myLib.mkEnabledOption;
+  options.custom.hardware.tune.ananicy.enable = myLib.mkEnabledOption "ananicy";
 
   config = lib.mkIf config.custom.hardware.tune.ananicy.enable {
     services.ananicy = {

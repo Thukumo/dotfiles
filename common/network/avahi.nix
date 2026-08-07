@@ -6,7 +6,7 @@
 }:
 {
   options.custom.network.avahi = {
-    enable = myLib.mkEnabledOption;
+    enable = myLib.mkEnabledOption "avahi (mDNS/DNS-SD)";
   };
 
   config = lib.mkIf config.custom.network.avahi.enable {

@@ -39,15 +39,18 @@ in
           "whisper-cpp"
         ];
         default = "moonshine";
+        description = "Speech-to-text backend";
       };
       cudaSupport = lib.mkEnableOption "CUDA GPU acceleration (whisper-cpp only)";
       language = lib.mkOption {
         type = lib.types.str;
         default = "auto";
+        description = "Recognition language (e.g. \"ja\")";
       };
       model = lib.mkOption {
         type = lib.types.str;
         default = "large-v3-turbo";
+        description = "Model name";
       };
     };
   };

@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.custom.hardware.tune.auto-cpufreq.enable = myLib.mkEnabledOption;
+  options.custom.hardware.tune.auto-cpufreq.enable = myLib.mkEnabledOption "auto-cpufreq";
 
   config = lib.mkIf config.custom.hardware.tune.auto-cpufreq.enable {
     services.auto-cpufreq.enable = true;

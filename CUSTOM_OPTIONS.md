@@ -1,45 +1,45 @@
 # Custom Options Tree
-Generated on 2026-08-07 11:13:28
+Generated on 2026-08-07 11:33:59
 
 - **custom**
   - **desktop**
     - `anyEnabled` (Default: `false`): Whether any user has desktop enabled
     - **pipewire**
-      - `enable` (Default: `true`): No description
+      - `enable` (Default: `true`): Whether to enable pipewire (enabled by default).
     - `sessionCommand` (Default: `null`): Command to start the desktop session
     - `sessionManager` (Default: `"tuigreet"`): Session manager to use
     - **sunshine**
-      - `enable` (Default: `false`) (Example: `true`): Whether to enable .
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable sunshine (game streaming).
   - **hardware**
     - **disk**
       - **beesd**
-        - `enable` (Default: `false`): No description
-        - `hashTableSizeMB` (Default: `No default`): No description
+        - `enable` (Default: `false`): Whether to enable beesd (btrfs deduplication)
+        - `hashTableSizeMB` (Default: `No default`): Size of the beesd hash table in MiB
       - **btrfs-autoScrub**
-        - `enable` (Default: `false`): No description
+        - `enable` (Default: `false`): Whether to enable btrfs auto scrub
       - **disko**
-        - `ESPSize` (Default: `"2G"`): No description
-        - `diskName` (Default: `No default`): No description
-        - `enable` (Default: `true`): No description
+        - `ESPSize` (Default: `"2G"`): Size of the EFI System Partition (e.g. "2G")
+        - `diskName` (Default: `No default`): Path to the disk device (e.g. /dev/disk/by-id/...)
+        - `enable` (Default: `true`): Whether to enable disko (disk formatting) (enabled by default).
         - **luks**
           - `deviceName` (Default: `"cryptedpart"`): Name of the LUKS device
           - `enable` (Default: `true`): Enable LUKS encryption
-        - `swapSize` (Default: `No default`): No description
+        - `swapSize` (Default: `No default`): Size of the swap partition (e.g. "8G")
       - **fstrim**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable fstrim (enabled by default).
       - **snapshot**
-        - `enable` (Default: `false`): No description
+        - `enable` (Default: `false`): Whether to enable btrbk snapshots of /persist
     - **fwupdmgr**
-      - `enable` (Default: `true`): No description
+      - `enable` (Default: `true`): Whether to enable fwupdmgr (firmware updates) (enabled by default).
     - **gpu**
       - **nvidia**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable nvidia GPU.
     - **keyboard**
       - **keybind**
         - `deviceIds` (Default: `[]`) (Example: `["0001:0001"]`): List of keyboard device IDs to apply keybindings to. Use '*' for all keyboards.
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable keyd keybind remapping (enabled by default).
       - **vialRule**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable Vial (via) protocol support (enabled by default).
     - **secure-boot**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Secure Boot with Lanzaboote.
       - `init` (Default: `false`) (Example: `true`): Whether to enable use when init secure boot.
@@ -47,31 +47,31 @@ Generated on 2026-08-07 11:13:28
         - `enable` (Default: `false`): Enable TPM2 TOTP support
     - **tune**
       - **ananicy**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable ananicy (enabled by default).
       - **auto-cpufreq**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable auto-cpufreq (enabled by default).
       - **bpftune**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable bpftune (enabled by default).
       - **earlyoom**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable earlyoom (enabled by default).
       - **ksm**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable KSM (Kernel Samepage Merging) (enabled by default).
         - `enableForAll` (Default: `false`) (Example: `true`): Whether to enable Enable ksm for all.
       - **powertop**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable powertop (enabled by default).
       - **zswap**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable zswap (enabled by default).
   - **mycelium**
     - **hosts** (User Options)
       - `hostname` (Default: `No default`): Hostname that other machines resolve to this address
       - `ipv6` (Default: `No default`): Mycelium IPv6 address of this host
   - **network**
     - **avahi**
-      - `enable` (Default: `true`): No description
+      - `enable` (Default: `true`): Whether to enable avahi (mDNS/DNS-SD) (enabled by default).
     - **cloudflare-warp**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
     - **mycelium**
-      - `enable` (Default: `true`): No description
+      - `enable` (Default: `true`): Whether to enable mycelium (enabled by default).
     - **ssh-server**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable OpenSSH Server.
     - **wifi**
@@ -86,9 +86,9 @@ Generated on 2026-08-07 11:13:28
       - `path` (Default: `"/etc/age/key.txt"`): Path of the system age identity key
   - **security**
     - **clamav**
-      - `enable` (Default: `true`): No description
+      - `enable` (Default: `true`): Whether to enable ClamAV (enabled by default).
       - **realtime**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable ClamAV real-time scanning (enabled by default).
     - **gaze**
       - **customSecurity** (Submodule)
         - `detector` (Default: `"accurate"`): Face detector quality for 'securityLevel = "custom"'.
@@ -106,9 +106,9 @@ Generated on 2026-08-07 11:13:28
       - `securityLevel` (Default: `"maximum"`): Gaze security level. 'low'/'medium' use MobileFaceNet (faster), 'high'/'maximum' use ResNet50 (more accurate, stricter). Ignored when 'securityLevel = "custom"' (set thresholds via 'services.gaze.settings.security' directly). 
   - **style**
     - **plymouth**
-      - `enable` (Default: `true`): No description
-      - `packages` (Default: `["/nix/store/ibxwvx36nn2vpggxmm6mq045h2z178qk-hellonavi"]`): No description
-      - `theme` (Default: `"hellonavi"`): No description
+      - `enable` (Default: `true`): Whether to enable plymouth (enabled by default).
+      - `packages` (Default: `["/nix/store/ibxwvx36nn2vpggxmm6mq045h2z178qk-hellonavi"]`): Extra Plymouth theme packages
+      - `theme` (Default: `"hellonavi"`): Plymouth theme name
   - **users** (User Options)
     - **account**
       - `shell` (Default: `null`): Login shell for this user
@@ -167,25 +167,25 @@ Generated on 2026-08-07 11:13:28
       - `de` (Default: `null`): Desktop environment or window manager to use
       - `enable` (Default: `false`) (Example: `true`): Whether to enable desktop environment.
       - **hyprlock**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable hyprlock (enabled by default).
       - `ime` (Default: `null`): Input method engine to use
       - `launcher` (Default: `null`): Application launcher to use
       - `mimeBrowser` (Default: `null`): Browser to set as the default MIME handler
       - **nowplaying**
-        - `enable` (Default: `true`): No description
+        - `enable` (Default: `true`): Whether to enable nowplaying (enabled by default).
         - `server` (Default: `"https://api-nowplaying.tsukumo.f5.si"`): Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).
       - `terminal` (Default: `null`): Terminal emulator to use
       - **voice-input**
-        - `backend` (Default: `"moonshine"`): No description
+        - `backend` (Default: `"moonshine"`): Speech-to-text backend
         - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration (whisper-cpp only).
         - `enable` (Default: `false`) (Example: `true`): Whether to enable voice input (speech-to-text).
-        - `language` (Default: `"auto"`): No description
-        - `model` (Default: `"large-v3-turbo"`): No description
+        - `language` (Default: `"auto"`): Recognition language (e.g. "ja")
+        - `model` (Default: `"large-v3-turbo"`): Model name
         - `server` (Default: `false`) (Example: `true`): Whether to enable persistent whisper-server (keeps model in VRAM).
       - **vr**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
         - **immersed**
-          - `enable` (Default: `false`): No description
+          - `enable` (Default: `false`): Whether to enable Immersed (VR workspace)
       - **winapps**
         - `autopause` (Default: `false`) (Example: `true`): Whether to enable automatic pausing of Windows when inactive.
         - `autopauseTime` (Default: `"300"`): Duration of inactivity (in seconds) to tolerate before Windows is automatically paused
@@ -209,17 +209,17 @@ Generated on 2026-08-07 11:13:28
         - `cacheReuse` (Default: `256`): Minimum chunk size to attempt reusing from the cache via KV shifting. Null to use default.
         - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration.
         - `enable` (Default: `false`) (Example: `true`): Whether to enable llama.
-        - `host` (Default: `"127.0.0.1"`): No description
+        - `host` (Default: `"127.0.0.1"`): Host of the llama-server
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
-        - `models` (Default: `[]`): No description
+        - `models` (Default: `[]`): Models to serve ("owner/repo/file.gguf" or submodule)
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/vc3bha4vhf0szn55m7bwgssqzgjkdsfv-llama-cpp-10273"`): No description
-        - `port` (Default: `11434`): No description
+        - `package` (Default: `"/nix/store/vc3bha4vhf0szn55m7bwgssqzgjkdsfv-llama-cpp-10273"`): llama-cpp package to use
+        - `port` (Default: `11434`): Port of the llama-server
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
       - **opencode**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
-        - `models` (Default: `[]`): No description
+        - `models` (Default: `[]`): Extra models to register for the llama provider (llama models are added automatically when llama is enabled)
       - **podman**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable podman.
       - **unityhub**
@@ -231,13 +231,13 @@ Generated on 2026-08-07 11:13:28
         - `enable` (Default: `false`) (Example: `true`): Whether to enable DLNA Server for this user.
         - `mediaDirs` (Default: `[]`) (Example: `["V,Documents/mov"]`): Media directories for this user. Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video"). Relative paths are resolved to the user's home. 
       - **globalProtect**
-        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): No description
+        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): DNS domains routed through the VPN
         - `enable` (Default: `false`) (Example: `true`): Whether to enable GlobalProtect VPN.
-        - `vpnPortal` (Default: `"gpvpn.sic.shibaura-it.ac.jp"`): No description
+        - `vpnPortal` (Default: `"gpvpn.sic.shibaura-it.ac.jp"`): GlobalProtect portal address
       - **sstp**
-        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): No description
+        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): DNS domains routed through the VPN
         - `enable` (Default: `false`) (Example: `true`): Whether to enable SSTP VPN.
-        - `vpnServer` (Default: `"srasvpn.sic.shibaura-it.ac.jp"`): No description
+        - `vpnServer` (Default: `"srasvpn.sic.shibaura-it.ac.jp"`): SSTP VPN server address
     - **persistence**
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user

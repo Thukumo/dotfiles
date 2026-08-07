@@ -12,14 +12,17 @@
       host = lib.mkOption {
         type = lib.types.str;
         default = "127.0.0.1";
+        description = "Host of the llama-server";
       };
       port = lib.mkOption {
         type = lib.types.port;
         default = 11434;
+        description = "Port of the llama-server";
       };
       package = lib.mkOption {
         type = lib.types.package;
         default = pkgs.llama-cpp;
+        description = "llama-cpp package to use";
       };
       cudaSupport = lib.mkEnableOption "CUDA GPU acceleration";
       rocmSupport = lib.mkEnableOption "ROCm GPU acceleration";
@@ -37,6 +40,7 @@
       };
       models = lib.mkOption {
         # String または AttrSet を受け取るハイブリッド型
+        description = "Models to serve (\"owner/repo/file.gguf\" or submodule)";
         type = lib.types.listOf (
           lib.types.coercedTo lib.types.str
             (str: {

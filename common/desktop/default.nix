@@ -74,6 +74,7 @@ in
           immersed.enable = lib.mkOption {
             type = lib.types.bool;
             default = config.desktop.vr.enable;
+            description = "Whether to enable Immersed (VR workspace)";
           };
         };
       };
@@ -81,8 +82,8 @@ in
   );
 
   options.custom.desktop = {
-    sunshine.enable = lib.mkEnableOption "";
-    pipewire.enable = myLib.mkEnabledOption;
+    sunshine.enable = lib.mkEnableOption "sunshine (game streaming)";
+    pipewire.enable = myLib.mkEnabledOption "pipewire";
     anyEnabled = lib.mkOption {
       type = lib.types.bool;
       internal = true;

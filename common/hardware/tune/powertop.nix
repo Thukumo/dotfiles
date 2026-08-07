@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.custom.hardware.tune.powertop.enable = myLib.mkEnabledOption;
+  options.custom.hardware.tune.powertop.enable = myLib.mkEnabledOption "powertop";
 
   config = lib.mkIf config.custom.hardware.tune.powertop.enable {
     powerManagement.powertop.enable = true;

@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.custom.hardware.tune.zswap.enable = myLib.mkEnabledOption;
+  options.custom.hardware.tune.zswap.enable = myLib.mkEnabledOption "zswap";
 
   config = lib.mkIf config.custom.hardware.tune.zswap.enable {
     boot.kernelParams = [

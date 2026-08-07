@@ -6,16 +6,19 @@
 }:
 {
   options.custom.hardware.disk.disko = {
-    enable = myLib.mkEnabledOption;
+    enable = myLib.mkEnabledOption "disko (disk formatting)";
     diskName = lib.mkOption {
       type = lib.types.str;
+      description = "Path to the disk device (e.g. /dev/disk/by-id/...)";
     };
     swapSize = lib.mkOption {
       type = lib.types.str;
+      description = "Size of the swap partition (e.g. \"8G\")";
     };
     ESPSize = lib.mkOption {
       type = lib.types.str;
       default = "2G";
+      description = "Size of the EFI System Partition (e.g. \"2G\")";
     };
     luks = {
       enable = lib.mkOption {

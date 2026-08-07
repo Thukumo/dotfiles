@@ -14,9 +14,9 @@ in
   ];
 
   options.custom.security.clamav = {
-    enable = myLib.mkEnabledOption;
+    enable = myLib.mkEnabledOption "ClamAV";
     realtime = {
-      enable = myLib.mkEnabledOption;
+      enable = myLib.mkEnabledOption "ClamAV real-time scanning";
     };
   };
   config = {

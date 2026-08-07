@@ -18,6 +18,7 @@ in
       models = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ ];
+        description = "Extra models to register for the llama provider (llama models are added automatically when llama is enabled)";
       };
     };
   };

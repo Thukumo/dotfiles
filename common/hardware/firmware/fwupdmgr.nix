@@ -6,7 +6,7 @@
 }:
 
 {
-  options.custom.hardware.fwupdmgr.enable = myLib.mkEnabledOption;
+  options.custom.hardware.fwupdmgr.enable = myLib.mkEnabledOption "fwupdmgr (firmware updates)";
 
   config = lib.mkIf config.custom.hardware.fwupdmgr.enable {
     services.fwupd.enable = true;

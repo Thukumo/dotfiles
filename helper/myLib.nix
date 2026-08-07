@@ -28,10 +28,13 @@ let
       name: type: isModuleFile name type || (type == "directory" && !builtins.elem name excludedDirs)
     );
 
-  mkEnabledOption = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-  };
+  mkEnabledOption =
+    name:
+    lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether to enable ${name} (enabled by default).";
+    };
 
   # Type for the per-user option `custom.users` (attrsOf submodule).
   # Each module extends it with only the fields it adds:

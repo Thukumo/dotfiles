@@ -10,7 +10,7 @@ in
 {
   options.custom.hardware.keyboard = {
     keybind = {
-      enable = myLib.mkEnabledOption;
+      enable = myLib.mkEnabledOption "keyd keybind remapping";
       deviceIds = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ ];
@@ -18,7 +18,7 @@ in
         example = [ "0001:0001" ];
       };
     };
-    vialRule.enable = myLib.mkEnabledOption;
+    vialRule.enable = myLib.mkEnabledOption "Vial (via) protocol support";
   };
   config = {
     # for vial

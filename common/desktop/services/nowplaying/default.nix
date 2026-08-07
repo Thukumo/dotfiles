@@ -9,7 +9,7 @@
 {
   options.custom.users = myLib.mkUserOption {
     options.desktop.nowplaying = {
-      enable = myLib.mkEnabledOption;
+      enable = myLib.mkEnabledOption "nowplaying";
       server = lib.mkOption {
         type = lib.types.str;
         default = "https://api-nowplaying.tsukumo.f5.si";

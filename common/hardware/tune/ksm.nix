@@ -6,7 +6,7 @@
 }:
 {
   options.custom.hardware.tune.ksm = {
-    enable = myLib.mkEnabledOption;
+    enable = myLib.mkEnabledOption "KSM (Kernel Samepage Merging)";
     enableForAll = lib.mkEnableOption "Enable ksm for all";
   };
 
