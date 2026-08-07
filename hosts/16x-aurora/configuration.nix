@@ -120,7 +120,10 @@
     };
   };
 
-  custom.network.cloudflare-warp.enable = true;
+  custom.network = {
+    wifi.enable = true;
+    cloudflare-warp.enable = true;
+  };
 
   networking.dhcpcd.extraConfig = ''
     metric 700
@@ -129,10 +132,7 @@
   custom.hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
 
   # agenix system key (for secrets not tied to a specific user)
-  custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
-  environment.persistence."/persist".files = [
-    "/etc/age/key.txt"
-  ];
+  custom.secrets.systemAgeKey.enable = true;
 
   custom.hardware.disk = {
     disko = {

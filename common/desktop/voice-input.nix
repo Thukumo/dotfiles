@@ -62,8 +62,9 @@ in
       modelDir = "${config.home.homeDirectory}/.local/share/whisper/models";
       modelName = "ggml-${cfg.model}";
       modelFile =
-        assert !(cfg.server && cfg.backend != "whisper-cpp");
-        "${modelDir}/${modelName}.bin";
+        lib.throwIf (cfg.server && cfg.backend != "whisper-cpp")
+          "voice-input: `server` (persistent whisper-server) is only supported with the whisper-cpp backend, but got `${cfg.backend}`"
+          "${modelDir}/${modelName}.bin";
 
       toggleScript =
         if cfg.backend == "moonshine" then
@@ -164,8 +165,6 @@ in
           '';
     in
     {
-      home.packages = [ ];
-
       home.persistence."/persist".directories = [
         ".local/whisper-typing"
       ]

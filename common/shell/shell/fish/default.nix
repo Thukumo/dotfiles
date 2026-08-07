@@ -1,12 +1,10 @@
 {
-  pkgs,
   lib,
-  osConfig,
-  config,
+  myConfig,
   ...
 }:
 let
-  isEnabled = osConfig.users.users.${config.home.username}.shell == pkgs.fish;
+  isEnabled = myConfig.account.shell == "fish";
 in
 {
   programs.fish = {

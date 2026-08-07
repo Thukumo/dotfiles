@@ -30,6 +30,10 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
 
+  home-manager.extraSpecialArgs = {
+    inherit myLib;
+  };
+
   # Inject each user's custom config into their home-manager module
   home-manager.users = lib.mkMerge [
     (lib.mkMerge (

@@ -1,15 +1,7 @@
-{ lib, ... }:
+{ myLib, ... }:
 
 {
-  imports = map (name: ./. + "/${name}") (
-    builtins.attrNames (
-      lib.filterAttrs (
-        name: type:
-        (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
-        || (type == "directory" && name != "luaconfig")
-      ) (builtins.readDir ./.)
-    )
-  );
+  imports = myLib.mkImportModules ./. [ "luaconfig" ];
   programs.nixvim = {
     enable = true;
     defaultEditor = true;

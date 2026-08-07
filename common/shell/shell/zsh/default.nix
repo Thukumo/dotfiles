@@ -1,12 +1,12 @@
 {
   pkgs,
   lib,
-  osConfig,
   config,
+  myConfig,
   ...
 }:
 let
-  isEnabled = osConfig.users.users.${config.home.username}.shell == pkgs.zsh;
+  isEnabled = myConfig.account.shell == "zsh";
 in
 {
   programs.zsh = {

@@ -13,11 +13,22 @@
         default = [ ];
         description = "Additional identity paths for age encryption";
       };
+
+      systemAgeKey = {
+        enable = lib.mkEnableOption "a system-wide age identity key for secrets not tied to a user";
+        path = lib.mkOption {
+          type = lib.types.str;
+          default = "/etc/age/key.txt";
+          description = "Path of the system age identity key";
+        };
+      };
     };
   };
 
   config =
     let
+      keyCfg = config.custom.secrets.systemAgeKey;
+
       isPersisted =
         path:
         let
@@ -37,8 +48,8 @@
         inputs.ragenix.packages."${config.nixpkgs.system}".default
       ];
 
-      # Note: Secret key directories must be added to environment.persistence
-      # in each host configuration to avoid infinite recursion
+      # Note: Extra identity keys added via custom.secrets.extraIdentityPaths
+      # must be persisted in host configuration to avoid infinite recursion.
 
       assertions = map (path: {
         assertion = isPersisted path;
@@ -46,5 +57,12 @@
       }) config.custom.secrets.extraIdentityPaths;
 
       age.identityPaths = map (p: "/persist" + p) config.custom.secrets.extraIdentityPaths;
+
+      custom.secrets.extraIdentityPaths = lib.mkIf keyCfg.enable [
+        keyCfg.path
+      ];
+      environment.persistence."/persist".files = lib.mkIf keyCfg.enable [
+        keyCfg.path
+      ];
     };
 }

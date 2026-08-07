@@ -11,10 +11,24 @@
     myLib.mkUserOption {
       options = {
         # NixOS user account (users.users.<name>) settings derived from custom.users.
-        account.userConfig = lib.mkOption {
-          type = lib.types.attrs;
-          default = { };
-          description = "Attribute set merged into users.users.<name>.";
+        account = {
+          userConfig = lib.mkOption {
+            type = lib.types.attrs;
+            default = { };
+            description = "Attribute set merged into users.users.<name>.";
+          };
+          # shell.private.enableとの衝突を回避している
+          shell = lib.mkOption {
+            type = lib.types.nullOr (
+              lib.types.enum [
+                "nushell"
+                "zsh"
+                "fish"
+              ]
+            );
+            default = null;
+            description = "Login shell for this user";
+          };
         };
 
         email = lib.mkOption {
@@ -81,7 +95,10 @@
         ${name} = {
           isNormalUser = lib.mkDefault true;
         }
-        // userCfg.account.userConfig;
+        // userCfg.account.userConfig
+        // lib.optionalAttrs (userCfg.account.shell != null) {
+          shell = pkgs.${userCfg.account.shell};
+        };
       }) config.custom.users
     );
 
@@ -91,15 +108,17 @@
     # affect `users.users` via upstream NixOS modules.
     custom.users = {
       "tsukumo" = {
-        account.userConfig = {
-          hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
-          extraGroups = [
-            "wheel"
-          ];
-          shell = pkgs.nushell;
-          openssh.authorizedKeys.keyFiles = [
-            ../../shell/ssh/id_ed25519.pub
-          ];
+        account = {
+          userConfig = {
+            hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
+            extraGroups = [
+              "wheel"
+            ];
+            openssh.authorizedKeys.keyFiles = [
+              ../../shell/ssh/id_ed25519.pub
+            ];
+          };
+          shell = "nushell";
         };
 
         email = "contact@tsukumo.f5.si";
@@ -138,20 +157,16 @@
     };
 
     # for shell
-    # `account.userConfig` is a free-form attrset, so `or null` guards users
-    # that don't set a shell.
-    programs.fish.enable = lib.any (u: (u.account.userConfig.shell or null) == pkgs.fish) (
-      lib.attrValues config.custom.users
-    );
-    programs.zsh.enable = lib.any (u: (u.account.userConfig.shell or null) == pkgs.zsh) (
-      lib.attrValues config.custom.users
-    );
+    programs.fish.enable = lib.any (u: u.account.shell == "fish") (lib.attrValues config.custom.users);
+    programs.zsh.enable = lib.any (u: u.account.shell == "zsh") (lib.attrValues config.custom.users);
     # nixpkgs' `programs.nushell` does not register the shell in `/etc/shells`
     # (unlike `programs.fish`/`programs.zsh`), so add it manually when any
     # user logs in with nushell.
-    environment.shells = lib.mkIf (lib.any (u: (u.account.userConfig.shell or null) == pkgs.nushell) (
-      lib.attrValues config.custom.users
-    )) [ pkgs.nushell ];
+    environment.shells =
+      lib.mkIf (lib.any (u: u.account.shell == "nushell") (lib.attrValues config.custom.users))
+        [
+          pkgs.nushell
+        ];
 
     security.sudo.enable = false;
     security.sudo-rs = {

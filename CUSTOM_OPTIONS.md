@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-07 10:19:17
+Generated on 2026-08-07 11:05:15
 
 - **custom**
   - **desktop**
@@ -71,11 +71,15 @@ Generated on 2026-08-07 10:19:17
     - **ssh-server**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable OpenSSH Server.
     - **wifi**
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable wpa_supplicant Wi-Fi.
       - `fallbackToWPA2` (Default: `false`) (Example: `true`): Whether to enable gen config for WPA2.
     - **zapret**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
+    - **systemAgeKey**
+      - `enable` (Default: `false`) (Example: `true`): Whether to enable a system-wide age identity key for secrets not tied to a user.
+      - `path` (Default: `"/etc/age/key.txt"`): Path of the system age identity key
   - **security**
     - **clamav**
       - `enable` (Default: `true`): No description
@@ -103,6 +107,7 @@ Generated on 2026-08-07 10:19:17
       - `theme` (Default: `"hellonavi"`): No description
   - **users** (User Options)
     - **account**
+      - `shell` (Default: `null`): Login shell for this user
       - `userConfig` (Default: `{}`): Attribute set merged into users.users.<name>.
     - **desktop**
       - **activate-linux**

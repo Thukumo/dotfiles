@@ -18,6 +18,7 @@
       realtime.enable = false;
     };
     network = {
+      wifi.enable = true;
       mycelium.enable = true;
       cloudflare-warp.enable = true;
     };
@@ -42,10 +43,7 @@
 
   custom.hardware.keyboard.keybind.deviceIds = [ "18d1:00ff" ];
 
-  custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
-  environment.persistence."/persist".directories = [
-    "/etc/age"
-  ];
+  custom.secrets.systemAgeKey.enable = true;
 
   custom.hardware.disk = {
     beesd.hashTableSizeMB = 256;

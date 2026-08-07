@@ -7,14 +7,5 @@
     };
   };
 
-  imports =
-    let
-      dirs = builtins.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.));
-      files = builtins.attrNames (
-        lib.filterAttrs (
-          name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix"
-        ) (builtins.readDir ./.)
-      );
-    in
-    (map (name: ./. + "/${name}") dirs) ++ (map (name: ./. + "/${name}") files);
+  imports = myLib.mkImportModules ./. [ ];
 }

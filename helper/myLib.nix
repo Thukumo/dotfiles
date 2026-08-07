@@ -5,9 +5,6 @@
 # config-independent arguments. The config-dependent helpers
 # (`mkForEachUsers`) therefore take `config` explicitly.
 #
-# Home-manager modules (e.g. `common/shell/*`) get neither `specialArgs` nor
-# `config` at `imports`-resolution time, so they build their `imports` lists
-# with plain `lib` instead of the helpers below.
 { lib }:
 let
   # Import all children of `dir` matching `pred` (pred: name -> type -> bool).

@@ -86,10 +86,7 @@
   };
 
   # agenix system key (for secrets not tied to a specific user)
-  custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
-  environment.persistence."/persist".directories = [
-    "/etc/age"
-  ];
+  custom.secrets.systemAgeKey.enable = true;
 
   age.secrets."cloudflared_nowplaying".file = ./cloudflared-nowplaying-credentials.age;
   services.cloudflared = {

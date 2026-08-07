@@ -1,12 +1,11 @@
 {
-  pkgs,
   lib,
-  osConfig,
   config,
+  myConfig,
   ...
 }:
 let
-  isEnabled = osConfig.users.users.${config.home.username}.shell == pkgs.nushell;
+  isEnabled = myConfig.account.shell == "nushell";
 in
 {
   programs.nushell = {

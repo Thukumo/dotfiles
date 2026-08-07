@@ -10,6 +10,7 @@
 
 {
   custom.hardware.secure-boot.enable = true;
+  custom.network.wifi.enable = true;
   # # nanoKVM
   # services.udev.extraRules = ''
   #   SUBSYSTEM=="usb", ATTR{idVendor}=="345f", ATTR{idProduct}=="2131", MODE="0666", GROUP="plugdev"
@@ -90,10 +91,7 @@
   ];
 
   # agenix system key (for secrets not tied to a specific user)
-  custom.secrets.extraIdentityPaths = [ "/etc/age/key.txt" ];
-  environment.persistence."/persist".directories = [
-    "/etc/age"
-  ];
+  custom.secrets.systemAgeKey.enable = true;
 
   custom.hardware.disk = {
     btrfs-autoScrub.enable = true;
