@@ -1,12 +1,11 @@
 {
   lib,
   config,
+  myLib,
   ...
 }:
 let
-  anyUserEnabled = lib.any (user: user.desktop.apps.localsend.enable) (
-    builtins.attrValues config.custom.users
-  );
+  anyUserEnabled = myLib.anyUser config (user: user.desktop.apps.localsend.enable);
 in
 {
   config = lib.mkIf anyUserEnabled {

@@ -5,23 +5,19 @@
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule (_: {
-        options.network.globalProtect = {
-          enable = lib.mkEnableOption "GlobalProtect VPN";
-          vpnPortal = lib.mkOption {
-            type = lib.types.str;
-            default = "gpvpn.sic.shibaura-it.ac.jp";
-          };
-          dnsDomains = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ "shibaura-it.ac.jp" ];
-          };
-        };
-      })
-    );
-  };
+  options.custom.users = myLib.mkUserOption (_: {
+    options.network.globalProtect = {
+      enable = lib.mkEnableOption "GlobalProtect VPN";
+      vpnPortal = lib.mkOption {
+        type = lib.types.str;
+        default = "gpvpn.sic.shibaura-it.ac.jp";
+      };
+      dnsDomains = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ "shibaura-it.ac.jp" ];
+      };
+    };
+  });
 
   config.home-manager.users =
     myLib.mkForEachUsers config (user: user.custom.network.globalProtect.enable)

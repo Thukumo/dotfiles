@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-07 09:40:57
+Generated on 2026-08-07 10:19:17
 
 - **custom**
   - **desktop**
@@ -232,8 +232,6 @@ Generated on 2026-08-07 09:40:57
     - **persistence**
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user
-    - **secrets**
-      - `secretKey` (Default: `null`): Path to user's secret key for age encryption (relative to /persist)
     - **shell**
       - **private**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable private shell secrets.

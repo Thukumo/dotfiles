@@ -1,14 +1,10 @@
 { lib, myLib, ... }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop = {
-          hyprlock.enable = myLib.mkEnabledOption;
-          activate-linux.enable = lib.mkEnableOption "activate-linux watermark";
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.desktop = {
+      hyprlock.enable = myLib.mkEnabledOption;
+      activate-linux.enable = lib.mkEnableOption "activate-linux watermark";
+    };
   };
 
   imports =

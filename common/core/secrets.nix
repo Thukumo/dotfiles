@@ -7,18 +7,6 @@
 
 {
   options = {
-    custom.users = lib.mkOption {
-      type = lib.types.attrsOf (
-        lib.types.submodule {
-          options.secrets.secretKey = lib.mkOption {
-            type = lib.types.nullOr lib.types.str;
-            default = null;
-            description = "Path to user's secret key for age encryption (relative to /persist)";
-          };
-        }
-      );
-    };
-
     custom.secrets = {
       extraIdentityPaths = lib.mkOption {
         type = lib.types.listOf lib.types.str;

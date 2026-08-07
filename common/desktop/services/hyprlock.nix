@@ -3,12 +3,13 @@
   pkgs,
   lib,
   desktopLib,
+  myLib,
   ...
 }:
 
 {
-  security.pam.services.hyprlock = lib.mkIf (lib.any (u: u.desktop.hyprlock.enable) (
-    lib.attrValues config.custom.users
+  security.pam.services.hyprlock = lib.mkIf (myLib.anyUser config (
+    user: user.desktop.hyprlock.enable
   )) { };
 
   home-manager.users = desktopLib.mkHome (user: user.custom.desktop.hyprlock.enable) (_: {

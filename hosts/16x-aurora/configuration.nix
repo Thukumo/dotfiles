@@ -168,15 +168,6 @@
   #   package = pkgs.pulseaudioFull;
   # };
 
-  console.keyMap = "jp106";
-  services.xserver.xkb = {
-    layout = "jp106";
-    variant = "";
-  };
-
-  # hardware.enableRedistributableFirmware = true;
-  # boot.kernelModules = [ "mt7925e" ];
-
   hardware.bluetooth.enable = true;
   system.stateVersion = "26.05";
 }

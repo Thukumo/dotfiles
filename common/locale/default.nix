@@ -1,9 +1,20 @@
-{ myLib, config, ... }:
+{
+  myLib,
+  config,
+  lib,
+  ...
+}:
 
 {
   time.timeZone = "Asia/Tokyo";
 
   i18n.defaultLocale = "ja_JP.UTF-8";
+
+  console.keyMap = lib.mkDefault "jp106";
+  services.xserver.xkb = {
+    layout = lib.mkDefault "jp106";
+    variant = "";
+  };
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "ja_JP.UTF-8";

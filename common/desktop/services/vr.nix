@@ -3,12 +3,13 @@
   lib,
   pkgs,
   desktopLib,
+  myLib,
   ...
 }:
 {
   config =
     let
-      vrEnabled = builtins.any (user: user.desktop.vr.enable) (builtins.attrValues config.custom.users);
+      vrEnabled = myLib.anyUser config (user: user.desktop.vr.enable);
     in
     {
       environment.systemPackages = lib.mkIf vrEnabled [

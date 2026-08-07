@@ -56,12 +56,6 @@
     };
   };
 
-  console.keyMap = "jp106";
-  services.xserver.xkb = {
-    layout = "jp106";
-    variant = "";
-  };
-
   home-manager.users = myLib.mkForEachUsers config (_: true) (_: {
     programs.niri.settings.input = {
       touch = {

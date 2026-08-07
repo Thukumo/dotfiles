@@ -76,26 +76,6 @@
     ];
   };
 
-  services.btrbk = {
-    instances = {
-      "persist-snapshots" = {
-        onCalendar = "hourly";
-        settings = {
-          snapshot_preserve_min = "2d";
-          snapshot_preserve = "48h 7d 2w";
-          volume."/persist" = {
-            subvolume = ".";
-            snapshot_dir = ".snapshots";
-          };
-        };
-      };
-    };
-  };
-  # for btrbk
-  systemd.tmpfiles.rules = [
-    "d /persist/.snapshots 0700 root root -"
-  ];
-
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/BOOT";
     fsType = "vfat";

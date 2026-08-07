@@ -37,28 +37,48 @@ let
         };
       in
       browsers.${browser};
+
+    # ターミナル名(desktop.terminal の enum) → 起動コマンド。呼び出し側で null(未設定)は弾くこと。
+    terminalInfo =
+      terminal:
+      let
+        terminals = {
+          foot = {
+            command = "foot";
+          };
+        };
+      in
+      terminals.${terminal};
+
+    # ランチャー名(desktop.launcher の enum) → 起動コマンド。呼び出し側で null(未設定)は弾くこと。
+    launcherInfo =
+      launcher:
+      let
+        launchers = {
+          fuzzel = {
+            command = "fuzzel";
+          };
+        };
+      in
+      launchers.${launcher};
   };
 in
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule (
-        { config, ... }:
-        {
-          options.desktop = {
-            enable = lib.mkEnableOption "desktop environment";
-            vr = {
-              enable = lib.mkEnableOption "VR support";
-              immersed.enable = lib.mkOption {
-                type = lib.types.bool;
-                default = config.desktop.vr.enable;
-              };
-            };
+  options.custom.users = myLib.mkUserOption (
+    { config, ... }:
+    {
+      options.desktop = {
+        enable = lib.mkEnableOption "desktop environment";
+        vr = {
+          enable = lib.mkEnableOption "VR support";
+          immersed.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = config.desktop.vr.enable;
           };
-        }
-      )
-    );
-  };
+        };
+      };
+    }
+  );
 
   options.custom.desktop = {
     sunshine.enable = lib.mkEnableOption "";
@@ -75,9 +95,7 @@ in
 
   config = lib.mkMerge [
     {
-      custom.desktop.anyEnabled = lib.mkDefault (
-        lib.any (u: u.desktop.enable) (lib.attrValues config.custom.users)
-      );
+      custom.desktop.anyEnabled = lib.mkDefault (myLib.anyUser config (u: u.desktop.enable));
 
       _module.args.desktopLib = desktopLib;
       home-manager.users = myLib.mkForEachUsers config (user: user.custom.desktop.enable) (

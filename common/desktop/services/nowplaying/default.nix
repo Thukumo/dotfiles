@@ -7,19 +7,15 @@
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.nowplaying = {
-          enable = myLib.mkEnabledOption;
-          server = lib.mkOption {
-            type = lib.types.str;
-            default = "https://api-nowplaying.tsukumo.f5.si";
-            description = "Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).";
-          };
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.desktop.nowplaying = {
+      enable = myLib.mkEnabledOption;
+      server = lib.mkOption {
+        type = lib.types.str;
+        default = "https://api-nowplaying.tsukumo.f5.si";
+        description = "Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).";
+      };
+    };
   };
 
   config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.nowplaying.enable) (

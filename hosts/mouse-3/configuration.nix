@@ -155,12 +155,5 @@
     };
   };
 
-  console.keyMap = "jp106";
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "jp106";
-    variant = "";
-  };
-
   system.stateVersion = "26.05";
 }

@@ -2,49 +2,49 @@
   pkgs,
   lib,
   config,
+  myLib,
   ...
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options = {
-          # NixOS user account (users.users.<name>) settings derived from custom.users.
-          account.userConfig = lib.mkOption {
-            type = lib.types.attrs;
-            default = { };
-            description = "Attribute set merged into users.users.<name>.";
-          };
+  options.custom.users =
+    myLib.mkUserOption {
+      options = {
+        # NixOS user account (users.users.<name>) settings derived from custom.users.
+        account.userConfig = lib.mkOption {
+          type = lib.types.attrs;
+          default = { };
+          description = "Attribute set merged into users.users.<name>.";
+        };
 
-          email = lib.mkOption {
-            type = lib.types.nullOr lib.types.str;
-            default = null;
-            description = "User's email address for git configuration and other uses";
+        email = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "User's email address for git configuration and other uses";
+        };
+        dotfilesPath = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Path to dotfiles directory (relative to home). Enables NixOS management aliases when set.";
+        };
+        persistence = {
+          directories = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "Additional directories to persist for this user";
           };
-          dotfilesPath = lib.mkOption {
-            type = lib.types.nullOr lib.types.str;
-            default = null;
-            description = "Path to dotfiles directory (relative to home). Enables NixOS management aliases when set.";
-          };
-          persistence = {
-            directories = lib.mkOption {
-              type = lib.types.listOf lib.types.str;
-              default = [ ];
-              description = "Additional directories to persist for this user";
-            };
-            files = lib.mkOption {
-              type = lib.types.listOf lib.types.str;
-              default = [ ];
-              description = "Additional files to persist for this user";
-            };
+          files = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "Additional files to persist for this user";
           };
         };
-      }
-    );
-    default = { };
-    description = "Custom per-user configuration options";
-  };
+      };
+    }
+    // {
+      default = { };
+      description = "Custom per-user configuration options";
+    };
 
   config = {
     users.mutableUsers = false;
@@ -104,7 +104,6 @@
 
         email = "contact@tsukumo.f5.si";
         dotfilesPath = "dotfiles";
-        secrets.secretKey = "/home/tsukumo/.ssh/id_ed25519";
 
         persistence = {
           directories = [

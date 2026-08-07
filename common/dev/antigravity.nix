@@ -7,32 +7,25 @@
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.dev.antigravity = {
-          enable = lib.mkEnableOption "Google Antigravity";
-        };
+  options.custom.users = myLib.mkUserOption {
+    options.dev.antigravity = {
+      enable = lib.mkEnableOption "Google Antigravity";
+    };
+  };
+  config = lib.mkIf (myLib.anyUser config (user: user.dev.antigravity.enable)) {
+    nixpkgs.config.allowUnfreePackages = [ pkgs.antigravity-ide.pname ];
+    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.antigravity.enable) (
+      _:
+      { pkgs, ... }:
+      {
+        home.packages = [
+          pkgs.antigravity-ide
+        ];
+        home.persistence."/persist".directories = [
+          ".antigravity"
+          ".config/Antigravity"
+        ];
       }
     );
   };
-  config =
-    lib.mkIf
-      (builtins.any (user: user.dev.antigravity.enable) (builtins.attrValues config.custom.users))
-      {
-        nixpkgs.config.allowUnfreePackages = [ pkgs.antigravity-ide.pname ];
-        home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.antigravity.enable) (
-          _:
-          { pkgs, ... }:
-          {
-            home.packages = [
-              pkgs.antigravity-ide
-            ];
-            home.persistence."/persist".directories = [
-              ".antigravity"
-              ".config/Antigravity"
-            ];
-          }
-        );
-      };
 }

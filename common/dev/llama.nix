@@ -6,173 +6,169 @@
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.dev.llama = {
-          enable = lib.mkEnableOption "llama";
-          host = lib.mkOption {
-            type = lib.types.str;
-            default = "127.0.0.1";
-          };
-          port = lib.mkOption {
-            type = lib.types.port;
-            default = 11434;
-          };
-          package = lib.mkOption {
-            type = lib.types.package;
-            default = pkgs.llama-cpp;
-          };
-          cudaSupport = lib.mkEnableOption "CUDA GPU acceleration";
-          rocmSupport = lib.mkEnableOption "ROCm GPU acceleration";
-          vulkanSupport = lib.mkEnableOption "Vulkan GPU acceleration";
-          openclSupport = lib.mkEnableOption "OpenCL GPU acceleration";
-          mlock = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description = "Force system to keep model in RAM rather than swapping or compressing.";
-          };
-          cacheReuse = lib.mkOption {
-            type = lib.types.nullOr lib.types.int;
-            default = 256;
-            description = "Minimum chunk size to attempt reusing from the cache via KV shifting. Null to use default.";
-          };
-          models = lib.mkOption {
-            # String または AttrSet を受け取るハイブリッド型
-            type = lib.types.listOf (
-              lib.types.coercedTo lib.types.str
-                (str: {
-                  # "owner/repo/file.gguf" のような簡易文字列からパース
-                  repoId = lib.concatStringsSep "/" (lib.take 2 (lib.splitString "/" str));
-                  file = lib.last (lib.splitString "/" str);
-                })
-                (
-                  lib.types.submodule (
-                    { config, ... }:
-                    let
-                      commonOptions = {
-                        repoId = lib.mkOption { type = lib.types.str; };
-                        file = lib.mkOption { type = lib.types.str; };
-                        gpuLayers = lib.mkOption {
-                          type = lib.types.oneOf [
-                            lib.types.int
-                            (lib.types.enum [ "auto" ])
-                          ];
-                          default = "auto";
-                          description = "Number of layers to offload to GPU (-ngl). Can be an integer or 'auto'.";
-                        };
-                        flashAttn = lib.mkOption {
-                          type = lib.types.bool;
-                          default = true;
-                          description = "Whether to enable Flash Attention.";
-                        };
-                        cacheTypeK = lib.mkOption {
-                          type = lib.types.nullOr (
-                            lib.types.enum [
-                              "f32"
-                              "f16"
-                              "bf16"
-                              "q8_0"
-                              "q4_0"
-                              "q4_1"
-                              "iq4_nl"
-                              "q5_0"
-                              "q5_1"
-                            ]
-                          );
-                          default = "q8_0";
-                          description = "KV cache data type for K. Set null to use llama.cpp defaults.";
-                        };
-                        cacheTypeV = lib.mkOption {
-                          type = lib.types.nullOr (
-                            lib.types.enum [
-                              "f32"
-                              "f16"
-                              "bf16"
-                              "q8_0"
-                              "q4_0"
-                              "q4_1"
-                              "iq4_nl"
-                              "q5_0"
-                              "q5_1"
-                            ]
-                          );
-                          default = "q8_0";
-                          description = "KV cache data type for V. Set null to use llama.cpp defaults.";
-                        };
-                      };
-                    in
-                    {
-                      options = commonOptions // {
-                        name = lib.mkOption {
-                          type = lib.types.str;
-                          default = lib.removeSuffix ".gguf" config.file;
-                          description = "Name of the model. Defaults to the file name without the .gguf suffix.";
-                        };
-                        contextLength = lib.mkOption {
-                          type = lib.types.int;
-                          default = 128000;
-                        };
+  options.custom.users = myLib.mkUserOption {
+    options.dev.llama = {
+      enable = lib.mkEnableOption "llama";
+      host = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 11434;
+      };
+      package = lib.mkOption {
+        type = lib.types.package;
+        default = pkgs.llama-cpp;
+      };
+      cudaSupport = lib.mkEnableOption "CUDA GPU acceleration";
+      rocmSupport = lib.mkEnableOption "ROCm GPU acceleration";
+      vulkanSupport = lib.mkEnableOption "Vulkan GPU acceleration";
+      openclSupport = lib.mkEnableOption "OpenCL GPU acceleration";
+      mlock = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Force system to keep model in RAM rather than swapping or compressing.";
+      };
+      cacheReuse = lib.mkOption {
+        type = lib.types.nullOr lib.types.int;
+        default = 256;
+        description = "Minimum chunk size to attempt reusing from the cache via KV shifting. Null to use default.";
+      };
+      models = lib.mkOption {
+        # String または AttrSet を受け取るハイブリッド型
+        type = lib.types.listOf (
+          lib.types.coercedTo lib.types.str
+            (str: {
+              # "owner/repo/file.gguf" のような簡易文字列からパース
+              repoId = lib.concatStringsSep "/" (lib.take 2 (lib.splitString "/" str));
+              file = lib.last (lib.splitString "/" str);
+            })
+            (
+              lib.types.submodule (
+                { config, ... }:
+                let
+                  commonOptions = {
+                    repoId = lib.mkOption { type = lib.types.str; };
+                    file = lib.mkOption { type = lib.types.str; };
+                    gpuLayers = lib.mkOption {
+                      type = lib.types.oneOf [
+                        lib.types.int
+                        (lib.types.enum [ "auto" ])
+                      ];
+                      default = "auto";
+                      description = "Number of layers to offload to GPU (-ngl). Can be an integer or 'auto'.";
+                    };
+                    flashAttn = lib.mkOption {
+                      type = lib.types.bool;
+                      default = true;
+                      description = "Whether to enable Flash Attention.";
+                    };
+                    cacheTypeK = lib.mkOption {
+                      type = lib.types.nullOr (
+                        lib.types.enum [
+                          "f32"
+                          "f16"
+                          "bf16"
+                          "q8_0"
+                          "q4_0"
+                          "q4_1"
+                          "iq4_nl"
+                          "q5_0"
+                          "q5_1"
+                        ]
+                      );
+                      default = "q8_0";
+                      description = "KV cache data type for K. Set null to use llama.cpp defaults.";
+                    };
+                    cacheTypeV = lib.mkOption {
+                      type = lib.types.nullOr (
+                        lib.types.enum [
+                          "f32"
+                          "f16"
+                          "bf16"
+                          "q8_0"
+                          "q4_0"
+                          "q4_1"
+                          "iq4_nl"
+                          "q5_0"
+                          "q5_1"
+                        ]
+                      );
+                      default = "q8_0";
+                      description = "KV cache data type for V. Set null to use llama.cpp defaults.";
+                    };
+                  };
+                in
+                {
+                  options = commonOptions // {
+                    name = lib.mkOption {
+                      type = lib.types.str;
+                      default = lib.removeSuffix ".gguf" config.file;
+                      description = "Name of the model. Defaults to the file name without the .gguf suffix.";
+                    };
+                    contextLength = lib.mkOption {
+                      type = lib.types.int;
+                      default = 128000;
+                    };
 
-                        # ドラフトモデルのオプショナル指定
-                        draft = lib.mkOption {
-                          type = lib.types.nullOr (
-                            lib.types.submodule {
-                              options = commonOptions;
-                            }
-                          );
-                          default = null;
-                        };
-                        specType = lib.mkOption {
-                          type = lib.types.listOf (
-                            lib.types.enum [
-                              "none"
-                              "draft-simple"
-                              "draft-eagle3"
-                              "draft-mtp"
-                              "draft-dflash"
-                              "ngram-simple"
-                              "ngram-map-k"
-                              "ngram-map-k4v"
-                              "ngram-mod"
-                              "ngram-cache"
-                            ]
-                          );
-                          default = [ "none" ];
-                          description = ''
-                            Speculative decoding type (can specify multiple as a list for hybrid decoding):
-                            - none: Normal inference (default).
-                            - draft-simple: Traditional draft model speculative decoding (requires -md).
-                            - draft-eagle3: Eagle-3 speculative decoding with dedicated tree draft (requires -md).
-                            - draft-mtp: Multi-Token Prediction (MTP) using target model's internal heads (no external -md needed).
-                            - draft-dflash: DeepSeek-Flash speculative decoding.
-                            - ngram-simple: n-gram based model-less speculative decoding.
-                            - ngram-map-k: n-gram map (K) based speculative decoding.
-                            - ngram-map-k4v: n-gram map (K4V) based speculative decoding.
-                            - ngram-mod: Modified n-gram lookup speculative decoding.
-                            - ngram-cache: n-gram cache based speculative decoding.
-                          '';
-                        };
-                        specDefault = lib.mkOption {
-                          type = lib.types.nullOr lib.types.int;
-                          default = null;
-                          description = "Max number of draft tokens for speculative decoding (MTP).";
-                        };
-                        extraArgs = lib.mkOption {
-                          type = lib.types.listOf lib.types.str;
-                          default = [ ];
-                          description = "Extra arguments to pass to llama-server.";
-                        };
-                      };
-                    }
-                  )
-                )
-            );
-            default = [ ];
-          };
-        };
-      }
-    );
+                    # ドラフトモデルのオプショナル指定
+                    draft = lib.mkOption {
+                      type = lib.types.nullOr (
+                        lib.types.submodule {
+                          options = commonOptions;
+                        }
+                      );
+                      default = null;
+                    };
+                    specType = lib.mkOption {
+                      type = lib.types.listOf (
+                        lib.types.enum [
+                          "none"
+                          "draft-simple"
+                          "draft-eagle3"
+                          "draft-mtp"
+                          "draft-dflash"
+                          "ngram-simple"
+                          "ngram-map-k"
+                          "ngram-map-k4v"
+                          "ngram-mod"
+                          "ngram-cache"
+                        ]
+                      );
+                      default = [ "none" ];
+                      description = ''
+                        Speculative decoding type (can specify multiple as a list for hybrid decoding):
+                        - none: Normal inference (default).
+                        - draft-simple: Traditional draft model speculative decoding (requires -md).
+                        - draft-eagle3: Eagle-3 speculative decoding with dedicated tree draft (requires -md).
+                        - draft-mtp: Multi-Token Prediction (MTP) using target model's internal heads (no external -md needed).
+                        - draft-dflash: DeepSeek-Flash speculative decoding.
+                        - ngram-simple: n-gram based model-less speculative decoding.
+                        - ngram-map-k: n-gram map (K) based speculative decoding.
+                        - ngram-map-k4v: n-gram map (K4V) based speculative decoding.
+                        - ngram-mod: Modified n-gram lookup speculative decoding.
+                        - ngram-cache: n-gram cache based speculative decoding.
+                      '';
+                    };
+                    specDefault = lib.mkOption {
+                      type = lib.types.nullOr lib.types.int;
+                      default = null;
+                      description = "Max number of draft tokens for speculative decoding (MTP).";
+                    };
+                    extraArgs = lib.mkOption {
+                      type = lib.types.listOf lib.types.str;
+                      default = [ ];
+                      description = "Extra arguments to pass to llama-server.";
+                    };
+                  };
+                }
+              )
+            )
+        );
+        default = [ ];
+      };
+    };
   };
 
   config.home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.llama.enable) (

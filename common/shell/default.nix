@@ -7,12 +7,8 @@
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.shell.private.enable = lib.mkEnableOption "private shell secrets";
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.shell.private.enable = lib.mkEnableOption "private shell secrets";
   };
 
   config = {

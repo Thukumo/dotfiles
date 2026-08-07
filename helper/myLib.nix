@@ -36,6 +36,18 @@ let
     default = true;
   };
 
+  # Type for the per-user option `custom.users` (attrsOf submodule).
+  # Each module extends it with only the fields it adds:
+  # `options.custom.users = myLib.mkUserOption ({ config, ... }: { options.… = …; });`
+  mkUserOption =
+    defn:
+    lib.mkOption {
+      type = lib.types.attrsOf (lib.types.submodule defn);
+    };
+
+  # Whether any user in `custom.users` satisfies `cond`.
+  anyUser = config: cond: lib.any cond (lib.attrValues config.custom.users);
+
   # Iterate only users explicitly present in `config.custom.users`.
   # This avoids evaluating conditions for users with no custom config,
   # and keeps condition mistakes as hard evaluation errors.
@@ -70,6 +82,8 @@ in
     mkImportModuleFiles
     mkImportModules
     mkEnabledOption
+    mkUserOption
+    anyUser
     mkForEachUsers
     ;
 }

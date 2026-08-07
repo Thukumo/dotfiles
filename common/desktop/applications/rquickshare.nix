@@ -2,14 +2,13 @@
   lib,
   desktopLib,
   config,
+  myLib,
   ...
 }:
 {
   config =
     let
-      rqEnabled = builtins.any (userConfig: userConfig.desktop.apps.rquickshare.enable) (
-        builtins.attrValues config.custom.users
-      );
+      rqEnabled = myLib.anyUser config (user: user.desktop.apps.rquickshare.enable);
     in
     {
       home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.rquickshare.enable) (

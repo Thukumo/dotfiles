@@ -37,8 +37,8 @@
             "Shift+P" = power-off-monitors;
             "Escape" = spawn "${pkgs.hyprlock}/bin/hyprlock";
 
-            "Return" = spawn "foot";
-            "Space" = spawn "fuzzel";
+            "Return" = spawn (desktopLib.terminalInfo myConfig.desktop.terminal).command;
+            "Space" = spawn (desktopLib.launcherInfo myConfig.desktop.launcher).command;
             # "Space" = spawn "anyrun";
             "M" = spawn "mattermost-desktop";
 
@@ -71,10 +71,10 @@
             }) (lib.range 0 9)
           );
           moveW = {
-            "Shift+F" = move-column-to-monitor-right;
+            "Shift+W" = move-column-to-monitor-up;
             "Shift+A" = move-column-to-monitor-left;
-            "Shift+S" = move-column-to-monitor-up;
-            "Shift+D" = move-column-to-monitor-down;
+            "Shift+S" = move-column-to-monitor-down;
+            "Shift+D" = move-column-to-monitor-right;
           };
           other = {
             "XF86AudioRaiseVolume" = spawn "swayosd-client" "--output-volume" "raise";

@@ -1,27 +1,24 @@
 {
   lib,
   config,
+  myLib,
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.network.dlna = {
-          enable = lib.mkEnableOption "DLNA Server for this user";
-          mediaDirs = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ ];
-            example = [ "V,Documents/mov" ];
-            description = ''
-              Media directories for this user.
-              Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video").
-              Relative paths are resolved to the user's home.
-            '';
-          };
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.network.dlna = {
+      enable = lib.mkEnableOption "DLNA Server for this user";
+      mediaDirs = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        example = [ "V,Documents/mov" ];
+        description = ''
+          Media directories for this user.
+          Must be prefixed with V, P, or A followed by a comma (e.g., "V,path/to/video").
+          Relative paths are resolved to the user's home.
+        '';
+      };
+    };
   };
 
   config =

@@ -121,13 +121,6 @@
   #   package = pkgs.pulseaudioFull;
   # };
 
-  console.keyMap = "jp106";
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "jp106";
-    variant = "";
-  };
-
   # Enable automatic login for the user.
   # services.getty.autologinUser = "tsukumo";
 

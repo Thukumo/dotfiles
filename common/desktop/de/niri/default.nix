@@ -2,6 +2,7 @@
   lib,
   config,
   desktopLib,
+  myLib,
   ...
 }:
 
@@ -10,7 +11,7 @@
     lib.mkIf
       (
         config.custom.desktop.anyEnabled
-        && (lib.any (u: u.desktop.enable && u.desktop.de == "niri") (lib.attrValues config.custom.users))
+        && myLib.anyUser config (u: u.desktop.enable && u.desktop.de == "niri")
       )
       {
         custom.desktop.sessionCommand = "niri-session";

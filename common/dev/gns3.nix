@@ -9,17 +9,13 @@ let
   cfg = config.custom.users;
 in
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.dev.gns3 = {
-          enable = lib.mkEnableOption "gns3";
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.dev.gns3 = {
+      enable = lib.mkEnableOption "gns3";
+    };
   };
 
-  config = lib.mkIf (builtins.any (user: user.dev.gns3.enable) (builtins.attrValues cfg)) {
+  config = lib.mkIf (myLib.anyUser config (user: user.dev.gns3.enable)) {
     virtualisation.libvirtd.enable = true;
     programs.wireshark.enable = true;
 

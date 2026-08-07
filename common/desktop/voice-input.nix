@@ -2,6 +2,7 @@
   lib,
   pkgs,
   desktopLib,
+  myLib,
   ...
 }:
 
@@ -27,32 +28,28 @@ let
 in
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.desktop.voice-input = {
-          enable = lib.mkEnableOption "voice input (speech-to-text)";
-          server = lib.mkEnableOption "persistent whisper-server (keeps model in VRAM)";
-          backend = lib.mkOption {
-            type = lib.types.enum [
-              "moonshine"
-              "faster-whisper"
-              "whisper-cpp"
-            ];
-            default = "moonshine";
-          };
-          cudaSupport = lib.mkEnableOption "CUDA GPU acceleration (whisper-cpp only)";
-          language = lib.mkOption {
-            type = lib.types.str;
-            default = "auto";
-          };
-          model = lib.mkOption {
-            type = lib.types.str;
-            default = "large-v3-turbo";
-          };
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.desktop.voice-input = {
+      enable = lib.mkEnableOption "voice input (speech-to-text)";
+      server = lib.mkEnableOption "persistent whisper-server (keeps model in VRAM)";
+      backend = lib.mkOption {
+        type = lib.types.enum [
+          "moonshine"
+          "faster-whisper"
+          "whisper-cpp"
+        ];
+        default = "moonshine";
+      };
+      cudaSupport = lib.mkEnableOption "CUDA GPU acceleration (whisper-cpp only)";
+      language = lib.mkOption {
+        type = lib.types.str;
+        default = "auto";
+      };
+      model = lib.mkOption {
+        type = lib.types.str;
+        default = "large-v3-turbo";
+      };
+    };
   };
 
   config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.voice-input.enable) (

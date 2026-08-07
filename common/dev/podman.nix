@@ -6,21 +6,14 @@
 }:
 
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.dev.podman = {
-          enable = lib.mkEnableOption "podman";
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.dev.podman = {
+      enable = lib.mkEnableOption "podman";
+    };
   };
 
   config =
-    lib.mkIf
-      (builtins.any (userConfig: userConfig.dev.podman.enable || userConfig.desktop.winapps.enable) (
-        builtins.attrValues config.custom.users
-      ))
+    lib.mkIf (myLib.anyUser config (user: user.dev.podman.enable || user.desktop.winapps.enable))
       {
         virtualisation = {
           containers.enable = true;

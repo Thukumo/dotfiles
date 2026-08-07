@@ -2,14 +2,13 @@
   config,
   lib,
   pkgs,
+  myLib,
   ...
 }:
 {
   config =
     let
-      isEnabled = builtins.any (user: user.desktop.vr.immersed.enable) (
-        builtins.attrValues config.custom.users
-      );
+      isEnabled = myLib.anyUser config (user: user.desktop.vr.immersed.enable);
     in
     lib.mkIf isEnabled {
       nixpkgs.config.allowUnfreePackages = [ pkgs.immersed.pname ];

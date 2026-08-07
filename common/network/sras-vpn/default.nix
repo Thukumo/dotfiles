@@ -5,25 +5,21 @@
   ...
 }:
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule (_: {
-        options.network.sstp = {
-          enable = lib.mkEnableOption "SSTP VPN";
-          vpnServer = lib.mkOption {
-            type = lib.types.str;
-            default = "srasvpn.sic.shibaura-it.ac.jp";
-          };
-          dnsDomains = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [
-              "shibaura-it.ac.jp"
-            ];
-          };
-        };
-      })
-    );
-  };
+  options.custom.users = myLib.mkUserOption (_: {
+    options.network.sstp = {
+      enable = lib.mkEnableOption "SSTP VPN";
+      vpnServer = lib.mkOption {
+        type = lib.types.str;
+        default = "srasvpn.sic.shibaura-it.ac.jp";
+      };
+      dnsDomains = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [
+          "shibaura-it.ac.jp"
+        ];
+      };
+    };
+  });
 
   config = {
     age.secrets."sras-vpn" = {

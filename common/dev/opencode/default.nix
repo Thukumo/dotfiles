@@ -12,18 +12,14 @@ let
   agentsFile = builtins.toFile "opencode-agents.md" agentsContent;
 in
 {
-  options.custom.users = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.dev.opencode = {
-          enable = lib.mkEnableOption "opencode";
-          models = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ ];
-          };
-        };
-      }
-    );
+  options.custom.users = myLib.mkUserOption {
+    options.dev.opencode = {
+      enable = lib.mkEnableOption "opencode";
+      models = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+      };
+    };
   };
 
   config = {
