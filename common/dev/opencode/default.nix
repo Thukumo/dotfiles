@@ -23,52 +23,63 @@ in
   };
 
   config = {
-    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.opencode.enable) (user: {
-      age.secrets."opencode_auth" = {
-        file = ./auth_tsukumo.age;
-        path = ".local/share/opencode/auth.json";
-      };
+    home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.opencode.enable) (
+      user:
+      { lib, ... }:
+      let
+        models =
+          user.custom.dev.opencode.models
+          ++ lib.optionals (user.custom ? dev.llama && user.custom.dev.llama.enable) (
+            map (m: m.name) user.custom.dev.llama.models
+          );
+      in
+      {
+        age.secrets."opencode_auth" = {
+          file = ./auth_tsukumo.age;
+          path = ".local/share/opencode/auth.json";
+        };
 
-      programs.opencode = {
-        enable = true;
-        settings = {
-          "$schema" = "https://opencode.ai/config.json";
+        programs.opencode = {
+          enable = true;
+          settings = {
+            "$schema" = "https://opencode.ai/config.json";
 
-          "instructions" = [ "${agentsFile}" ];
+            "instructions" = [ "${agentsFile}" ];
 
-          # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
-          "snapshot" = true;
+            # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
+            "snapshot" = true;
 
-          # コンテキスト圧縮時の保持ターン数を増やして会話の文脈を維持
-          "compaction" = {
-            "auto" = true;
-            "tail_turns" = 10;
-            "prune" = true;
-          };
+            # コンテキスト圧縮時の保持ターン数を増やして会話の文脈を維持
+            "compaction" = {
+              "auto" = true;
+              "tail_turns" = 10;
+              "prune" = true;
+            };
 
-          "provider" = {
-            "llama" = {
-              "npm" = "@ai-sdk/openai-compatible";
-              "name" = "Llama (local)";
-              "options" = {
-                "baseURL" = "http://${user.custom.dev.llama.host}:${toString user.custom.dev.llama.port}/v1";
-              };
-              "models" = builtins.listToAttrs (
-                builtins.map (model: {
-                  name = model;
-                  value = {
+            "provider" = {
+              "llama" = {
+                "npm" = "@ai-sdk/openai-compatible";
+                "name" = "Llama (local)";
+                "options" = {
+                  "baseURL" = "http://${user.custom.dev.llama.host}:${toString user.custom.dev.llama.port}/v1";
+                };
+                "models" = builtins.listToAttrs (
+                  builtins.map (model: {
                     name = model;
-                  };
-                }) user.custom.dev.opencode.models
-              );
+                    value = {
+                      name = model;
+                    };
+                  }) models
+                );
+              };
             };
           };
         };
-      };
-      home.persistence."/persist".directories = [
-        ".local/share/opencode"
-        ".local/state/opencode"
-      ];
-    });
+        home.persistence."/persist".directories = [
+          ".local/share/opencode"
+          ".local/state/opencode"
+        ];
+      }
+    );
   };
 }

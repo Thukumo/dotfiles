@@ -2,8 +2,6 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, ... }:
-
 {
   security.sudo-rs.wheelNeedsPassword = true;
   custom.hardware.secure-boot.enable = true;
@@ -113,7 +111,6 @@
       };
       opencode = {
         enable = true;
-        models = map (m: m.name) config.custom.users."tsukumo".dev.llama.models;
       };
       antigravity.enable = true;
       unityhub.enable = true;

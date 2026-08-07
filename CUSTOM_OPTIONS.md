@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-07 11:05:15
+Generated on 2026-08-07 11:13:28
 
 - **custom**
   - **desktop**
@@ -61,6 +61,10 @@ Generated on 2026-08-07 11:05:15
         - `enable` (Default: `true`): No description
       - **zswap**
         - `enable` (Default: `true`): No description
+  - **mycelium**
+    - **hosts** (User Options)
+      - `hostname` (Default: `No default`): Hostname that other machines resolve to this address
+      - `ipv6` (Default: `No default`): Mycelium IPv6 address of this host
   - **network**
     - **avahi**
       - `enable` (Default: `true`): No description
