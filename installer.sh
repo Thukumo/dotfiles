@@ -65,20 +65,40 @@ cleanup() {
 trap cleanup EXIT
 
 rm -rf "$TMP_DIR"
-mkdir -p "$TMP_DIR"/persist/etc/age
-nix shell nixpkgs#rage -c rage-keygen -o "$TMP_DIR"/persist/etc/age/key.txt
-chmod 600 "$TMP_DIR"/persist/etc/age/key.txt
 
-# 公開鍵を抽出
-PUBLIC_KEY=$(grep '# public key:' "$TMP_DIR"/persist/etc/age/key.txt | awk '{print $4}')
-echo "生成された公開鍵: $PUBLIC_KEY"
-
-# secrets.nixに自動追加（既存のキーがあれば削除してから追加）
-sed -i "/^    \"$HOST_NAME\" = /d" secrets.nix
-sed -i "/^  systemKeysAttr = {$/a\\    \"$HOST_NAME\" = \"$PUBLIC_KEY\";" secrets.nix
-
-echo "secrets.nixに公開鍵を追加しました"
-sudo ragenix -r -i "/etc/age/key.txt"
+# hardware-configuration はフレーク評価に必要なので先に生成する
 ssh $SSH_OPTS "$REMOTE" "nixos-generate-config --no-filesystems --show-hardware-config" > "hosts/${HOST_NAME}/hardware-configuration.nix"
 git add "hosts/${HOST_NAME}/hardware-configuration.nix"
+
+# ホームキーを配置するユーザー (home-manager のユーザー) を取得する
+USER_NAME=$(nix eval --raw --apply 'users: builtins.attrNames users' ".#nixosConfigurations.${HOST_NAME}.config.home-manager.users" | awk '{print $1}')
+
+mkdir -p "$TMP_DIR"/persist/etc/age "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age
+nix shell nixpkgs#rage -c rage-keygen -o "$TMP_DIR"/persist/etc/age/key.txt
+nix shell nixpkgs#rage -c rage-keygen -o "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age/home-manager_key
+chmod 600 "$TMP_DIR"/persist/etc/age/key.txt "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age/home-manager_key
+
+# 公開鍵を抽出
+SYSTEM_PUBLIC_KEY=$(grep '# public key:' "$TMP_DIR"/persist/etc/age/key.txt | awk '{print $4}')
+HOME_PUBLIC_KEY=$(grep '# public key:' "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age/home-manager_key | awk '{print $4}')
+echo "生成されたシステム公開鍵: $SYSTEM_PUBLIC_KEY"
+echo "生成されたホーム公開鍵: $HOME_PUBLIC_KEY"
+
+# keys.nixに自動追加（既存のキーがあれば削除してから追加）
+sed -i "/^    \"$HOST_NAME\" = /d" keys.nix
+sed -i "/^  systemKeys = {$/a\\    \"$HOST_NAME\" = \"$SYSTEM_PUBLIC_KEY\";" keys.nix
+sed -i "/^      \"$HOST_NAME\" = /d" keys.nix
+sed -i "/^    \"$USER_NAME\" = {$/a\\      \"$HOST_NAME\" = \"$HOME_PUBLIC_KEY\";" keys.nix
+
+echo "keys.nixに公開鍵を追加しました"
+
+# secrets.nix を再生成して、新しいホストが必要とする秘密にキーを追加する
+nix eval --raw --apply 'x: x.render x.hostsData x.keys' .#genSecrets > secrets.nix
+
+# 再暗号化。このマシンのキーで解けない秘密 (他ホスト専用の秘密) がある場合は
+# ragenix がエラーで中断するため、必要なら該当ホスト上で rekey する
+if ! sudo ragenix -r -i "/etc/age/key.txt" -i "/persist/home/$USER_NAME/.config/age/home-manager_key"; then
+  echo "警告: 一部の秘密を rekey できませんでした。該当ホスト上で 'ragenix -r -i <そのホストのキー>' を実行してください" >&2
+fi
+
 nix run --inputs-from . nixos-anywhere -- --extra-files "$TMP_DIR" $BUILD_ON_REMOTE --flake ".#${HOST_NAME}" --ssh-option StrictHostKeyChecking=no --ssh-option UserKnownHostsFile=/dev/null --ssh-option GlobalKnownHostsFile=/dev/null "$REMOTE"

@@ -1,7 +1,7 @@
-{ osConfig, lib, ... }:
-lib.mkIf (osConfig.age.secrets ? "home-manager_key") {
+{ config, ... }:
+{
   age = {
-    identityPaths = [ (toString osConfig.age.secrets."home-manager_key".path) ];
+    identityPaths = [ "${config.home.homeDirectory}/.config/age/home-manager_key" ];
     secrets = {
       "ssh_key" = {
         file = ../ssh/ssh-key_tsukumo.age;

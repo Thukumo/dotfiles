@@ -73,6 +73,7 @@
 
   outputs =
     {
+      self,
       git-hooks,
       nixpkgs,
       home-manager,
@@ -167,6 +168,7 @@
               gen-docs = {
                 enable = true;
                 files = "\\.nix$";
+                require_serial = true;
                 name = "Generate custom options documentation";
                 entry = "${
                   pkgs.writeShellApplication {
@@ -194,6 +196,38 @@
                     '';
                   }
                 }/bin/gen-docs";
+              };
+              gen-secrets = {
+                enable = true;
+                files = "\\.nix$";
+                require_serial = true;
+                name = "Regenerate secrets.nix";
+                entry = "${
+                  pkgs.writeShellApplication {
+                    name = "gen-secrets";
+                    runtimeInputs = with pkgs; [
+                      nix
+                      git
+                      diffutils
+                      coreutils
+                      nixfmt
+                    ];
+                    text = ''
+                      TEMP_FILE=$(mktemp)
+                      trap 'rm -f "$TEMP_FILE"' EXIT
+
+                      # nixfmtしないとdiffが生まれ続ける
+                      nix eval --raw --apply 'x: x.render x.hostsData x.keys' .#genSecrets | nixfmt - > "$TEMP_FILE"
+
+                      if ! diff -q secrets.nix "$TEMP_FILE" > /dev/null 2>&1; then
+                        cp "$TEMP_FILE" secrets.nix
+                        git add secrets.nix
+                        echo "error: secrets.nix changed" >&2
+                        exit 1
+                      fi
+                    '';
+                  }
+                }/bin/gen-secrets";
               };
             };
           };
@@ -266,6 +300,29 @@
         {
           render = import ./gen-docs-render.nix { inherit lib; };
           options = (lib.mapAttrs mkHost hosts).${docHost}.options.custom;
+        };
+
+      # secrets.nix の生成用:
+      #   nix eval --raw --apply 'x: x.render x.hostsData x.keys' .#genSecrets
+      genSecrets =
+        let
+          hostsData = lib.mapAttrs (_hostName: cfg: {
+            system = lib.mapAttrsToList (_: s: s.file) cfg.config.age.secrets;
+            home = lib.concatLists (
+              lib.mapAttrsToList (
+                user: hmCfg:
+                lib.mapAttrsToList (_: s: {
+                  inherit (s) file;
+                  inherit user;
+                }) hmCfg.age.secrets
+              ) cfg.config.home-manager.users
+            );
+          }) (lib.mapAttrs mkHost hosts);
+        in
+        {
+          render = import ./gen-secrets-render.nix { inherit lib self; };
+          inherit hostsData;
+          keys = import ./keys.nix;
         };
     };
 }

@@ -23,9 +23,28 @@ mDNS(Avahi)が動作している環境でないと、installer.localの名前解
 
 `direnv allow`
 
-## 暗号化されたデータの追加
+## ragenix
+
+### データの追加
 
 `EDITOR='cp /dev/stdin' ragenix -e <filename>.age`にパイプすると楽
+
+### 編集
+
+```sh
+# システムのsecret編集
+sudo ragenix -e <file>.age -i /etc/age/key.txt
+# ユーザーのsecret編集 (keyは<home>/.config/age/home-manager_key)
+ragenix -e <file>.age -i ~/.config/age/home-manager_key
+```
+
+ホストを増やす/秘密の参照を変えた場合は、`ragenix -r` で rekey が必要:
+
+```sh
+sudo ragenix -r -i /etc/age/key.txt -i ~/.config/age/home-manager_key
+```
+
+`installer.sh` は新ホストのシステムキー・ホームキーを生成し、`keys.nix` への登録・`secrets.nix` の再生成・rekey まで自動で行う。
 
 ## WinApps
 

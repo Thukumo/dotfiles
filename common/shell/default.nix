@@ -16,9 +16,10 @@
       (myLib.mkForEachUsers config (_: true) (_: {
         imports = myLib.mkImportModules ./. [ "private" ];
       }))
-      (myLib.mkForEachUsers config (user: user.custom.shell.private.enable) (_: {
+      (myLib.mkForEachUsers config (user: user.custom.shell.private.enable) {
         imports = [ ./private ];
-      }))
+        home.persistence."/persist".files = [ ".config/age/home-manager_key" ];
+      })
     ];
 
     nixpkgs.config.allowUnfreePackages = [
