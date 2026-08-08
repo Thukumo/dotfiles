@@ -1,16 +1,28 @@
 --- a/lua/cmp_ai/backends/openai.lua
 +++ b/lua/cmp_ai/backends/openai.lua
-@@ -34,6 +34,31 @@
+@@ -34,6 +34,44 @@
      end)
      return
    end
-+
 +  -- FIM (fill-in-the-middle) モード: llama.cpp の /infill エンドポイントを使う。
-+  -- chat 形式の marker プロトコルより小さいモデルでも追従しやすい。
 +  -- llama-swap 経由で使う場合、ルーティングに model フィールドが必要。
 +  if self.params.fim then
 +    local url = self.params.url:gsub('/v1/chat/completions$', '/infill')
 +    url = url:gsub('/chat/completions$', '/infill')
++
++    -- 生成が接尾辞 (カーソル以降の行) を再現し始めた時点で止める。
++    -- これにより、接尾辞の重複コピーや解説文の追記を防ぐ。
++    -- lines_after は「カーソル行の残り + 以降の行」の連結なので、
++    -- 最初の改行より後 (カーソル以降の行) の先頭行を stop に使う。
++    local stops = { '<|endoftext|>', '<|im_end|>' }
++    local after_rest = lines_after:match('\n(.*)')
++    if after_rest then
++      local first_suffix_line = after_rest:match('([^\n]*)') or ''
++      if #first_suffix_line > 0 then
++        table.insert(stops, 1, '\n' .. first_suffix_line)
++      end
++    end
++
 +    local data = {
 +      model = self.params.model,
 +      input_prefix = lines_before,
@@ -18,6 +30,7 @@
 +      n_predict = tonumber(self.params.max_tokens) or 64,
 +      temperature = self.params.temperature or 0.1,
 +      repeat_penalty = 1.2,
++      stop = stops,
 +    }
 +    self:Get(url, self.headers, data, function(answer)
 +      local new_data = {}

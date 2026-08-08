@@ -71,15 +71,15 @@
         fimModel = "qwen2.5-coder-7b";
         models = [
           {
-            repoId = "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF";
-            file = "qwen2.5-coder-7b-instruct-q4_k_m.gguf";
+            repoId = "MaziyarPanahi/Qwen2.5-Coder-7B-GGUF";
+            file = "Qwen2.5-Coder-7B.Q5_K_M.gguf";
             name = "qwen2.5-coder-7b";
             contextLength = 32768;
             fim = true;
           }
           {
-            repoId = "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF";
-            file = "qwen2.5-coder-3b-instruct-q4_k_m.gguf";
+            repoId = "MaziyarPanahi/Qwen2.5-Coder-3B-GGUF";
+            file = "Qwen2.5-Coder-3B.Q5_K_M.gguf";
             name = "qwen2.5-coder-3b";
             contextLength = 32768;
             fim = true;
