@@ -47,6 +47,11 @@ in
 
             "instructions" = [ "${agentsFile}" ];
 
+            "plugin" = [
+              "@dietrichgebert/ponytail"
+              "@prevalentware/opencode-goal-plugin"
+            ];
+
             # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
             "snapshot" = true;
 
