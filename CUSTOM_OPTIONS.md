@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-08-09 06:34:39
+Generated on 2026-09-04 06:29:00
 
 - **custom**
   - **desktop**
@@ -107,7 +107,7 @@ Generated on 2026-08-09 06:34:39
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): Whether to enable plymouth (enabled by default).
-      - `packages` (Default: `["/nix/store/ibxwvx36nn2vpggxmm6mq045h2z178qk-hellonavi"]`): Extra Plymouth theme packages
+      - `packages` (Default: `["/nix/store/416dw5b1vwdngcr3jnfh5pzvipjj3d87-hellonavi"]`): Extra Plymouth theme packages
       - `theme` (Default: `"hellonavi"`): Plymouth theme name
   - **users** (User Options)
     - **account**
@@ -214,7 +214,7 @@ Generated on 2026-08-09 06:34:39
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): Models to serve ("owner/repo/file.gguf" or submodule)
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/vc3bha4vhf0szn55m7bwgssqzgjkdsfv-llama-cpp-10273"`): llama-cpp package to use
+        - `package` (Default: `"/nix/store/hfx8wfcqav9gsqd0fi29fd4dmqxmd5rr-llama-cpp-0.3.0"`): llama-cpp package to use
         - `port` (Default: `11434`): Port of the llama-server
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.

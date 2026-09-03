@@ -2,6 +2,7 @@
   lib,
   config,
   myLib,
+  pkgs,
   ...
 }:
 {
@@ -10,5 +11,7 @@
   config = lib.mkIf config.custom.hardware.tune.auto-cpufreq.enable {
     services.auto-cpufreq.enable = true;
     services.thermald.enable = true;
+    systemd.services.thermald.serviceConfig.ExecStart =
+      lib.mkForce "${pkgs.thermald}/sbin/thermald --no-daemon --adaptive --dbus-enable --ignore-cpuid-check";
   };
 }

@@ -8,7 +8,10 @@
 }:
 {
   config = lib.mkIf (myLib.anyUser config (user: user.desktop.apps.discord.enable)) {
-    nixpkgs.config.allowUnfreePackages = [ pkgs.discord.pname ];
+    nixpkgs.config.allowUnfreePackages = [
+      pkgs.discord.pname
+      "discord-unwrapped"
+    ];
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.discord.enable) (
       _:
       { pkgs, ... }:
