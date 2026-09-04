@@ -1248,17 +1248,17 @@
     "onlyoffice-nixpkgs": {
       "flake": false,
       "locked": {
-        "lastModified": 1783694392,
-        "narHash": "sha256-lf2AVMaTJ1/D50zgJiahxl9PQFmEw5ZG+V7Nex/8/fY=",
+        "lastModified": 1788234613,
+        "narHash": "sha256-cN79kTIR9Y0aME8TiPScd5wp/Tx9fId+R0j7EQiGmt8=",
         "owner": "emmanuelrosa",
         "repo": "nixpkgs",
-        "rev": "b277334482fb40a176b6fc1403c9b809ccf50e6b",
+        "rev": "156a0b2e84faa41250a1ff6141acf456cf5e91ff",
         "type": "github"
       },
       "original": {
         "owner": "emmanuelrosa",
         "repo": "nixpkgs",
-        "rev": "b277334482fb40a176b6fc1403c9b809ccf50e6b",
+        "rev": "156a0b2e84faa41250a1ff6141acf456cf5e91ff",
         "type": "github"
       }
     },

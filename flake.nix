@@ -66,7 +66,7 @@
     # nixpkgs PR #526315 (ONLYOFFICE DesktopEditors: updates) の未マージ分。
     # programs.onlyoffice モジュールと extraFontPackages 対応パッケージを取り込む。
     onlyoffice-nixpkgs = {
-      url = "github:emmanuelrosa/nixpkgs/b277334482fb40a176b6fc1403c9b809ccf50e6b";
+      url = "github:emmanuelrosa/nixpkgs/156a0b2e84faa41250a1ff6141acf456cf5e91ff";
       flake = false;
     };
   };
