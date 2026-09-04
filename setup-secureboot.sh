@@ -110,7 +110,7 @@ setup_luks_tpm2() {
 setup_tpm2_totp() {
     info "--- TPM2 TOTP Setup ---"
     if confirm "TPM2 TOTP を初期化しますか？"; then
-        $TPM2_TOTP generate
+        $TPM2_TOTP -p 0,2,7 generate
     fi
 }
 
