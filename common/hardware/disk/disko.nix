@@ -95,7 +95,10 @@
                 subvolumes = {
                   "root" = {
                     mountpoint = "/";
-                    mountOptions = [ "noatime" ];
+                    mountOptions = [
+                      "compress-force=zstd"
+                      "noatime"
+                    ];
                   };
                   "nix" = {
                     mountpoint = "/nix";
