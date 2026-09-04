@@ -12,6 +12,12 @@
         # systemd.user.services."fcitx5-daemon".Service = {
         #   Restart = "always";
         # };
+        xdg.configFile."autostart/org.fcitx.Fcitx5.desktop".text = ''
+          [Desktop Entry]
+          Type=Application
+          Name=Fcitx 5
+          Hidden=true
+        '';
         i18n.inputMethod = {
           enable = true;
           type = "fcitx5";
