@@ -57,9 +57,13 @@ fi
 
 echo "Using remote: $REMOTE"
 TMP_DIR="tmp"
+SECRETS_OLD="$(mktemp)"
+FAILED_LIST="$(mktemp)"
 
 cleanup() {
   rm -rf "$TMP_DIR"
+  [[ -n "${SECRETS_OLD:-}" ]] && rm -f "$SECRETS_OLD"
+  [[ -n "${FAILED_LIST:-}" ]] && rm -f "$FAILED_LIST"
 }
 
 trap cleanup EXIT
@@ -93,12 +97,73 @@ sed -i "/^    \"$USER_NAME\" = {$/a\\      \"$HOST_NAME\" = \"$HOME_PUBLIC_KEY\"
 echo "keys.nixに公開鍵を追加しました"
 
 # secrets.nix を再生成して、新しいホストが必要とする秘密にキーを追加する
-nix eval --raw --apply 'x: x.render x.hostsData x.keys' .#genSecrets > secrets.nix
+# (出力はフックと同じく nixfmt をかける)
+# 中断後に再実行した場合、worktree の secrets.nix は再生成済みになっているため、
+# ベースラインはコミット済み版を使う (そうしないと diff が空になり rekey がスキップされる)
+BASELINE_ARGS=()
+if git show HEAD:secrets.nix >"$SECRETS_OLD" 2>/dev/null; then
+  BASELINE_ARGS=(--old "$SECRETS_OLD")
+else
+  echo "警告: ベースライン (git HEAD の secrets.nix) を取得できないため、全秘密を再暗号化します" >&2
+fi
+nix eval --raw --apply 'x: x.render x.hostsData x.keys' .#genSecrets \
+  | nix shell nixpkgs#nixfmt -c nixfmt - > secrets.nix
 
-# 再暗号化。このマシンのキーで解けない秘密 (他ホスト専用の秘密) がある場合は
-# ragenix がエラーで中断するため、必要なら該当ホスト上で rekey する
-if ! sudo ragenix -r -i "/etc/age/key.txt" -i "/persist/home/$USER_NAME/.config/age/home-manager_key"; then
-  echo "警告: 一部の秘密を rekey できませんでした。該当ホスト上で 'ragenix -r -i <そのホストのキー>' を実行してください" >&2
+LOCAL_KEY_ARGS=()
+if [[ -f "/etc/age/key.txt" ]]; then
+  LOCAL_KEY_ARGS+=(-i "/etc/age/key.txt")
+fi
+if [[ -f "$HOME/.config/age/home-manager_key" ]]; then
+  LOCAL_KEY_ARGS+=(-i "$HOME/.config/age/home-manager_key")
+elif [[ -f "/persist/home/$USER/.config/age/home-manager_key" ]]; then
+  LOCAL_KEY_ARGS+=(-i "/persist/home/$USER/.config/age/home-manager_key")
+elif [[ -f "/persist/home/$USER_NAME/.config/age/home-manager_key" ]]; then
+  LOCAL_KEY_ARGS+=(-i "/persist/home/$USER_NAME/.config/age/home-manager_key")
+fi
+
+if ! sudo ./rekey.sh "${BASELINE_ARGS[@]}" --failed-out "$FAILED_LIST" "${LOCAL_KEY_ARGS[@]}"; then
+  echo "error: ローカルの鍵では rekey できない秘密があります" >&2
+  echo "次の手順を手動で実行してください:" >&2
+  echo "  1. 変更を commit + push (secrets.nix が更新されているため --no-verify が必要):" >&2
+  echo "     git add -A && git commit --no-verify -m rekey && git push" >&2
+  echo "  2. 以下の秘密を参照ホストで rekey (各ファイル、いずれか 1 台で可。参照ホストは上記の rekey.sh 出力を参照):" >&2
+  while IFS= read -r f; do
+    [[ -n "$f" ]] || continue
+    echo "  $f" >&2
+  done <"$FAILED_LIST"
+  echo "  3. 完了したら Enter (installer が git pull して新ホストの鍵で検証します)" >&2
+  if ! read -r; then
+    echo "error: 標準入力が閉じています。参照ホストでの rekey 手順を完了してから再実行してください" >&2
+    exit 1
+  fi
+  if ! git pull; then
+    echo "error: git pull に失敗しました" >&2
+    exit 1
+  fi
+  unresolved=()
+  RAGE=(rage)
+  if ! command -v rage >/dev/null 2>&1; then
+    RAGE=(nix shell nixpkgs#rage -c rage)
+  fi
+  while IFS= read -r f; do
+    [[ -n "$f" ]] || continue
+    if [[ ! -f "$f" ]]; then
+      echo "skipped (pull 後に対象ファイルが存在しません。リネーム等で対象外になった可能性): $f" >&2
+      continue
+    fi
+    if ! "${RAGE[@]}" -d \
+      -i "$TMP_DIR/persist/etc/age/key.txt" \
+      -i "$TMP_DIR/persist/home/$USER_NAME/.config/age/home-manager_key" \
+      "$f" >/dev/null 2>&1; then
+      unresolved+=("$f")
+    fi
+  done <"$FAILED_LIST"
+  if [[ ${#unresolved[@]} -gt 0 ]]; then
+    echo "error: 以下の秘密は新ホストの鍵でまだ復号できません。参照ホストでの rekey が完了しているか確認してください" >&2
+    printf '  %s\n' "${unresolved[@]}" >&2
+    exit 1
+  fi
+  echo "すべての秘密が新ホストの鍵で復号できることを確認しました" >&2
 fi
 
 nix run --inputs-from . nixos-anywhere -- --extra-files "$TMP_DIR" $BUILD_ON_REMOTE --flake ".#${HOST_NAME}" --ssh-option StrictHostKeyChecking=no --ssh-option UserKnownHostsFile=/dev/null --ssh-option GlobalKnownHostsFile=/dev/null "$REMOTE"
