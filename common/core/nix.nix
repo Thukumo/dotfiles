@@ -51,6 +51,7 @@
           Unit = {
             Description = "Pull dotfiles repository on login";
             After = [ "network-online.target" ];
+            Wants = [ "network-online.target" ];
           };
           Service = {
             Type = "oneshot";
