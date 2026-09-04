@@ -19,18 +19,18 @@
       opener = {
         edit = [
           {
-            run = ''nvim "$@"'';
+            run = "nvim %s";
             block = true;
           }
         ];
         play = [
           {
-            run = ''${pkgs.vlc}/bin/vlc "$@"'';
+            run = "${pkgs.vlc}/bin/vlc %s";
           }
         ];
         image = [
           {
-            run = ''${pkgs.feh}/bin/feh "$@"'';
+            run = "${pkgs.feh}/bin/feh %s";
           }
         ];
       };
