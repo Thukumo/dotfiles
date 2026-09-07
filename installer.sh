@@ -75,7 +75,7 @@ ssh $SSH_OPTS "$REMOTE" "nixos-generate-config --no-filesystems --show-hardware-
 git add "hosts/${HOST_NAME}/hardware-configuration.nix"
 
 # ホームキーを配置するユーザー (home-manager のユーザー) を取得する
-USER_NAME=$(nix eval --raw --apply 'users: builtins.attrNames users' ".#nixosConfigurations.${HOST_NAME}.config.home-manager.users" | awk '{print $1}')
+USER_NAME=$(nix eval --raw --apply 'users: builtins.head (builtins.attrNames users)' ".#nixosConfigurations.${HOST_NAME}.config.home-manager.users")
 
 mkdir -p "$TMP_DIR"/persist/etc/age "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age
 nix shell nixpkgs#rage -c rage-keygen -o "$TMP_DIR"/persist/etc/age/key.txt

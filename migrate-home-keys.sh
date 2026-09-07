@@ -16,7 +16,7 @@ for h in "${HOSTS[@]}"; do
     continue
   fi
 
-  user=$(nix eval --raw --apply 'users: builtins.attrNames users' ".#nixosConfigurations.${h}.config.home-manager.users" | awk '{print $1}')
+  user=$(nix eval --raw --apply 'users: builtins.head (builtins.attrNames users)' ".#nixosConfigurations.${h}.config.home-manager.users")
   dest="/persist/home/$user/.config/age/home-manager_key"
 
   if [[ "$h" == "$(hostname)" ]]; then
