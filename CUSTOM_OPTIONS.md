@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-09-04 06:29:00
+Generated on 2026-09-09 09:01:36
 
 - **custom**
   - **desktop**
@@ -101,7 +101,7 @@ Generated on 2026-09-04 06:29:00
       - `encryptTemplates` (Default: `false`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. Defaults to 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
       - `gui` (Default: `true`) (Example: `true`): Whether to enable the Gaze GTK GUI for enrolling faces.
       - `ir` (Default: `null`): Infrared (Windows Hello) camera source, e.g. '"usb:0bda:558b"' or '"/dev/video3"'. Resolved by VID:PID to the mono/IR node. 'null' disables the IR camera. 
-      - `pamServices` (Default: `["sudo","polkit-1","hyprlock"]`): PAM services to enable Gaze face authentication for.
+      - `pamServices` (Default: `["sudo","polkit-1","hyprlock","swaylock"]`): PAM services to enable Gaze face authentication for.
       - `rgb` (Default: `"primary"`): RGB camera source for Gaze. A GStreamer source, 'primary' (PipeWire), a 'usb:VVVV:PPPP' VID:PID, or a '/dev/video*' node. Set to "" to disable RGB and use the IR camera only. 
       - `securityLevel` (Default: `"maximum"`): Gaze security level. 'low'/'medium' use MobileFaceNet (faster), 'high'/'maximum' use ResNet50 (more accurate, stricter). Ignored when 'securityLevel = "custom"' (set thresholds via 'services.gaze.settings.security' directly). 
   - **style**
@@ -166,10 +166,9 @@ Generated on 2026-09-04 06:29:00
       - `browser` (Default: `null`): Browser opened by desktop shortcuts (e.g. Mod+Shift+C). Shortcut binds are not created when unset.
       - `de` (Default: `null`): Desktop environment or window manager to use
       - `enable` (Default: `false`) (Example: `true`): Whether to enable desktop environment.
-      - **hyprlock**
-        - `enable` (Default: `true`): Whether to enable hyprlock (enabled by default).
       - `ime` (Default: `null`): Input method engine to use
       - `launcher` (Default: `null`): Application launcher to use
+      - `locker` (Default: `"swaylock"`): Screen locker to use
       - `mimeBrowser` (Default: `null`): Browser to set as the default MIME handler
       - **nowplaying**
         - `enable` (Default: `true`): Whether to enable nowplaying (enabled by default).

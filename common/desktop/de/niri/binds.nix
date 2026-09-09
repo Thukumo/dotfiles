@@ -35,8 +35,6 @@
 
           normalBind = {
             "Shift+P" = power-off-monitors;
-            "Escape" = spawn "${pkgs.hyprlock}/bin/hyprlock";
-
             "Return" = spawn (desktopLib.terminalInfo myConfig.desktop.terminal).command;
             "Space" = spawn (desktopLib.launcherInfo myConfig.desktop.launcher).command;
             # "Space" = spawn "anyrun";
@@ -64,6 +62,9 @@
               spawn "sh" "-c"
                 "${pkgs.libnotify}/bin/notify-send \"$(date +%H:%M:%S)\" \"$(date +%Y/%m/%d)\n$(${pkgs.acpi}/bin/acpi -b | cut -d: -f2- | sed 's/^, //')\"";
           };
+          lockerBind = lib.optionalAttrs (myConfig.desktop.locker != null) {
+            "Escape" = spawn "${pkgs.${myConfig.desktop.locker}}/bin/${myConfig.desktop.locker}";
+          };
           worksp = builtins.listToAttrs (
             map (n: {
               name = toString n;
@@ -86,7 +87,7 @@
           };
         in
         (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (
-          browserBinds // normalBind // worksp // moveW
+          browserBinds // normalBind // lockerBind // worksp // moveW
         ))
         // other
       );

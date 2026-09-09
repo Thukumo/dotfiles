@@ -23,6 +23,7 @@ in
         "sudo"
         "polkit-1"
         "hyprlock"
+        "swaylock"
       ];
       description = "PAM services to enable Gaze face authentication for.";
     };
