@@ -7,12 +7,14 @@
 {
   security.tpm2.enable = false;
 
-  services.journald.storage = "volatile";
-  services.journald.extraConfig = ''
-    RuntimeMaxUse=64M
-    RuntimeKeepFree=64M
-    MaxRetentionSec=2days
-  '';
+  services.journald = {
+    storage = "volatile";
+    settings.Journal = {
+      RuntimeMaxUse = "64M";
+      RuntimeKeepFree = "64M";
+      MaxRetentionSec = "2days";
+    };
+  };
 
   # どうせクロック周波数が変動しないので
   custom.hardware.tune.auto-cpufreq.enable = false;
