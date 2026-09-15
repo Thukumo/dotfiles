@@ -4,21 +4,6 @@
   ...
 }:
 
-let
-  wifiList = {
-    "φ2" = {
-      name = "phi2";
-      f = p: { pskRaw = p; };
-    };
-    "X4S".f = p: { pskRaw = p; };
-    "AP80211-5n" = {
-      name = "5n";
-      f = p: { pskRaw = p; };
-    };
-    "DigicreWiFi".f = p: { pskRaw = p; };
-  };
-  mkConf = essid: val: (val.f "ext:${val.name or essid}_pwd");
-in
 {
   options.custom.network.wifi = {
     enable = lib.mkEnableOption "wpa_supplicant Wi-Fi";
@@ -34,7 +19,12 @@ in
       extraConfigFiles = [
         config.age.secrets.eduroam.path
       ];
-      networks = lib.mapAttrs mkConf wifiList;
+      networks = {
+        "φ2".pskRaw = "ext:phi2_pwd";
+        "X4S".pskRaw = "ext:X4S_pwd";
+        "AP80211-5n".pskRaw = "ext:5n_pwd";
+        "DigicreWiFi".pskRaw = "ext:DigicreWiFi_pwd";
+      };
     };
 
     age.secrets = {

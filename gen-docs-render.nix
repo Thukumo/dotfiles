@@ -27,27 +27,23 @@ let
 
       # プレフィックスの空白
       p = lib.concatStrings (builtins.genList (_: "  ") indent);
+
+      # サブモジュール系の子要素レンダリング (isSubmodule / attrsOf submodule 共通)
+      renderSubmoduleChildren =
+        label: subOpts:
+        let
+          filteredSubOpts = lib.filterAttrs (n: _: !(lib.hasPrefix "_" n)) subOpts;
+          children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
+          content = lib.concatStrings children;
+        in
+        if content == "" then "" else "${p}- **${name}** (${label})\n${content}";
     in
     if isSubmodule then
-      let
-        # サブモジュールのオプションを取得
-        subOpts = opt.type.getSubOptions [ ];
-        # _ で始まる内部属性を除外
-        filteredSubOpts = lib.filterAttrs (n: _: !(lib.hasPrefix "_" n)) subOpts;
-        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
-        content = lib.concatStrings children;
-      in
-      if content == "" then "" else "${p}- **${name}** (Submodule)\n${content}"
+      renderSubmoduleChildren "Submodule" (opt.type.getSubOptions [ ])
     else if isAttrsOfSubmodule then
-      let
-        # attrsOf submodule の場合、入れ子の型からオプションを取得
-        subOpts = if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [ ] else { };
-        # _ で始まる内部属性を除外
-        filteredSubOpts = lib.filterAttrs (n: _: !(lib.hasPrefix "_" n)) subOpts;
-        children = lib.mapAttrsToList (n: v: renderTree (indent + 1) n v) filteredSubOpts;
-        content = lib.concatStrings children;
-      in
-      if content == "" then "" else "${p}- **${name}** (User Options)\n${content}"
+      renderSubmoduleChildren "User Options" (
+        if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [ ] else { }
+      )
     else if isOption then
       let
         desc = if opt ? description then cleanDesc opt.description else "No description";
