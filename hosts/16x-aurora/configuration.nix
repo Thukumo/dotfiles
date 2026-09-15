@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  security.sudo-rs.wheelNeedsPassword = true;
+  security.sudo-rs.wheelNeedsPassword = false;
   custom.hardware.secure-boot.enable = true;
   custom.security.gaze = {
     enable = true;
