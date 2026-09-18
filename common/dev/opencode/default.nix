@@ -74,6 +74,26 @@ in
                     name = model;
                     value = {
                       name = model;
+                      # llama-serverはリクエスト毎のreasoning_effortに対応。
+                      # AI SDK openai-compatibleがreasoningEffortを中継する。
+                      # Tabで切替 (default = テンプレート既定)。
+                      "variants" = {
+                        "low" = {
+                          "reasoningEffort" = "low";
+                        };
+                        "medium" = {
+                          "reasoningEffort" = "medium";
+                        };
+                        "high" = {
+                          "reasoningEffort" = "high";
+                        };
+                        "xhigh" = {
+                          "reasoningEffort" = "xhigh";
+                        };
+                        "max" = {
+                          "reasoningEffort" = "max";
+                        };
+                      };
                     };
                   }) models
                 );

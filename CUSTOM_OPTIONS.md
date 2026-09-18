@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-09-15 17:32:29
+Generated on 2026-09-19 00:28:47
 
 - **custom**
   - **desktop**
@@ -215,6 +215,7 @@ Generated on 2026-09-15 17:32:29
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
         - `package` (Default: `"/nix/store/0n6dnrgcf2prj8dbg5f13jhrwnv1lvlr-llama-cpp-0.4.0"`): llama-cpp package to use
         - `port` (Default: `11434`): Port of the llama-server
+        - `prismFork` (Default: `false`) (Example: `true`): Whether to enable PrismML fork of llama-cpp (required for Ternary Bonsai 2 PTQ1_0/PQ2_0).
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
       - **opencode**

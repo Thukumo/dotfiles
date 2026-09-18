@@ -24,6 +24,7 @@
         default = pkgs.llama-cpp;
         description = "llama-cpp package to use";
       };
+      prismFork = lib.mkEnableOption "PrismML fork of llama-cpp (required for Ternary Bonsai 2 PTQ1_0/PQ2_0)";
       cudaSupport = lib.mkEnableOption "CUDA GPU acceleration";
       rocmSupport = lib.mkEnableOption "ROCm GPU acceleration";
       vulkanSupport = lib.mkEnableOption "Vulkan GPU acceleration";
@@ -126,6 +127,15 @@
                       );
                       default = null;
                     };
+                    mmproj = lib.mkOption {
+                      type = lib.types.nullOr (
+                        lib.types.submodule {
+                          options = commonOptions;
+                        }
+                      );
+                      default = null;
+                      description = "Vision tower file (--mmproj) for multimodal models.";
+                    };
                     specType = lib.mkOption {
                       type = lib.types.listOf (
                         lib.types.enum [
@@ -133,6 +143,7 @@
                           "draft-simple"
                           "draft-eagle3"
                           "draft-mtp"
+                          "draft-dspark"
                           "draft-dflash"
                           "ngram-simple"
                           "ngram-map-k"
@@ -148,6 +159,7 @@
                         - draft-simple: Traditional draft model speculative decoding (requires -md).
                         - draft-eagle3: Eagle-3 speculative decoding with dedicated tree draft (requires -md).
                         - draft-mtp: Multi-Token Prediction (MTP) using target model's internal heads (no external -md needed).
+                        - draft-dspark: DSpark speculative decoding with dedicated drafter (requires -md, e.g. Bonsai 27B).
                         - draft-dflash: DeepSeek-Flash speculative decoding.
                         - ngram-simple: n-gram based model-less speculative decoding.
                         - ngram-map-k: n-gram map (K) based speculative decoding.
@@ -189,7 +201,7 @@
     { config, ... }:
     let
       cfg = user.custom.dev.llama;
-      llamaBackend = cfg.package.override {
+      baseBackend = cfg.package.override {
         inherit (cfg)
           cudaSupport
           rocmSupport
@@ -197,6 +209,20 @@
           openclSupport
           ;
       };
+      # ponytail: forkはsrc差し替えのみ、npm hashは流用 (UI不変のため)
+      llamaBackend =
+        if cfg.prismFork then
+          baseBackend.overrideAttrs (_old: {
+            version = "prism-b10687-5d80cff";
+            src = pkgs.fetchFromGitHub {
+              owner = "PrismML-Eng";
+              repo = "llama.cpp";
+              rev = "5d80cff0b8cb9f2bf823cfc4e71e3abb97f290d6";
+              hash = "sha256-P/TrseqTkqQwD6wGgsznCl1P/bhZZT6e0K1+WBZXGLY=";
+            };
+          })
+        else
+          baseBackend;
       modelDir = "${config.home.homeDirectory}/.local/share/llama/models";
 
       allDownloads = lib.flatten (
@@ -204,6 +230,7 @@
           m:
           [ { inherit (m) repoId file; } ]
           ++ (if m.draft != null then [ { inherit (m.draft) repoId file; } ] else [ ])
+          ++ (if m.mmproj != null then [ { inherit (m.mmproj) repoId file; } ] else [ ])
         ) cfg.models
       );
 
@@ -238,6 +265,7 @@
                         "-md ${modelDir}/${m.draft.file} -ngld ${builtins.toString m.draft.gpuLayers}"
                       else
                         "";
+                    mmprojArg = if m.mmproj != null then "--mmproj ${modelDir}/${m.mmproj.file}" else "";
                     specTypeArg =
                       let
                         finalSpecType = if m.specType == [ ] then [ "none" ] else m.specType;
@@ -276,6 +304,7 @@
                           ${specTypeArg} \
                           ${specDefaultArg} \
                           ${speculativeArgs} \
+                          ${mmprojArg} \
                           ${extraArgsStr} \
                           --host ${cfg.host}
                       '';
