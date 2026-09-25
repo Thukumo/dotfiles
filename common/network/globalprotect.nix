@@ -88,10 +88,13 @@
                 "https://${user.custom.network.globalProtect.vpnPortal}/gateway:prelogin-cookie"
             '')
           ];
-          home.persistence."/persist".directories = [
-            ".local/share/.gp-saml-gui-wrapped"
-            ".cache/.gp-saml-gui-wrapped"
-          ];
+          home.persistence."/persist" = {
+            directories = [
+              ".local/share/.gp-saml-gui-wrapped"
+              ".cache/.gp-saml-gui-wrapped"
+            ];
+            files = [ ".gp-saml-gui-cookies" ];
+          };
         }
       );
 }
