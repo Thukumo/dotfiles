@@ -47,12 +47,21 @@
                 set -euo pipefail
 
                 IFACE="''${TUNDEV:-${vpnInterface}}"
+                IP="${pkgs.iproute2}/bin/ip"
+                RESOLVECTL="${pkgs.systemd}/bin/resolvectl"
+
                 if [ "''${reason:-}" = connect ]; then
-                  OLD_DEFAULT="$(${pkgs.iproute2}/bin/ip route show default 2>/dev/null || true)"
+                  OLD_DEFAULT="$($IP route show default 2>/dev/null || true)"
+                  # Drop stale routes from an aborted session reusing this ifname,
+                  # so vpnc-script doesn't snapshot them into its default-route backup.
+                  $IP route flush dev "$IFACE" 2>/dev/null || true
+                  $IP -6 route flush dev "$IFACE" 2>/dev/null || true
                 fi
 
                 # Keep openconnect's standard interface/route setup.
-                ${pkgs.vpnc-scripts}/bin/vpnc-script
+                # NOTE: vpnc-script runs under `set -e` and may abort mid-cleanup;
+                # our connect/disconnect fix-ups below are idempotent and always run.
+                ${pkgs.vpnc-scripts}/bin/vpnc-script || true
 
                 case "''${reason:-}" in
                   connect)
@@ -60,19 +69,26 @@
                     # pre-VPN default so only server-pushed split routes use the VPN.
                     # ponytail: naive save/restore, policy routing if this falls short
                     if [ -n "''${OLD_DEFAULT:-}" ]; then
-                      ${pkgs.iproute2}/bin/ip route del default dev "$IFACE" 2>/dev/null || true
+                      $IP route del default dev "$IFACE" 2>/dev/null || true
                       echo "$OLD_DEFAULT" | while IFS= read -r r; do
                         [ -n "$r" ] || continue
                         # shellcheck disable=SC2086
-                        ${pkgs.iproute2}/bin/ip route replace $r 2>/dev/null || true
+                        $IP route replace $r 2>/dev/null || true
                       done
                     fi
-                    ${pkgs.iproute2}/bin/ip -6 route del default dev "$IFACE" 2>/dev/null || true
+                    $IP -6 route del default dev "$IFACE" 2>/dev/null || true
                     ${lib.optionalString (dnsDomains != [ ]) ''
                       ${pkgs.systemd}/bin/resolvectl domain "$IFACE" ${domainArgs}
                       ${pkgs.systemd}/bin/resolvectl default-route "$IFACE" no
                     ''}
-                    ${pkgs.systemd}/bin/resolvectl flush-caches
+                    $RESOLVECTL flush-caches
+                    ;;
+                  disconnect)
+                    # Finish what vpnc-script may have aborted: no tun routes or
+                    # per-link DNS may leak into the next session.
+                    $IP route flush dev "$IFACE" 2>/dev/null || true
+                    $IP -6 route flush dev "$IFACE" 2>/dev/null || true
+                    $RESOLVECTL revert "$IFACE" 2>/dev/null || true
                     ;;
                 esac
               ''}"
