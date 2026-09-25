@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  security.sudo-rs.wheelNeedsPassword = true;
+  security.sudo-rs.wheelNeedsPassword = false;
   custom.hardware.secure-boot.enable = true;
   custom.security.gaze = {
     enable = true;
@@ -68,58 +68,38 @@
       llama = {
         enable = true;
         cudaSupport = true;
-        fimModel = "qwen2.5-coder-7b";
+        prismFork = true;
+        # fimModel = "qwen2.5-coder-7b";
         models = [
-          {
-            repoId = "MaziyarPanahi/Qwen2.5-Coder-7B-GGUF";
-            file = "Qwen2.5-Coder-7B.Q5_K_M.gguf";
-            name = "qwen2.5-coder-7b";
-            contextLength = 32768;
-            fim = true;
-          }
-          {
-            repoId = "MaziyarPanahi/Qwen2.5-Coder-3B-GGUF";
-            file = "Qwen2.5-Coder-3B.Q5_K_M.gguf";
-            name = "qwen2.5-coder-3b";
-            contextLength = 32768;
-            fim = true;
-          }
-          {
-            repoId = "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF";
-            file = "Qwopus3.6-35B-A3B-Coder-MTP-Q4_K_M.gguf";
-            name = "qwopus3.6-35b-coder-mtp";
-            specType = [ "draft-mtp" ];
-            extraArgs = [ "--cpu-moe" ];
-          }
-          {
-            repoId = "bartowski/Kwaipilot_KAT-Coder-V2.5-Dev-GGUF";
-            file = "Kwaipilot_KAT-Coder-V2.5-Dev-Q4_K_M.gguf";
-            name = "kat-coder-v2.5-dev";
-          }
-          {
-            repoId = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF";
-            file = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf";
-            specType = [ "draft-mtp" ];
-            extraArgs = [ "--cpu-moe" ];
-          }
-          {
-            repoId = "google/gemma-4-26B-A4B-it-qat-q4_0-gguf";
-            file = "gemma-4-26B_q4_0-it.gguf";
-          }
-          rec {
-            repoId = "unsloth/gemma-4-12b-it-GGUF";
-            file = "gemma-4-12b-it-Q4_K_M.gguf";
-
-            specType = [ "draft-mtp" ];
-            contextLength = 64000;
-            draft = {
-              inherit repoId;
-              file = "mtp-gemma-4-12b-it.gguf";
-            };
-          }
           {
             repoId = "prism-ml/Bonsai-27B-gguf";
             file = "Bonsai-27B-Q1_0.gguf";
+            contextLength = 32768;
+          }
+          {
+            repoId = "prism-ml/Ternary-Bonsai-2-27B-gguf";
+            file = "Ternary-Bonsai-2-27B-PTQ1_0.gguf";
+            contextLength = 65536;
+            # 8GB VRAM実測: -ngl autoだと見積りゲートで層がCPUに落ちる (64kで3tok/s) ため
+            # -ngl 99で全層GPU固定 (実測 PP22/TG21 tok/s、警告なし)
+            # -np 1、小batch、Q4_0 KVもVRAMに収めるため必須
+            # ngram系specは全種実測で効果なし (TG 20.7-20.9で横並び、ngram-cacheは微減) のため不使用。
+            # DSpark/MTP drafter待ち
+            gpuLayers = 99;
+            # 8GB VRAM実測: 4slotだとVRAM溢れでCPU fallback (0.7tok/s) するため
+            # np1+小batch+Q4_0 KVでVRAMに収める (実測 PP17/TG21 tok/s)
+            # NOTE: このエントリにmmproj入れるな。Bonsai 2はGPU実行されず3tok/sに落ちる (実測)。
+            # 画像入力は無印Q1_0エントリ (mmproj付き・18tok/s) を使うこと
+            cacheTypeK = "q4_0";
+            cacheTypeV = "q4_0";
+            extraArgs = [
+              "-np"
+              "1"
+              "-ub"
+              "128"
+              "-b"
+              "256"
+            ];
           }
           rec {
             repoId = "ggml-org/gemma-4-E4B-it-GGUF";

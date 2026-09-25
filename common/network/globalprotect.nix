@@ -46,13 +46,28 @@
               VPN_SCRIPT="${pkgs.writeShellScript "vpn-dns-script.sh" ''
                 set -euo pipefail
 
+                IFACE="''${TUNDEV:-${vpnInterface}}"
+                if [ "''${reason:-}" = connect ]; then
+                  OLD_DEFAULT="$(${pkgs.iproute2}/bin/ip route show default 2>/dev/null || true)"
+                fi
+
                 # Keep openconnect's standard interface/route setup.
                 ${pkgs.vpnc-scripts}/bin/vpnc-script
 
-                IFACE="''${TUNDEV:-${vpnInterface}}"
-
                 case "''${reason:-}" in
                   connect)
+                    # vpnc-script installs a full-tunnel default route; restore the
+                    # pre-VPN default so only server-pushed split routes use the VPN.
+                    # ponytail: naive save/restore, policy routing if this falls short
+                    if [ -n "''${OLD_DEFAULT:-}" ]; then
+                      ${pkgs.iproute2}/bin/ip route del default dev "$IFACE" 2>/dev/null || true
+                      echo "$OLD_DEFAULT" | while IFS= read -r r; do
+                        [ -n "$r" ] || continue
+                        # shellcheck disable=SC2086
+                        ${pkgs.iproute2}/bin/ip route replace $r 2>/dev/null || true
+                      done
+                    fi
+                    ${pkgs.iproute2}/bin/ip -6 route del default dev "$IFACE" 2>/dev/null || true
                     ${lib.optionalString (dnsDomains != [ ]) ''
                       ${pkgs.systemd}/bin/resolvectl domain "$IFACE" ${domainArgs}
                       ${pkgs.systemd}/bin/resolvectl default-route "$IFACE" no
@@ -73,10 +88,13 @@
                 "https://${user.custom.network.globalProtect.vpnPortal}/gateway:prelogin-cookie"
             '')
           ];
-          home.persistence."/persist".directories = [
-            ".local/share/.gp-saml-gui-wrapped"
-            ".cache/.gp-saml-gui-wrapped"
-          ];
+          home.persistence."/persist" = {
+            directories = [
+              ".local/share/.gp-saml-gui-wrapped"
+              ".cache/.gp-saml-gui-wrapped"
+            ];
+            files = [ ".gp-saml-gui-cookies" ];
+          };
         }
       );
 }

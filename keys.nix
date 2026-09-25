@@ -20,7 +20,7 @@
     "tsukumo" = {
       "16x-aurora" = "age1n9duyldcz8d3dgkckn3se69kxc057g0dzz5kfadgal3ensl86utqfwjngy";
       "mouse-3" = "age1jr5228eglth5uel3tvd6z3ay2xf349ykqpzltexu9u2cdpu33gjsls9p8d";
-      "thinkpadx13-nix" = "age1kc79w5k0ua9gv9efqlysx7l8ydqgf02ntmjzpgm33lh0zzenlcuqjz3837";
+      "thinkpadx13-nix" = "age1yqrh69757nsk8vtjq8dlu3738f7pgcq0v6cdulgd2uptgttdqqlsgg8tge";
       "yoga-book" = "age1j2emsn9y3ey4h7ggwf0wha44elkchuswslg84vwgk7ch52kzxvesddfrge";
     };
   };
