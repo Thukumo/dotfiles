@@ -11,6 +11,8 @@ set -euo pipefail
 # 中断してしまう。このスクリプトは古い secrets.nix との差分から対象を絞り、
 # ファイルごとに独立して `ragenix -r --rules <一時ファイル>` を実行するため、
 # 失敗が他のファイルに波及しない。
+# 試行前に手元の -i から公開鍵を求めて recipients と照合し、開ける見込みの
+# ないファイルは試行せず報告する (存在しない鍵の検出漏れ対策)。
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -188,15 +190,21 @@ while IFS=$'\t' read -r p k; do
   NEW_KEYS["$p"]+="$k"$'\n'
 done < <(extract_keys "$NEW")
 
-# keys.nix のキー式ごとの値を新旧比較し、値が変わったキー式を集める
+# keys.nix のキー式ごとの値を求める (NEW は常に、OLD は preflight 用)。
+# CHANGED_SYM (新旧の値差分) は --old-keys 明示時のみ作る。
+# 既定モードの検出は各ファイルの最終更新コミット基準で行う (後述)。
 declare -A OLD_VAL NEW_VAL CHANGED_SYM
-if [[ -n "$OLD_KEYS_FILE" && -f "$KEYS_NEW" ]]; then
-  while IFS=$'\t' read -r s v; do
-    OLD_VAL["$s"]="$v"
-  done < <(extract_key_values "$OLD_KEYS_FILE")
+if [[ -f "$KEYS_NEW" ]]; then
   while IFS=$'\t' read -r s v; do
     NEW_VAL["$s"]="$v"
   done < <(extract_key_values "$KEYS_NEW")
+fi
+if [[ -n "$OLD_KEYS_FILE" ]]; then
+  while IFS=$'\t' read -r s v; do
+    OLD_VAL["$s"]="$v"
+  done < <(extract_key_values "$OLD_KEYS_FILE")
+fi
+if [[ -n "$OLD_KEYS_ARG" && -f "$KEYS_NEW" && -n "$OLD_KEYS_FILE" ]]; then
   for s in "${!NEW_VAL[@]}"; do
     if [[ ! -v OLD_VAL[$s] ]] || [[ "${OLD_VAL[$s]}" != "${NEW_VAL[$s]}" ]]; then
       CHANGED_SYM["$s"]=1
@@ -225,13 +233,41 @@ else
       changed_files+=("$p")
     fi
   done
-  # keys.nix の値が変わったキー式を参照する秘密も対象にする
-  # (secrets.nix は参照式で書かれるため値だけの変更は差分に出ない)
-  if [[ -n "${CHANGED_SYM[*]:-}" ]]; then
+  if [[ -n "$OLD_KEYS_ARG" ]]; then
+    # 明示ベースライン (--old-keys): 値の変わったキー式を参照する秘密も対象にする
+    # (secrets.nix は参照式で書かれるため値だけの変更は差分に出ない)
+    if [[ -n "${CHANGED_SYM[*]:-}" ]]; then
+      for p in "${!NEW_KEYS[@]}"; do
+        while IFS= read -r k; do
+          [[ -n "$k" ]] || continue
+          if [[ -v CHANGED_SYM[$k] ]]; then
+            changed_files+=("$p")
+            break
+          fi
+        done <<<"${NEW_KEYS[$p]}"
+      done
+    fi
+  elif git -C "$SCRIPT_DIR" -c safe.directory="$SCRIPT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    # 各秘密の最終更新コミット時点の keys.nix を基準に値を比較する。
+    # 鍵変更を commit/pull 済みでも検出できる (HEAD 差分では消えてしまうため)。
+    # atomic commit (鍵と .age を同時更新) では基準も新鍵になるので誤検出しない。
+    declare -A REVSEEN REVCACHE
     for p in "${!NEW_KEYS[@]}"; do
+      rev="$(git -C "$SCRIPT_DIR" -c safe.directory="$SCRIPT_DIR" log -1 --format=%H -- "$p" 2>/dev/null || true)"
+      [[ -z "$rev" ]] && continue
+      if [[ ! -v REVSEEN[$rev] ]]; then
+        tmpk="$(mktemp)" || fail "mktemp に失敗しました"
+        TMP_FILES+=("$tmpk")
+        if git -C "$SCRIPT_DIR" -c safe.directory="$SCRIPT_DIR" show "$rev:keys.nix" >"$tmpk" 2>/dev/null; then
+          while IFS=$'\t' read -r s v; do
+            REVCACHE["$rev"$'\t'"$s"]="$v"
+          done < <(extract_key_values "$tmpk")
+        fi
+        REVSEEN["$rev"]=1
+      fi
       while IFS= read -r k; do
         [[ -n "$k" ]] || continue
-        if [[ -v CHANGED_SYM[$k] ]]; then
+        if [[ "${REVCACHE["$rev"$'\t'"$k"]:-}" != "${NEW_VAL[$k]:-}" ]]; then
           changed_files+=("$p")
           break
         fi
@@ -336,7 +372,57 @@ RAGENIX=(ragenix)
 if ! command -v ragenix >/dev/null 2>&1; then
   RAGENIX=(nix run nixpkgs#ragenix --)
 fi
-for p in "${changed_files[@]}"; do
+
+# preflight: 手元の -i で開けなさそうな秘密を試行前に振り分ける。
+# 公開鍵は秘密鍵ファイルの "# public key:" コメントから求める
+# (rage-keygen があればそれでも補う)。全 recipient が判明し、いずれも
+# 手元にないファイルだけ試行対象から外す (不明な recipient を含む場合は試す)。
+declare -A HAVE_PUB
+for id in "${IDENTITIES[@]}"; do
+  if [[ -r "$id" ]]; then
+    while IFS= read -r pub; do
+      [[ -n "$pub" ]] && HAVE_PUB["$pub"]=1
+    done < <(grep -o 'age1[0-9a-z]*' "$id" 2>/dev/null || true)
+  fi
+  if command -v rage-keygen >/dev/null 2>&1; then
+    pub="$(rage-keygen -y "$id" </dev/null 2>/dev/null | grep -o 'age1[0-9a-z]*' | head -n 1 || true)"
+    [[ -n "$pub" ]] && HAVE_PUB["$pub"]=1
+  fi
+done
+ready_files=()
+skipped_files=()
+if [[ -n "${HAVE_PUB[*]:-}" ]]; then
+  for p in "${changed_files[@]}"; do
+    ok=0
+    unknown=0
+    while IFS= read -r k; do
+      [[ -n "$k" ]] || continue
+      ov="${OLD_VAL[$k]:-}"
+      nv="${NEW_VAL[$k]:-}"
+      if [[ -z "$ov" && -z "$nv" ]]; then
+        unknown=1
+        continue
+      fi
+      if [[ (-n "$ov" && -v HAVE_PUB[$ov]) || (-n "$nv" && -v HAVE_PUB[$nv]) ]]; then
+        ok=1
+        break
+      fi
+    done <<<"${NEW_KEYS[$p]}"
+    if [[ "$ok" == 1 || "$unknown" == 1 ]]; then
+      ready_files+=("$p")
+    else
+      skipped_files+=("$p")
+    fi
+  done
+else
+  ready_files=("${changed_files[@]}")
+fi
+if [[ ${#skipped_files[@]} -gt 0 ]]; then
+  echo "rekey.sh: 手元の鍵では開けないため試行しません:" >&2
+  printf '  %s\n' "${skipped_files[@]}" >&2
+  failed_files+=("${skipped_files[@]}")
+fi
+for p in "${ready_files[@]}"; do
   rekey_one "$p" || failed_files+=("$p")
 done
 
