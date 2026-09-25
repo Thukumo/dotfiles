@@ -42,7 +42,7 @@ Usage: $0 [--old FILE] [--new FILE] [-i IDENTITY]... [--all]
   --old FILE      変更前の secrets.nix (デフォルト: git HEAD の secrets.nix)
   --old-keys FILE 変更前の keys.nix (デフォルト: git HEAD の keys.nix)
   --new FILE      変更後の secrets.nix (デフォルト: ./secrets.nix)
-  -i IDENTITY     復号用の age 鍵 (繰り返し可)
+  -i IDENTITY     復号用の age 鍵 (繰り返し可。既定: 自ホストの鍵を自動検出)
   --all           差分を無視して全秘密を再暗号化
   --files         差分を無視して指定した秘密だけを再暗号化
   --failed-out    rekey できなかったファイルの相対パスを書き出すファイル
@@ -259,6 +259,18 @@ if [[ ${#changed_files[@]} -eq 0 ]]; then
   exit 0
 fi
 
+# -i がなければ自ホストの鍵を既定にする (候補は rotate-age-keys.sh と同じ)。
+# 読めない鍵は混ぜない (ragenix が -i 全体で失敗するため)
+if [[ ${#IDENTITIES[@]} -eq 0 ]]; then
+  [[ -r "/etc/age/key.txt" ]] && IDENTITIES+=("/etc/age/key.txt")
+  if [[ -n "${HOME:-}" && -r "$HOME/.config/age/home-manager_key" ]]; then
+    IDENTITIES+=("$HOME/.config/age/home-manager_key")
+  elif [[ -n "${SUDO_USER:-}" && -r "/persist/home/$SUDO_USER/.config/age/home-manager_key" ]]; then
+    IDENTITIES+=("/persist/home/$SUDO_USER/.config/age/home-manager_key")
+  elif [[ -n "${USER:-}" && -r "/persist/home/$USER/.config/age/home-manager_key" ]]; then
+    IDENTITIES+=("/persist/home/$USER/.config/age/home-manager_key")
+  fi
+fi
 if [[ ${#IDENTITIES[@]} -eq 0 ]]; then
   fail "-i で復号用の鍵を指定してください (例: -i /etc/age/key.txt)"
 fi
@@ -350,5 +362,8 @@ if [[ ${#failed_files[@]} -gt 0 ]]; then
   done
   echo "  参照しているホストで rekey してください: git commit → そのホストで" >&2
   echo "  git pull して rekey.sh --files を実行 → push → ここで git pull" >&2
+  if [[ -f "/etc/age/key.txt" && ! -r "/etc/age/key.txt" ]]; then
+    echo "  このホストの system 秘密を含む場合は sudo での実行が必要です" >&2
+  fi
   exit 1
 fi
