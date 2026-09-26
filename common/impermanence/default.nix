@@ -54,6 +54,7 @@ in
       wantedBy = [ "initrd.target" ];
       after = [
         "dev-vg-root.device"
+        "systemd-hibernate-resume.service"
       ]
       ++ lib.optionals cfgLuks.enable [ cryptsetupUnit ];
       wants = lib.mkIf cfgLuks.enable [ cryptsetupUnit ];
