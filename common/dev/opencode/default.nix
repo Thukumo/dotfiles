@@ -100,6 +100,10 @@ in
               };
             };
           };
+
+          tui = {
+            plugin = [ "@mesaleh/opencode-tps" ];
+          };
         };
         home.persistence."/persist".directories = [
           ".local/share/opencode"
