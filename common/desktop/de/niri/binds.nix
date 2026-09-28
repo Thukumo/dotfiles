@@ -57,10 +57,10 @@
             "P" =
               spawn "sh" "-c"
                 "${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - - | ${pkgs.wl-clipboard}/bin/wl-copy";
-
-            "A" =
-              spawn "sh" "-c"
-                "${pkgs.libnotify}/bin/notify-send \"$(date +%H:%M:%S)\" \"$(date +%Y/%m/%d)\n$(${pkgs.acpi}/bin/acpi -b | cut -d: -f2- | sed 's/^, //')\"";
+          };
+          # `-c panel` はインスタンス解決に必須 (無いと "default" 設定を探しに行く)。
+          panelBind = lib.optionalAttrs (myConfig.desktop.panel != null) {
+            "A" = spawn "${pkgs.quickshell}/bin/quickshell" "ipc" "-c" "panel" "call" "panel" "toggle";
           };
           lockerBind = lib.optionalAttrs (myConfig.desktop.locker != null) {
             "Escape" = spawn "${pkgs.${myConfig.desktop.locker}}/bin/${myConfig.desktop.locker}";
@@ -87,7 +87,7 @@
           };
         in
         (lib.mapAttrs' (key: lib.nameValuePair "Mod+${key}") (
-          browserBinds // normalBind // lockerBind // worksp // moveW
+          browserBinds // normalBind // lockerBind // worksp // moveW // panelBind
         ))
         // other
       );
