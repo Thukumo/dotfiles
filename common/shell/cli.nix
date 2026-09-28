@@ -10,7 +10,7 @@
 
     gdu
 
-    p7zip
+    _7zz
 
     wiremix
 
