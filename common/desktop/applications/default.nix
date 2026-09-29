@@ -83,9 +83,9 @@
               description = "LibreWolf";
             };
             extensions = lib.mkOption {
-              type = lib.types.attrsOf lib.types.str;
-              default = { };
-              description = "LibreWolf extensions to auto-install from AMO (extension ID → slug)";
+              type = lib.types.listOf lib.types.str;
+              default = [ ];
+              description = "LibreWolf extensions to install from AMO (extension GUID; AMO accepts the GUID in its download URL). The declared set is authoritative: extensions not listed are removed and manual installation is blocked.";
             };
           };
           gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
