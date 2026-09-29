@@ -87,6 +87,18 @@
               default = [ ];
               description = "LibreWolf extensions to install from AMO (extension GUID; AMO accepts the GUID in its download URL). The declared set is authoritative: extensions not listed are removed and manual installation is blocked.";
             };
+            settings = lib.mkOption {
+              type = lib.types.attrsOf (
+                lib.types.oneOf [
+                  lib.types.bool
+                  lib.types.int
+                  lib.types.float
+                  lib.types.str
+                ]
+              );
+              default = { };
+              description = "LibreWolf preference overrides written to librewolf.overrides.cfg as defaultPref(). They act as defaults: changes made in the UI take precedence.";
+            };
           };
           gnome-disk-utility.enable = lib.mkEnableOption "GNOME Disk Utility";
           thunar.enable = lib.mkEnableOption "Thunar";

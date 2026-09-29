@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-09-29 12:07:19
+Generated on 2026-09-29 13:40:09
 
 - **custom**
   - **desktop**
@@ -138,6 +138,7 @@ Generated on 2026-09-29 12:07:19
         - **librewolf**
           - `enable` (Default: `false`): LibreWolf
           - `extensions` (Default: `[]`): LibreWolf extensions to install from AMO (extension GUID; AMO accepts the GUID in its download URL). The declared set is authoritative: extensions not listed are removed and manual installation is blocked.
+          - `settings` (Default: `{}`): LibreWolf preference overrides written to librewolf.overrides.cfg as defaultPref(). They act as defaults: changes made in the UI take precedence.
         - **localsend**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable LocalSend.
         - **mattermost-desktop**
