@@ -70,10 +70,6 @@
       flake = false;
     };
 
-    # OpenCode 1.18.30 の循環参照リグレッション回避のため正常動作する旧nixpkgsに固定
-    nixpkgs-opencode = {
-      url = "github:NixOS/nixpkgs/3ed67ec0a4d3c7ab4ae1f04f8ee8df07bfa506a2";
-    };
   };
 
   outputs =
@@ -131,7 +127,6 @@
         {
           nixpkgs.overlays = [
             (final: _prev: {
-              opencode = inputs.nixpkgs-opencode.legacyPackages.${final.stdenv.hostPlatform.system}.opencode;
               onlyoffice-desktopeditors = final.callPackage (
                 inputs.onlyoffice-nixpkgs + "/pkgs/by-name/on/onlyoffice-desktopeditors/package.nix"
               ) { };
