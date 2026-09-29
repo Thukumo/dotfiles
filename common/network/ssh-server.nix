@@ -27,6 +27,8 @@
       };
     };
     services.fail2ban.enable = true;
+    # sshd writes the host keys (and their .pub files) directly into /persist.
+    custom.impermanence.gc.keep = [ "/persist/etc/ssh" ];
     systemd.tmpfiles.rules = [
       "d /persist/etc/ssh 0755 root root -"
     ];

@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-09-28 09:53:00
+Generated on 2026-09-29 11:26:55
 
 - **custom**
   - **desktop**
@@ -61,6 +61,10 @@ Generated on 2026-09-28 09:53:00
         - `enable` (Default: `true`): Whether to enable powertop (enabled by default).
       - **zswap**
         - `enable` (Default: `true`): Whether to enable zswap (enabled by default).
+  - **impermanence**
+    - **gc**
+      - `enable` (Default: `true`): Whether to enable removal of data in /persist that is no longer declared as persistent (enabled by default).
+      - `keep` (Default: `[]`) (Example: `["/persist/var/lib/my-manual-state"]`): Paths below /persist kept even when they are not declared via 'environment.persistence' or 'home.persistence'. Modules that write directly into /persist should append their paths here. To keep everything, disable 'custom.impermanence.gc' instead. 
   - **mycelium**
     - **hosts** (User Options)
       - `hostname` (Default: `No default`): Hostname that other machines resolve to this address
