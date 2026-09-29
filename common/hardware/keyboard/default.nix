@@ -35,7 +35,7 @@ in
             capslock = "overload(meta, tab)";
             shift = "overload(shift, esc)";
             muhenkan = "home";
-            henkan = "end";
+            henkan = "backspace";
             katakanahiragana = "end";
             space = "overload(nav, space)";
             tab = "/";
