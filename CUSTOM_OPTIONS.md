@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-09-29 13:40:09
+Generated on 2026-09-30 09:34:53
 
 - **custom**
   - **desktop**
@@ -226,6 +226,9 @@ Generated on 2026-09-29 13:40:09
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
       - **opencode**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
+        - `models` (Default: `[]`): Extra models to register for the llama provider (llama models are added automatically when llama is enabled)
+      - **pi**
+        - `enable` (Default: `false`) (Example: `true`): Whether to enable pi coding agent.
         - `models` (Default: `[]`): Extra models to register for the llama provider (llama models are added automatically when llama is enabled)
       - **podman**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable podman.

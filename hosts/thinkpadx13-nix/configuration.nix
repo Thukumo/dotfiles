@@ -79,6 +79,7 @@
         gns3.enable = true;
         unityhub.enable = true;
         opencode.enable = true;
+        pi.enable = true;
       };
     };
     desktop.sunshine.enable = false;

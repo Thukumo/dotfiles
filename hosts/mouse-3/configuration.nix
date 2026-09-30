@@ -34,6 +34,7 @@
       dev = {
         podman.enable = true;
         opencode.enable = true;
+        pi.enable = true;
       };
     };
   };
