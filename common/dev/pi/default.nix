@@ -86,8 +86,6 @@ in
               "npm:@narumitw/pi-plan-mode"
               # サブスク使用量表示 (OpenCode Go / Command Code GOAT 対応)
               "npm:@bacnh85/pi-sub"
-              # /undo /redo /diff (ワークスペース+セッションのスナップショット復元)
-              "npm:@davideasden/pi-undo"
               # 構造化質問ダイアログ (モデルが選択肢付きで聞いてくる)
               "npm:@juicesharp/rpiv-ask-user-question"
               # エディタ上のTodoパネル
