@@ -213,12 +213,12 @@
       llamaBackend =
         if cfg.prismFork then
           baseBackend.overrideAttrs (_old: {
-            version = "prism-b10687-5d80cff";
+            version = "prism-b10754-2459f68";
             src = pkgs.fetchFromGitHub {
               owner = "PrismML-Eng";
               repo = "llama.cpp";
-              rev = "5d80cff0b8cb9f2bf823cfc4e71e3abb97f290d6";
-              hash = "sha256-P/TrseqTkqQwD6wGgsznCl1P/bhZZT6e0K1+WBZXGLY=";
+              rev = "2459f68b5c0eb26261fd5a81682004b93cd645ba";
+              hash = "sha256-3tASDsQU5JcTb2TIGEXaLpTK4T6osikndyVVBCWa8R4=";
             };
           })
         else
