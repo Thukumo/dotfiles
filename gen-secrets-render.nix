@@ -43,7 +43,11 @@ let
     ) hostsData
   );
 
-  allFiles = lib.sort (a: b: a < b) (lib.unique (map (r: r.file) (systemRefs ++ homeRefs)));
+  extraFiles = lib.attrNames (keys.extraRecipients or { });
+
+  allFiles = lib.sort (a: b: a < b) (
+    lib.unique (map (r: r.file) (systemRefs ++ homeRefs) ++ extraFiles)
+  );
 
   # 秘密ごとの recipients を求める
   recipientsFor =
@@ -127,10 +131,11 @@ let
     file:
     let
       e = recipientsFor file;
+      refs = if e.refs == [ ] then "(extraRecipients)" else lib.concatStringsSep ", " e.refs;
     in
     ''
       # ${file}
-      #   referenced by: ${lib.concatStringsSep ", " e.refs}
+      #   referenced by: ${refs}
       "${file}".publicKeys = [ ${lib.concatStringsSep " " e.recipients} ];
     '';
 in
