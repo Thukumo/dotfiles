@@ -33,7 +33,10 @@
       desktop.enable = false;
       dev = {
         podman.enable = true;
-        opencode.enable = true;
+        opencode = {
+          enable = true;
+          web.enable = true;
+        };
         pi.enable = true;
       };
     };
@@ -102,42 +105,47 @@
 
   services.nginx = {
     enable = true;
-    virtualHosts = {
-      "api-nowplaying.tsukumo.f5.si" = {
-        listen = [
+    virtualHosts =
+      let
+        tunnelListener = [
           {
             addr = "127.0.0.1";
             port = 8182;
           }
         ];
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8181";
+      in
+      {
+        "api-nowplaying.tsukumo.f5.si" = {
+          listen = tunnelListener;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8181";
+          };
+        };
+        "nowplaying.tsukumo.f5.si" = {
+          listen = tunnelListener;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8183";
+          };
+        };
+        "mouse-3-opencode.tsukumo.f5.si" = {
+          listen = tunnelListener;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:4096";
+            proxyWebsockets = true;
+            extraConfig = ''
+              proxy_buffering off;
+              proxy_read_timeout 3600s;
+            '';
+          };
+        };
+        "_" = {
+          listen = tunnelListener;
+          default = true;
+          locations."/" = {
+            return = "404";
+          };
         };
       };
-      "nowplaying.tsukumo.f5.si" = {
-        listen = [
-          {
-            addr = "127.0.0.1";
-            port = 8182;
-          }
-        ];
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8183";
-        };
-      };
-      "_" = {
-        listen = [
-          {
-            addr = "127.0.0.1";
-            port = 8182;
-          }
-        ];
-        default = true;
-        locations."/" = {
-          return = "404";
-        };
-      };
-    };
   };
 
   custom.hardware.disk = {

@@ -35,6 +35,13 @@ in
     keys.systemKeys."backup-pixel9a"
   ];
 
+  # common/dev/opencode/opencode-web-password.age
+  #   referenced by: tsukumo@mouse-3
+  "common/dev/opencode/opencode-web-password.age".publicKeys = [
+    keys.homeKeys."tsukumo"."mouse-3"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
   # common/network/sras-vpn/sras-vpn.age
   #   referenced by: 16x-aurora, mouse-3, thinkpadx13-nix, yoga-book
   "common/network/sras-vpn/sras-vpn.age".publicKeys = [

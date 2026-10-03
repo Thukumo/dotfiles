@@ -20,13 +20,21 @@ in
         default = [ ];
         description = "Extra models to register for the llama provider (llama models are added automatically when llama is enabled)";
       };
+      web = {
+        enable = lib.mkEnableOption "opencode web server";
+        port = lib.mkOption {
+          type = lib.types.port;
+          default = 4096;
+          description = "Port the opencode web server listens on (127.0.0.1 only)";
+        };
+      };
     };
   };
 
   config = {
     home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.opencode.enable) (
       user:
-      { lib, ... }:
+      { lib, config, ... }:
       let
         models =
           user.custom.dev.opencode.models
@@ -38,6 +46,24 @@ in
         age.secrets."opencode_auth" = {
           file = ./auth_tsukumo.age;
           path = ".local/share/opencode/auth.json";
+        };
+
+        age.secrets."opencode_web_password" = lib.mkIf user.custom.dev.opencode.web.enable {
+          file = ./opencode-web-password.age;
+        };
+
+        systemd.user.services.opencode-web = lib.mkIf user.custom.dev.opencode.web.enable {
+          Unit = {
+            Description = "opencode web server";
+            After = [ "agenix.service" ];
+          };
+          Service = {
+            ExecStart = "${config.programs.opencode.package}/bin/opencode serve --hostname 127.0.0.1 --port ${toString user.custom.dev.opencode.web.port}";
+            EnvironmentFile = [ "%t/agenix/opencode_web_password" ];
+            Restart = "on-failure";
+            RestartSec = "5";
+          };
+          Install.WantedBy = [ "default.target" ];
         };
 
         programs.opencode = {
