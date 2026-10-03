@@ -118,7 +118,6 @@
       };
       opencode.enable = true;
       pi.enable = true;
-      antigravity.enable = true;
       unityhub.enable = true;
     };
   };

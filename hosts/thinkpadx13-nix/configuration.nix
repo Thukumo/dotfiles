@@ -75,7 +75,6 @@
         };
       };
       dev = {
-        antigravity.enable = true;
         gns3.enable = true;
         unityhub.enable = true;
         opencode.enable = true;
