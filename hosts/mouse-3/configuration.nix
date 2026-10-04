@@ -43,6 +43,8 @@
   };
 
   home-manager.users."tsukumo" = {
+    home.persistence."/persist".directories = [ ".local/share/nowplaying" ];
+
     age.secrets."nowplaying_token".file = ../../common/desktop/services/nowplaying/nowplaying-token.age;
 
     services.podman.containers = {
@@ -71,7 +73,11 @@
       nowplaying = {
         image = "docker-archive:${inputs.nowplaying.packages.x86_64-linux.image}";
         network = "host";
-        environment.NOWPLAYING_BIND = "127.0.0.1:8181";
+        environment = {
+          NOWPLAYING_BIND = "127.0.0.1:8181";
+          NOWPLAYING_DATA = "/data/listens.jsonl";
+        };
+        volumes = [ "/persist/home/tsukumo/.local/share/nowplaying:/data" ];
         # agenix default secret location, %t expands to $XDG_RUNTIME_DIR
         environmentFile = [ "%t/agenix/nowplaying_token" ];
       };
