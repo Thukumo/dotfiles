@@ -377,4 +377,10 @@
       };
     }
   );
+
+  config.systemd.services."user@".serviceConfig = lib.mkIf (
+    myLib.anyUser config (user: user.dev.llama.enable)
+  ) {
+    LimitMEMLOCK = "infinity";
+  };
 }

@@ -84,7 +84,7 @@
             # -ngl 99で全層GPU固定 (実測 PP22/TG21 tok/s、警告なし)
             # -np 1、小batch、Q4_0 KVもVRAMに収めるため必須
             # ngram系specは全種実測で効果なし (TG 20.7-20.9で横並び、ngram-cacheは微減) のため不使用。
-            # DSpark/MTP drafter待ち
+            # MTPは下のmtp-48kエントリで実測済み。DSparkはdrafter待ち
             gpuLayers = 99;
             # 8GB VRAM実測: 4slotだとVRAM溢れでCPU fallback (0.7tok/s) するため
             # np1+小batch+Q4_0 KVでVRAMに収める (実測 PP17/TG21 tok/s)
@@ -92,6 +92,26 @@
             # 画像入力は無印Q1_0エントリ (mmproj付き・18tok/s) を使うこと
             cacheTypeK = "q4_0";
             cacheTypeV = "q4_0";
+            extraArgs = [
+              "-np"
+              "1"
+              "-ub"
+              "128"
+              "-b"
+              "256"
+            ];
+          }
+          {
+            # fork b10754実測 (48k, q4_0 KV, 8GB): MTP無し=PP422/TG27 → MTP=PP357/TG57-78 (acceptance 60-66%)
+            # モデルはコミュニティ製 (sudoingx) のPTQ1_0+MTPリーン版。64kだとVRAMに収らないため48k
+            name = "Ternary-Bonsai-2-27B-PTQ1_0-mtp-48k";
+            repoId = "sudoingx/Ternary-Bonsai-2-27B-PTQ1_0-MTP-GGUF";
+            file = "Ternary-Bonsai-2-27B-PTQ1_0-mtp-lean.gguf";
+            contextLength = 49152;
+            gpuLayers = 99;
+            cacheTypeK = "q4_0";
+            cacheTypeV = "q4_0";
+            specType = [ "draft-mtp" ];
             extraArgs = [
               "-np"
               "1"
