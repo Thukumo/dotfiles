@@ -7,14 +7,16 @@ set -euo pipefail
 #   ./rotate-age-keys.sh <host> [--user USER] [--no-deploy] [--yes]
 #
 # 流れ (旧鍵で復号できるうちに rekey してから新鍵を配備する):
-#   1. 新鍵を tmp/rotate-<host>/ に生成 (gitignore 済み、失敗時リトライ用に残す)
+#   1. 新鍵を tmp/rotate-<host>/ に生成 (gitignore 済み)
 #   2. keys.nix の公開鍵を更新 → secrets.nix を再生成
 #   3. ./rekey.sh --files で再暗号化 (対象は当該ホストの鍵を参照する秘密。復号には手元の旧鍵を使う)
 #   4. 新鍵で復号できることを検証してからこのホストに配備 (sudo install)
+#      成功したら tmp/rotate-<host>/ は削除する (旧鍵バックアップ含む)
 #
 # rekey に失敗したら中断する (新鍵は配備しない)。表示される手順で
 # 参照ホスト側の rekey を済ませてから再実行すること。再実行時は残っている
 # tmp/rotate-<host>/ の新鍵をそのまま使うので、鍵ペアは変わらない。
+# --no-deploy や失敗時は手動配備・リトライ用に tmp/rotate-<host>/ を残す。
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
@@ -66,7 +68,13 @@ echo "host: $HOST, user: $USER_NAME"
 STAGE="tmp/rotate-$HOST"
 mkdir -p "$STAGE"
 FAILED_LIST="$(mktemp)"
-trap 'rm -f "$FAILED_LIST"' EXIT
+DEPLOYED=0
+cleanup() {
+  rm -f "$FAILED_LIST"
+  # 配備まで成功したときだけ消す (失敗時はリトライ用に鍵を残す)
+  [[ "$DEPLOYED" == 1 ]] && rm -rf "$STAGE"
+}
+trap cleanup EXIT
 
 KEYGEN=(rage-keygen)
 RAGE=(rage)
@@ -249,10 +257,11 @@ deploy_one() { # $1=src $2=dest $3=owner-arg("root" or "user")
 
 deploy_one "$STAGE/key.txt" "$SYSTEM_DEST" root
 deploy_one "$STAGE/home-manager_key" "$HOME_DEST" user
+DEPLOYED=1
 
 cat <<EOF
 done.
-  旧鍵の退避: $STAGE/old-*.bak (動作確認後に削除)
-  新鍵の正本: 配備先ホスト上のみ。$STAGE/ の新鍵も確認後に削除推奨
+  新鍵の正本: 配備先ホスト上のみ
+  $STAGE/ (旧鍵バックアップ含む) はこのまま削除します
   次に: git add -A && git commit --no-verify -m "rotate $HOST keys" && nixos-rebuild switch --flake .#$HOST
 EOF
