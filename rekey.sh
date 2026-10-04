@@ -86,10 +86,11 @@ if [[ ${#FILES_ARG[@]} -eq 0 && -z "$OLD" ]]; then
 fi
 
 # keys.nix の値だけの変更は secrets.nix の差分に出ない (参照式で書かれるため) ので、
-# 差分モードでは keys.nix の新旧も比較する
+# keys.nix の新旧も比較する。--files モードでも preflight が現行の受取人
+# (旧鍵) を照合できるよう旧 keys.nix を読む
 KEYS_NEW="$SCRIPT_DIR/keys.nix"
 OLD_KEYS_FILE=""
-if [[ ${#FILES_ARG[@]} -eq 0 && "$ALL" == 0 ]]; then
+if [[ "$ALL" == 0 ]]; then
   if [[ -n "$OLD_KEYS_ARG" ]]; then
     [[ -f "$OLD_KEYS_ARG" ]] || fail "old keys file not found: $OLD_KEYS_ARG"
     OLD_KEYS_FILE="$OLD_KEYS_ARG"

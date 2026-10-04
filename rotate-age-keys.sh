@@ -65,14 +65,26 @@ if [[ -z "$USER_NAME" ]]; then
 fi
 echo "host: $HOST, user: $USER_NAME"
 
+# sudo 実行時は $HOME が /root になるため、対象ユーザーのホームを引く
+USER_HOME="$(getent passwd "$USER_NAME" | cut -d: -f6)" || USER_HOME=""
+[[ -n "$USER_HOME" ]] || USER_HOME="$HOME"
+
 STAGE="tmp/rotate-$HOST"
 mkdir -p "$STAGE"
-FAILED_LIST="$(mktemp)"
+# /tmp 上の自所有ファイルは root (rekey は sudo 実行) から書けない
+# (fs.protected_regular=1: stickyな /tmp では非所有者の O_CREAT が拒否される)
+# ため、非stickyな $STAGE 内に置く
+FAILED_LIST="$STAGE/failed-list"
 DEPLOYED=0
 cleanup() {
+  # EXIT トラップの戻り値が終了ステータスを上書きしないよう、元の値を返す
+  local status=$?
   rm -f "$FAILED_LIST"
   # 配備まで成功したときだけ消す (失敗時はリトライ用に鍵を残す)
-  [[ "$DEPLOYED" == 1 ]] && rm -rf "$STAGE"
+  if [[ "$DEPLOYED" == 1 ]]; then
+    rm -rf "$STAGE"
+  fi
+  return "$status"
 }
 trap cleanup EXIT
 
@@ -180,16 +192,20 @@ mv "$STAGE/secrets.nix.new" secrets.nix
 echo "regenerated secrets.nix"
 
 LOCAL_KEY_ARGS=()
+# 旧鍵 (現行の .age を開く)
 [[ -f "/etc/age/key.txt" ]] && LOCAL_KEY_ARGS+=(-i "/etc/age/key.txt")
-if [[ -f "$HOME/.config/age/home-manager_key" ]]; then
-  LOCAL_KEY_ARGS+=(-i "$HOME/.config/age/home-manager_key")
-elif [[ -n "${USER:-}" && -f "/persist/home/$USER/.config/age/home-manager_key" ]]; then
-  LOCAL_KEY_ARGS+=(-i "/persist/home/$USER/.config/age/home-manager_key")
+if [[ -f "$USER_HOME/.config/age/home-manager_key" ]]; then
+  LOCAL_KEY_ARGS+=(-i "$USER_HOME/.config/age/home-manager_key")
+elif [[ -f "/persist/home/$USER_NAME/.config/age/home-manager_key" ]]; then
+  LOCAL_KEY_ARGS+=(-i "/persist/home/$USER_NAME/.config/age/home-manager_key")
 fi
 if [[ ${#LOCAL_KEY_ARGS[@]} -eq 0 ]]; then
   echo "error: 復号用の鍵が見つかりません (-i /etc/age/key.txt などを用意してください)" >&2
   exit 1
 fi
+# 新鍵: rekey 済みだが未配備の .age を再実行時に開くため
+# (deploy 失敗や他ホスト委譲後の再実行で旧鍵では開けなくなるのを防ぐ)
+LOCAL_KEY_ARGS+=(-i "$STAGE/key.txt" -i "$STAGE/home-manager_key")
 
 REKEY=(./rekey.sh)
 if [[ $EUID -ne 0 && -f "/etc/age/key.txt" ]]; then
@@ -247,7 +263,18 @@ deploy_one() { # $1=src $2=dest $3=owner-arg("root" or "user")
   backup="$STAGE/old-$(basename "$src").bak"
   # shellcheck disable=SC2024 # sudo は読む側のみ。書き先は tmp/ の自所有ファイル
   if [[ -f "$dest" ]]; then sudo cat "$dest" >"$backup" 2>/dev/null || true; fi
-  if [[ "$owner" == root ]]; then
+  if [[ -e "$dest" ]]; then
+    # install は unlink→再作成するため、ファイル単位 bind mount が旧 inode
+    # (//deleted) を指したままになる。既存ファイルは in-place で上書きする
+    # shellcheck disable=SC2024 # リダイレクトは読む側 (ユーザー)、書きは sudo tee
+    sudo tee "$dest" <"$src" >/dev/null
+    if [[ "$owner" == root ]]; then
+      sudo chown root:root "$dest"
+    else
+      sudo chown "$USER_NAME":users "$dest"
+    fi
+    sudo chmod 600 "$dest"
+  elif [[ "$owner" == root ]]; then
     sudo install -D -m 600 "$src" "$dest"
   else
     sudo install -D -m 600 -o "$USER_NAME" -g users "$src" "$dest"
@@ -257,6 +284,7 @@ deploy_one() { # $1=src $2=dest $3=owner-arg("root" or "user")
 
 deploy_one "$STAGE/key.txt" "$SYSTEM_DEST" root
 deploy_one "$STAGE/home-manager_key" "$HOME_DEST" user
+
 DEPLOYED=1
 
 cat <<EOF
