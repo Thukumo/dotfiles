@@ -2,7 +2,18 @@
   description = "NixOS Flake";
 
   inputs = {
-    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      # 公式 template が follows 入り。nixpkgs に無い hook パッケージは警告付きで skip される
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      # affinity-nix の dev 用 input を root へ寄せるためだけの input。
+      # dev 用ツールのラッパーで本体ビルドには関与しないため follows して問題ない
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -11,11 +22,24 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence.url = "github:nix-community/impermanence";
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    affinity-nix.url = "github:mrshmllow/affinity-nix";
+    affinity-nix = {
+      url = "github:mrshmllow/affinity-nix";
+      # overlay 経由の利用ではパッケージがシステム側の pkgs でビルドされるため安全
+      inputs.nixpkgs.follows = "nixpkgs";
+      # dev 用 input も root へ集約（どちらも本体ビルドには使われない）
+      inputs.git-hooks.follows = "git-hooks";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
 
     nixvim.url = "github:nix-community/nixvim";
 
@@ -24,21 +48,43 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    niri.url = "github:sodiboo/niri-flake";
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      # module はシステム側の pkgs で niri をビルドするため安全（内部の nixpkgs-stable は別途残る）
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
+    # ragenix は内部で allowAliases = false にしてビルドしており、follows すると
+    # isLinux エイリアスの無い新 nixpkgs で rust-overlay のビルドが壊れるため follows しない
     ragenix.url = "github:yaxitech/ragenix";
-    nixos-anywhere.url = "github:nix-community/nixos-anywhere";
+
+    nixos-anywhere = {
+      url = "github:nix-community/nixos-anywhere";
+      # installer.sh で動かす CLI 専用で、nixpkgs はそのビルドにしか使わない
+      inputs.nixpkgs.follows = "nixpkgs";
+      # nixos-stable は upstream のテスト専用 input なので root に寄せて重複を消す
+      inputs.nixos-stable.follows = "nixpkgs";
+    };
 
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    stylix.url = "github:nix-community/stylix/pull/2348/head";
+    stylix = {
+      url = "github:nix-community/stylix/pull/2348/head";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nur = {
       # url = "github:nix-community/NUR";
@@ -61,7 +107,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nowplaying.url = "github:Thukumo/nowplaying";
+    nowplaying = {
+      url = "github:Thukumo/nowplaying";
+      # nixpkgs input がひとつだけで、version に依存しない API しか使わないため安全
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # nixpkgs PR #526315 (ONLYOFFICE DesktopEditors: updates) の未マージ分。
     # programs.onlyoffice モジュールと extraFontPackages 対応パッケージを取り込む。
