@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-09-30 09:34:53
+Generated on 2026-10-04 21:29:18
 
 - **custom**
   - **desktop**
@@ -111,7 +111,7 @@ Generated on 2026-09-30 09:34:53
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): Whether to enable plymouth (enabled by default).
-      - `packages` (Default: `["/nix/store/d1pvhbqvpvaiwsfywl5y34pbsiafzl8b-hellonavi"]`): Extra Plymouth theme packages
+      - `packages` (Default: `["/nix/store/zv5c84lallzydxz54cald40zfiarghy1-hellonavi"]`): Extra Plymouth theme packages
       - `theme` (Default: `"hellonavi"`): Plymouth theme name
   - **users** (User Options)
     - **account**
@@ -219,7 +219,7 @@ Generated on 2026-09-30 09:34:53
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): Models to serve ("owner/repo/file.gguf" or submodule)
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/xfldlylsy32giw1kyx2yn6d8wgj41q74-llama-cpp-0.5.0"`): llama-cpp package to use
+        - `package` (Default: `"/nix/store/6491f2dv4wgrmra1f06pjibcixq8psym-llama-cpp-0.5.0"`): llama-cpp package to use
         - `port` (Default: `11434`): Port of the llama-server
         - `prismFork` (Default: `false`) (Example: `true`): Whether to enable PrismML fork of llama-cpp (required for Ternary Bonsai 2 PTQ1_0/PQ2_0).
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
@@ -227,6 +227,9 @@ Generated on 2026-09-30 09:34:53
       - **opencode**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
         - `models` (Default: `[]`): Extra models to register for the llama provider (llama models are added automatically when llama is enabled)
+        - **web**
+          - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode web server.
+          - `port` (Default: `4096`): Port the opencode web server listens on (127.0.0.1 only)
       - **pi**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable pi coding agent.
         - `models` (Default: `[]`): Extra models to register for the llama provider (llama models are added automatically when llama is enabled)

@@ -12,14 +12,14 @@
   systemKeys = {
     "16x-aurora" = "age1rq8eqfp4qsznzau3xla2ftq26d3wlhjk05l9c4tnwcpkj7ecxfqqfvtjad";
     "backup-pixel9a" = "age1akl70p6av6sjhuqa8wrr9ms5vn0jy6kgn5vh35c9m0jmg6hlrqtq9hp4cm";
-    "mouse-3" = "age15r3pt8e4trz023ljpl969uxray7xnzfzsg0hmduvy67hcfl429msrgekm3";
+    "mouse-3" = "age18wlnmdffy82jjqm0cyk42e8y29d777ccc55rv4fp7jdjlg6jcqxsqmnm4g";
     "thinkpadx13-nix" = "age1y3w68vz3g24mcaqu42vg76q0p9urnjekn42p60nlxnkh2zgdwqfsm4txkl";
     "yoga-book" = "age1u7eks62u4kj6y7v4hrcfumcvcwd3hlwkrw7su6l50x6ldreqpdnqsxjr2l";
   };
   homeKeys = {
     "tsukumo" = {
       "16x-aurora" = "age1n9duyldcz8d3dgkckn3se69kxc057g0dzz5kfadgal3ensl86utqfwjngy";
-      "mouse-3" = "age1jr5228eglth5uel3tvd6z3ay2xf349ykqpzltexu9u2cdpu33gjsls9p8d";
+      "mouse-3" = "age13jy3je2yy9ucymyar32m8rp2upu6qh235wq42nr3pgsprrq22y7szts2n0";
       "thinkpadx13-nix" = "age1yqrh69757nsk8vtjq8dlu3738f7pgcq0v6cdulgd2uptgttdqqlsgg8tge";
       "yoga-book" = "age1j2emsn9y3ey4h7ggwf0wha44elkchuswslg84vwgk7ch52kzxvesddfrge";
     };
