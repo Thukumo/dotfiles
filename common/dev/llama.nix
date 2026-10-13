@@ -209,7 +209,7 @@
           openclSupport
           ;
       };
-      # ponytail: forkはsrc差し替えのみ、npm hashは流用 (UI不変のため)
+      # ponytail: forkはb10754ベース。nixpkgs 0.6.0のtest patchは適用不可、npm hash/doCheckもfork用に戻す
       llamaBackend =
         if cfg.prismFork then
           baseBackend.overrideAttrs (_old: {
@@ -220,6 +220,9 @@
               rev = "2459f68b5c0eb26261fd5a81682004b93cd645ba";
               hash = "sha256-3tASDsQU5JcTb2TIGEXaLpTK4T6osikndyVVBCWa8R4=";
             };
+            patches = [ ];
+            doCheck = false;
+            npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
           })
         else
           baseBackend;
