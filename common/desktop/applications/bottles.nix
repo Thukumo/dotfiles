@@ -1,9 +1,14 @@
 {
+  config,
+  lib,
   desktopLib,
+  myLib,
+  pkgs,
   ...
 }:
 {
-  config = {
+  config = lib.mkIf (myLib.anyUser config (user: user.desktop.apps.bottles.enable)) {
+    nixpkgs.config.allowUnfreePackages = [ pkgs.lsfg-vk.pname ];
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.apps.bottles.enable) (
       _:
       { pkgs, ... }:

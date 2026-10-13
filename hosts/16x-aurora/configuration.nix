@@ -36,6 +36,7 @@
       winapps.enable = false;
       ime = "skk";
       apps = {
+        bottles.enable = true;
         discord.enable = true;
         google-chrome.enable = true;
         mattermost-desktop.enable = true;
