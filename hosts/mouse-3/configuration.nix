@@ -142,21 +142,19 @@
     };
   };
 
-  services.netdata = {
+  services.glances = {
     enable = true;
-    config = {
-      # nginx 経由だと接続元が 127.0.0.1 になり localhost ACL を素通りするため、
-      # ポート自体を dashboard (UI + read API) 専用に制限して
-      # netdata.conf / management API / MCP への到達を塞ぐ
-      web."bind to" = "127.0.0.1:19999=dashboard";
-      # 公開ダッシュボードに不要な情報を出すプラグインを無効化
-      # (プロセス名/ユーザー名/サービス名/コンテナ名/ログ/接続先アドレス)
-      plugins = {
-        apps = "no";
-        "systemd-journal" = "no";
-        "network-viewer" = "no";
-      };
-    };
+    extraArgs = [
+      "--webserver"
+      "--bind"
+      "127.0.0.1"
+      "--hide-public-info"
+      "--disable-check-update"
+      # プロセス一覧(コマンドライン)・接続先IP・リッスンポート・IPアドレスを隠す
+      # (--disable-process は UI にしか効かず API から見えるのでプラグイン単位で無効化)
+      "--disable-plugin"
+      "processlist,programlist,connections,ports,ip"
+    ];
   };
 
   services.nginx = {
@@ -197,7 +195,7 @@
         "mouse-3-metrics.tsukumo.f5.si" = {
           listen = tunnelListener;
           locations."/" = {
-            proxyPass = "http://127.0.0.1:19999";
+            proxyPass = "http://127.0.0.1:61208";
             proxyWebsockets = true;
             extraConfig = ''
               proxy_buffering off;
