@@ -34,7 +34,10 @@
               };
 
           normalBind = {
-            "Shift+P" = power-off-monitors;
+            "Alt+P" = power-off-monitors;
+            "Shift+P" =
+              spawn "sh" "-c"
+                "${pkgs.slurp}/bin/slurp | ${pkgs.grim}/bin/grim -g - \"$HOME/Screenshot_$(date +%Y%m%d_%H%M%S).png\"";
             "Return" = spawn (desktopLib.terminalInfo myConfig.desktop.terminal).command;
             "Space" = spawn (desktopLib.launcherInfo myConfig.desktop.launcher).command;
             # "Space" = spawn "anyrun";
