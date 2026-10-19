@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-10-16 01:32:45
+Generated on 2026-10-20 02:51:18
 
 - **custom**
   - **desktop**
@@ -225,7 +225,7 @@ Generated on 2026-10-16 01:32:45
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
         - `vulkanSupport` (Default: `false`) (Example: `true`): Whether to enable Vulkan GPU acceleration.
       - **opencode**
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode.
+        - `enable` (Default: `true`): Whether to enable opencode (enabled by default).
         - `models` (Default: `[]`): Extra models to register for the llama provider (llama models are added automatically when llama is enabled)
         - **web**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable opencode web server.

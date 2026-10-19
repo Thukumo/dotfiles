@@ -14,7 +14,7 @@ in
 {
   options.custom.users = myLib.mkUserOption {
     options.dev.opencode = {
-      enable = lib.mkEnableOption "opencode";
+      enable = myLib.mkEnabledOption "opencode";
       models = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ ];

@@ -34,10 +34,7 @@
       desktop.enable = false;
       dev = {
         podman.enable = true;
-        opencode = {
-          enable = true;
-          web.enable = true;
-        };
+        opencode.web.enable = true;
         pi.enable = true;
       };
     };

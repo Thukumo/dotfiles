@@ -137,7 +137,6 @@
           }
         ];
       };
-      opencode.enable = true;
       pi.enable = true;
       unityhub.enable = true;
     };

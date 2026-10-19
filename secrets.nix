@@ -27,11 +27,12 @@ in
   ];
 
   # common/dev/opencode/auth_tsukumo.age
-  #   referenced by: tsukumo@16x-aurora, tsukumo@mouse-3, tsukumo@thinkpadx13-nix
+  #   referenced by: tsukumo@16x-aurora, tsukumo@mouse-3, tsukumo@thinkpadx13-nix, tsukumo@yoga-book
   "common/dev/opencode/auth_tsukumo.age".publicKeys = [
     keys.homeKeys."tsukumo"."16x-aurora"
     keys.homeKeys."tsukumo"."mouse-3"
     keys.homeKeys."tsukumo"."thinkpadx13-nix"
+    keys.homeKeys."tsukumo"."yoga-book"
     keys.systemKeys."backup-pixel9a"
   ];
 
