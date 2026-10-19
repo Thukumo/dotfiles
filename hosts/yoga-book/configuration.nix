@@ -47,7 +47,10 @@
   custom.secrets.systemAgeKey.enable = true;
 
   custom.hardware.disk = {
-    beesd.hashTableSizeMB = 256;
+    beesd = {
+      enable = false;
+      hashTableSizeMB = 256;
+    };
     disko = {
       enable = true;
       diskName = "/dev/disk/by-id/mmc-064G70_0x432c5b54";
