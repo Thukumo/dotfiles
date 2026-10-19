@@ -6,6 +6,7 @@
   hardware.yogabook = {
     enable = true;
     keyboardLayout = "jp106";
+    useOutOfTreeKernelModules = false;
   };
   services.keyd.keyboards.default.settings.main = {
     fn = "leftcontrol";
