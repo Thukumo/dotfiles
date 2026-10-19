@@ -4,11 +4,23 @@ set -euo pipefail
 BUILD_ON_REMOTE=""
 HOST_NAME=""
 REMOTE=""
+NO_SUBSTITUTE=""
+POWEROFF=""
+PHASES=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
     --remote)
       BUILD_ON_REMOTE="--build-on remote"
+      shift
+      ;;
+    --no-substitute-on-destination)
+      NO_SUBSTITUTE="--no-substitute-on-destination"
+      shift
+      ;;
+    --poweroff)
+      POWEROFF=1
+      PHASES="--phases kexec,disko,install"
       shift
       ;;
     -*)
@@ -30,8 +42,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$HOST_NAME" ]]; then
-  echo "Usage: $0 [--remote] <host-name> [remote-host]" >&2
+  echo "Usage: $0 [--remote] [--no-substitute-on-destination] [--poweroff] <host-name> [remote-host]" >&2
   echo "  remote-host: nixos@installer.local (default)" >&2
+  echo "  --no-substitute-on-destination: 宛先のsubstituterを使わず、このPCからclosureを送る" >&2
+  echo "  --poweroff: インストール後にrebootせず、電源OFFする" >&2
   exit 1
 fi
 
@@ -57,13 +71,15 @@ fi
 
 echo "Using remote: $REMOTE"
 TMP_DIR="tmp"
+CTL_DIR="$(mktemp -d)"
 SECRETS_OLD="$(mktemp)"
-FAILED_LIST="$(mktemp)"
+# rekey.sh は sudo 実行。sticky な /tmp 直下だと fs.protected_regular で root が書けないため、
+# rotate-age-keys.sh と同様に非stickyな専用ディレクトリに置く
+FAILED_LIST="$CTL_DIR/failed-list"
 
 cleanup() {
-  rm -rf "$TMP_DIR"
+  rm -rf "$TMP_DIR" "$CTL_DIR"
   [[ -n "${SECRETS_OLD:-}" ]] && rm -f "$SECRETS_OLD"
-  [[ -n "${FAILED_LIST:-}" ]] && rm -f "$FAILED_LIST"
 }
 
 trap cleanup EXIT
@@ -76,11 +92,15 @@ git add "hosts/${HOST_NAME}/hardware-configuration.nix"
 
 # ホームキーを配置するユーザー (home-manager のユーザー) を取得する
 USER_NAME=$(nix eval --raw --apply 'users: builtins.head (builtins.attrNames users)' ".#nixosConfigurations.${HOST_NAME}.config.home-manager.users")
+USER_UID=$(id -u "$USER_NAME" 2>/dev/null || echo 1000)
+USER_GID=$(id -g "$USER_NAME" 2>/dev/null || echo 100)
 
 mkdir -p "$TMP_DIR"/persist/etc/age "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age
+: > "$FAILED_LIST"
 nix shell nixpkgs#rage -c rage-keygen -o "$TMP_DIR"/persist/etc/age/key.txt
 nix shell nixpkgs#rage -c rage-keygen -o "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age/home-manager_key
 chmod 600 "$TMP_DIR"/persist/etc/age/key.txt "$TMP_DIR"/persist/home/"$USER_NAME"/.config/age/home-manager_key
+chmod 700 "$TMP_DIR"/persist/home/"$USER_NAME"
 
 # 公開鍵を抽出
 SYSTEM_PUBLIC_KEY=$(grep '# public key:' "$TMP_DIR"/persist/etc/age/key.txt | awk '{print $4}')
@@ -166,4 +186,10 @@ if ! sudo ./rekey.sh "${BASELINE_ARGS[@]}" --failed-out "$FAILED_LIST" "${LOCAL_
   echo "すべての秘密が新ホストの鍵で復号できることを確認しました" >&2
 fi
 
-nix run --inputs-from . nixos-anywhere -- --extra-files "$TMP_DIR" $BUILD_ON_REMOTE --flake ".#${HOST_NAME}" --ssh-option StrictHostKeyChecking=no --ssh-option UserKnownHostsFile=/dev/null --ssh-option GlobalKnownHostsFile=/dev/null "$REMOTE"
+# --extra-files は --no-same-owner で展開され root 所有になるため、ホーム側だけユーザーに戻す
+nix run --inputs-from . nixos-anywhere -- --extra-files "$TMP_DIR" --chown "persist/home/$USER_NAME" "$USER_UID:$USER_GID" $BUILD_ON_REMOTE $NO_SUBSTITUTE $PHASES --flake ".#${HOST_NAME}" --ssh-option StrictHostKeyChecking=no --ssh-option UserKnownHostsFile=/dev/null --ssh-option GlobalKnownHostsFile=/dev/null "$REMOTE"
+
+if [[ -n "$POWEROFF" ]]; then
+  echo "Powering off $REMOTE..."
+  ssh $SSH_OPTS "$REMOTE" 'sudo poweroff' || true
+fi
