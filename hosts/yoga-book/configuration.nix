@@ -58,30 +58,46 @@
     };
   };
 
-  home-manager.users = myLib.mkForEachUsers config (_: true) (_: {
-    programs.niri.settings.input = {
-      touch = {
-        map-to-output = "DSI-1";
+  home-manager.users = myLib.mkForEachUsers config (_: true) (
+    _:
+    { pkgs, ... }:
+    {
+      home.packages = with pkgs; [
+        rnote
+        # xournalpp
+        saber
+        # openboard
+        # lorien
+        krita
+        kdePackages.okular
+        butterfly
+        drawy
+      ];
+
+      programs.niri.settings.input = {
+        touch = {
+          map-to-output = "DSI-1";
+        };
+        tablet = {
+          map-to-output = "DSI-1";
+          # NUR側で定義されたudevの回転ルール（0 1 0 -1 0 1）と、Niriの自動出力回転機能（270° CCW）が
+          # 二重適用されるのを防ぐため、ここでは明示的に単位行列（identity）に上書きして自動回転のみを活かします。
+          calibration-matrix = [
+            [
+              1.0
+              0.0
+              0.0
+            ]
+            [
+              0.0
+              1.0
+              0.0
+            ]
+          ];
+        };
       };
-      tablet = {
-        map-to-output = "DSI-1";
-        # NUR側で定義されたudevの回転ルール（0 1 0 -1 0 1）と、Niriの自動出力回転機能（270° CCW）が
-        # 二重適用されるのを防ぐため、ここでは明示的に単位行列（identity）に上書きして自動回転のみを活かします。
-        calibration-matrix = [
-          [
-            1.0
-            0.0
-            0.0
-          ]
-          [
-            0.0
-            1.0
-            0.0
-          ]
-        ];
-      };
-    };
-  });
+    }
+  );
 
   system.stateVersion = "26.05";
 }
