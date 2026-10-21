@@ -16,6 +16,7 @@
         settings = {
           "beacon.enabled" = false;
           "browser.startup.page" = 3;
+          "browser.tabs.unloadOnLowMemory" = true;
           "browser.toolbars.bookmarks.visibility" = "never";
           "media.eme.enabled" = true;
           "media.gmp-widevinecdm.enabled" = true;
