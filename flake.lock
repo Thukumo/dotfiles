@@ -960,11 +960,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792424024,
-        "narHash": "sha256-bCs3VkUrY1I9xBbuXlAfxgjWgdWpvv84GJvEZZo8kM0=",
+        "lastModified": 1792543199,
+        "narHash": "sha256-+S9Jzs/ccZz1Bnzzz3WKXt3elN8Y3jaAGFfTSJarYqk=",
         "owner": "thukumo",
         "repo": "nur",
-        "rev": "532d1d5b4fb435aae11bc441eb9a65114b0621dd",
+        "rev": "9a4cfa6060cd1f29e2130333f136c619274b2bce",
         "type": "github"
       },
       "original": {
