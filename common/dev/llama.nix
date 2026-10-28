@@ -220,7 +220,9 @@
               rev = "c96baf4abe24d11a50f326e40b6223b687449d63";
               hash = "sha256-qNGpilbhVGX2SFwWGtCOgsD+SmhtgIUmTqGhR/YYcck=";
             };
-            patches = [ ];
+            # Backport of upstream #28469 (9e0e220): llama.cpp rejects exactly 2000
+            # repetitions (>= vs >); the goal plugin's plan schema uses maxLength: 2000.
+            patches = [ ./llama-grammar-repetition.patch ];
             doCheck = false;
             npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
           })
