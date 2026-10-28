@@ -130,6 +130,34 @@
             repoId = "InternScience/Agents-A1-4B-Q4_K_M-GGUF";
             file = "Agents-A1-4B-Q4_K_M.gguf";
           }
+          {
+            name = "LFM3-VL-2B";
+            repoId = "LiquidAI/LFM3-VL-2B-GGUF";
+            file = "LFM3-VL-2B-Q4_K_M.gguf";
+            mmproj = {
+              repoId = "LiquidAI/LFM3-VL-2B-GGUF";
+              file = "mmproj-LFM3-VL-2B-F16.gguf";
+            };
+            # nixpkgs 0.6.0 / Prism fork には LFM3 が無いので upstream master を使う
+            backend = "upstream";
+            gpuLayers = 99;
+            contextLength = 128000;
+            extraArgs = [
+              "--jinja"
+              "-np"
+              "1"
+              "--temp"
+              "0.1"
+              "--top-p"
+              "1.0"
+              "--top-k"
+              "50"
+              "--min-p"
+              "0.0"
+              "--repeat-penalty"
+              "1.1"
+            ];
+          }
         ];
       };
       pi.enable = true;
