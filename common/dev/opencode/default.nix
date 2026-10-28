@@ -73,19 +73,17 @@ in
 
             "instructions" = [ "${agentsFile}" ];
 
-            "plugin" = [
+            "plugins" = [
               "@dietrichgebert/ponytail"
               "@prevalentware/opencode-goal-plugin"
+              "opencode-tps-meter"
             ];
 
             # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
-            "snapshot" = true;
+            "snapshots" = true;
 
-            # コンテキスト圧縮時の保持ターン数を増やして会話の文脈を維持
             "compaction" = {
               "auto" = true;
-              "tail_turns" = 10;
-              "prune" = true;
             };
 
             "provider" = {
@@ -127,8 +125,15 @@ in
             };
           };
 
-          tui = {
-            plugin = [ "@mesaleh/opencode-tps" ];
+          # stylix は OpenCode 1 向けに tui.theme を書くので、V2 では無効化して cli 側で指定する
+          tui = lib.mkForce { };
+          cli = {
+            plugins = [ "opencode-tps-meter" ];
+            session.thinking = "show";
+            theme = {
+              name = "stylix";
+              mode = "system";
+            };
           };
         };
         home.persistence."/persist".directories = [
