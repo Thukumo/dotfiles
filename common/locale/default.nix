@@ -31,5 +31,11 @@
     xdg.configFile."user-dirs.locale" = {
       text = "en_US";
     };
+    # 無いと Firefox/LibreWolf が ~/ダウンロード を勝手に作る
+    xdg.configFile."user-dirs.dirs" = {
+      text = ''
+        XDG_DOWNLOAD_DIR="$HOME/Downloads"
+      '';
+    };
   });
 }
