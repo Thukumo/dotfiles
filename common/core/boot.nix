@@ -21,8 +21,6 @@
   ];
   boot.consoleLogLevel = lib.mkDefault 4;
 
-  boot.initrd.systemd.enable = true;
-
   boot.kernel.sysctl."kernel.sysrq" = 242;
 
   boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_zen;

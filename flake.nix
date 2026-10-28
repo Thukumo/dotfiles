@@ -77,7 +77,7 @@
     };
 
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v1.1.0";
+      url = "github:nix-community/lanzaboote/v1.2.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -111,13 +111,6 @@
       url = "github:Thukumo/nowplaying";
       # nixpkgs input がひとつだけで、version に依存しない API しか使わないため安全
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # nixpkgs PR #526315 (ONLYOFFICE DesktopEditors: updates) の未マージ分。
-    # programs.onlyoffice モジュールと extraFontPackages 対応パッケージを取り込む。
-    onlyoffice-nixpkgs = {
-      url = "github:emmanuelrosa/nixpkgs/156a0b2e84faa41250a1ff6141acf456cf5e91ff";
-      flake = false;
     };
 
   };
@@ -171,18 +164,6 @@
         lanzaboote.nixosModules.lanzaboote
         stylix.nixosModules.stylix
         microvm.nixosModules.host
-
-        (import "${inputs.onlyoffice-nixpkgs}/nixos/modules/programs/onlyoffice.nix")
-
-        {
-          nixpkgs.overlays = [
-            (final: _prev: {
-              onlyoffice-desktopeditors = final.callPackage (
-                inputs.onlyoffice-nixpkgs + "/pkgs/by-name/on/onlyoffice-desktopeditors/package.nix"
-              ) { };
-            })
-          ];
-        }
       ];
 
       mkHost =
@@ -323,13 +304,17 @@
               ];
               services.avahi = {
                 enable = true;
-                hostName = "installer";
-                # ipv6=true;だと、なぜかAレコードが帰ってこなくなる
-                ipv6 = false;
-                publish = {
-                  enable = true;
-                  userServices = true;
-                  addresses = true;
+                settings = {
+                  server = {
+                    host-name = "installer";
+                    # ipv6=true;だと、なぜかAレコードが帰ってこなくなる
+                    use-ipv6 = false;
+                  };
+                  publish = {
+                    disable-publishing = false;
+                    disable-user-service-publishing = false;
+                    publish-addresses = true;
+                  };
                 };
               };
               documentation = {

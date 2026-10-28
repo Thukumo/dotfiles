@@ -6,7 +6,7 @@
   ...
 }:
 
-# apps.onlyoffice.enable を nixpkgs PR #526315 の programs.onlyoffice モジュールに繋ぐ。
+# apps.onlyoffice.enable を programs.onlyoffice モジュールに繋ぐ。
 # extraFontPackages に文書用のフォントだけを渡す。空のままだと fonts.packages
 # 全量が実ファイル化され、ターミナル用・絵文字までピッカーに混ざって肥大化する。
 # noto-cjk-sans はパッケージ側で同梱済みのため指定不要。

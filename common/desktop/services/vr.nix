@@ -36,11 +36,16 @@
       };
 
       # Enable Avahi daemon for service discovery, required by wivrn.
-      # Only set values when VR is enabled (avoid writing an explicit `false`,
-      # which can conflict with other modules also using mkDefault).
+      # wivrn モジュールは廃止済みの publish.* を設定して警告を出すため、
+      # 新オプションをここで設定し、旧オプションは null にして警告を止める。
       services.avahi.enable = lib.mkIf vrEnabled (lib.mkDefault true);
-      services.avahi.publish.enable = lib.mkIf vrEnabled (lib.mkDefault true);
-      services.avahi.publish.userServices = lib.mkIf vrEnabled (lib.mkDefault true);
+      services.avahi.publish.enable = lib.mkIf vrEnabled (lib.mkForce null);
+      services.avahi.publish.userServices = lib.mkIf vrEnabled (lib.mkForce null);
+      services.avahi.settings.publish.disable-publishing = lib.mkIf vrEnabled (lib.mkDefault false);
+      services.avahi.settings.publish.disable-user-service-publishing = lib.mkIf vrEnabled (
+        lib.mkDefault false
+      );
+      services.avahi.settings.publish.publish-addresses = lib.mkIf vrEnabled (lib.mkDefault true);
       home-manager.users = desktopLib.mkHome (user: user.custom.desktop.vr.enable) (_: {
         home.persistence."/persist".directories = [
           ".config/wivrn"
