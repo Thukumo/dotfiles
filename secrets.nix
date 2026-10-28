@@ -91,9 +91,9 @@ in
     keys.systemKeys."backup-pixel9a"
   ];
 
-  # hosts/mouse-3/cloudflared-nowplaying-credentials.age
+  # hosts/mouse-3/secrets/cloudflared-nowplaying-credentials.age
   #   referenced by: mouse-3
-  "hosts/mouse-3/cloudflared-nowplaying-credentials.age".publicKeys = [
+  "hosts/mouse-3/secrets/cloudflared-nowplaying-credentials.age".publicKeys = [
     keys.systemKeys."mouse-3"
     keys.systemKeys."backup-pixel9a"
   ];

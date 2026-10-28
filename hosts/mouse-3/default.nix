@@ -5,6 +5,9 @@ _:
 
   modules = [
     ./configuration.nix
+    ./hardware.nix
     ./hardware-configuration.nix
+    ./ingress.nix
+    ./services
   ];
 }
