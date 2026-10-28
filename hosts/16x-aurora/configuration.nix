@@ -73,24 +73,18 @@
         # fimModel = "qwen2.5-coder-7b";
         models = [
           {
-            repoId = "prism-ml/Bonsai-27B-gguf";
-            file = "Bonsai-27B-Q1_0.gguf";
-            contextLength = 32768;
-          }
-          {
             repoId = "prism-ml/Ternary-Bonsai-2-27B-gguf";
             file = "Ternary-Bonsai-2-27B-PTQ1_0.gguf";
             contextLength = 65536;
             # 8GB VRAM実測: -ngl autoだと見積りゲートで層がCPUに落ちる (64kで3tok/s) ため
-            # -ngl 99で全層GPU固定 (実測 PP22/TG21 tok/s、警告なし)
-            # -np 1、小batch、Q4_0 KVもVRAMに収めるため必須
-            # ngram系specは全種実測で効果なし (TG 20.7-20.9で横並び、ngram-cacheは微減) のため不使用。
+            # -ngl 99で全層GPU固定。c96baf4実測: 短ctx PP473/TG27、49k depth PP305/TG23
+            # -np 1、小batch、Q4_0 KVもVRAMに収めるため必須 (64kで約6.9GB使用)
+            # ngram系specは効果なしのため不使用 (モジュール側で--spec-defaultは付与しない)
             # MTPは下のmtp-48kエントリで実測済み。DSparkはdrafter待ち
             gpuLayers = 99;
-            # 8GB VRAM実測: 4slotだとVRAM溢れでCPU fallback (0.7tok/s) するため
-            # np1+小batch+Q4_0 KVでVRAMに収める (実測 PP17/TG21 tok/s)
+            # 4slotだとVRAM溢れでCPU fallback (0.7tok/s) するため np1+小batch+Q4_0 KVでVRAMに収める
+            # q8_0 Kは64kで初回リクエスト時にOOMするためq4_0固定
             # NOTE: このエントリにmmproj入れるな。Bonsai 2はGPU実行されず3tok/sに落ちる (実測)。
-            # 画像入力は無印Q1_0エントリ (mmproj付き・18tok/s) を使うこと
             cacheTypeK = "q4_0";
             cacheTypeV = "q4_0";
             extraArgs = [
@@ -103,7 +97,8 @@
             ];
           }
           {
-            # fork b10754実測 (48k, q4_0 KV, 8GB): MTP無し=PP422/TG27 → MTP=PP357/TG57-78 (acceptance 60-66%)
+            # 旧pin (2459f68, depth3) 実測: MTP無し=PP422/TG27 → MTP=PP357/TG57-78 (acceptance 60-66%)
+            # c96baf4実測 (depth2デフォルト): 短ctx TG48.9 (acceptance 66%)。depth3は48k/8GBでOOMするため指定しない
             # モデルはコミュニティ製 (sudoingx) のPTQ1_0+MTPリーン版。64kだとVRAMに収らないため48k
             name = "Ternary-Bonsai-2-27B-PTQ1_0-mtp-48k";
             repoId = "sudoingx/Ternary-Bonsai-2-27B-PTQ1_0-MTP-GGUF";

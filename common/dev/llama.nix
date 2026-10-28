@@ -171,7 +171,7 @@
                     specDefault = lib.mkOption {
                       type = lib.types.nullOr lib.types.int;
                       default = null;
-                      description = "Max number of draft tokens for speculative decoding (MTP).";
+                      description = "Max number of draft tokens for speculative decoding (--spec-draft-n-max).";
                     };
                     extraArgs = lib.mkOption {
                       type = lib.types.listOf lib.types.str;
@@ -209,7 +209,7 @@
           openclSupport
           ;
       };
-      # ponytail: forkはb10754ベース。nixpkgs 0.6.0のtest patchは適用不可、npm hash/doCheckもfork用に戻す
+      # ponytail: forkはupstream b10754ベース (tip c96baf4)。nixpkgs 0.6.0のtest patchは適用不可、npm hash/doCheckもfork用に戻す
       llamaBackend =
         if cfg.prismFork then
           baseBackend.overrideAttrs (_old: {
@@ -275,12 +275,7 @@
                       in
                       if finalSpecType != [ "none" ] then "--spec-type ${lib.concatStringsSep "," finalSpecType}" else "";
                     specDefaultArg =
-                      if m.specDefault != null then
-                        "--spec-draft-n-max ${builtins.toString m.specDefault}"
-                      else if m.specType != [ "none" ] then
-                        "--spec-default"
-                      else
-                        "";
+                      if m.specDefault != null then "--spec-draft-n-max ${builtins.toString m.specDefault}" else "";
                     flashAttnArg = if m.flashAttn then "-fa on" else "-fa off";
                     cacheKArg = if m.cacheTypeK != null then "-ctk ${m.cacheTypeK}" else "";
                     cacheVArg = if m.cacheTypeV != null then "-ctv ${m.cacheTypeV}" else "";
