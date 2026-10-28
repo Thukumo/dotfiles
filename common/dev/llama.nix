@@ -213,12 +213,12 @@
       llamaBackend =
         if cfg.prismFork then
           baseBackend.overrideAttrs (_old: {
-            version = "prism-b10754-2459f68";
+            version = "prism-b10754-c96baf4";
             src = pkgs.fetchFromGitHub {
               owner = "PrismML-Eng";
               repo = "llama.cpp";
-              rev = "2459f68b5c0eb26261fd5a81682004b93cd645ba";
-              hash = "sha256-3tASDsQU5JcTb2TIGEXaLpTK4T6osikndyVVBCWa8R4=";
+              rev = "c96baf4abe24d11a50f326e40b6223b687449d63";
+              hash = "sha256-qNGpilbhVGX2SFwWGtCOgsD+SmhtgIUmTqGhR/YYcck=";
             };
             patches = [ ];
             doCheck = false;
@@ -277,7 +277,7 @@
                     specDefaultArg =
                       if m.specDefault != null then
                         "--spec-draft-n-max ${builtins.toString m.specDefault}"
-                      else if m.specType != [ ] then
+                      else if m.specType != [ "none" ] then
                         "--spec-default"
                       else
                         "";
@@ -381,9 +381,9 @@
     }
   );
 
-  config.systemd.services."user@".serviceConfig = lib.mkIf (
-    myLib.anyUser config (user: user.dev.llama.enable)
-  ) {
-    LimitMEMLOCK = "infinity";
-  };
+  config.systemd.services."user@".serviceConfig =
+    lib.mkIf (myLib.anyUser config (user: user.dev.llama.enable))
+      {
+        LimitMEMLOCK = "infinity";
+      };
 }
