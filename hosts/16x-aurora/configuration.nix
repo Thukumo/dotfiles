@@ -210,6 +210,12 @@
     beesd.hashTableSizeMB = 2048;
   };
 
+  # auto-cpufreq's performance governor makes intel_pstate reject EPP writes
+  # (EBUSY), and its turbo=auto left no_turbo=1 (CPU capped at 2.4GHz base).
+  # Disable it here; use intel_pstate powersave with turbo enabled.
+  custom.hardware.tune.auto-cpufreq.enable = false;
+  powerManagement.cpuFreqGovernor = "powersave";
+
   custom.hardware.gpu.nvidia.enable = true;
   hardware.nvidia = {
     powerManagement.finegrained = true;
