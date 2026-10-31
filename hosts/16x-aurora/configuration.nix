@@ -181,6 +181,29 @@
               "1.1"
             ];
           }
+          {
+            name = "AtomicChat/LFM3-1.7B-Uncensored-GGUF:Q4_K_M";
+            repoId = "AtomicChat/LFM3-1.7B-Uncensored-GGUF";
+            file = "LFM3-1.7B-Uncensored-AD-Q4_K_M.gguf";
+            backend = "upstream";
+            gpuLayers = 99;
+            contextLength = 256000;
+            extraArgs = [
+              "--jinja"
+              "-np"
+              "1"
+              "--temp"
+              "0.1"
+              "--top-p"
+              "1.0"
+              "--top-k"
+              "50"
+              "--min-p"
+              "0.0"
+              "--repeat-penalty"
+              "1.1"
+            ];
+          }
         ];
       };
       pi.enable = true;
