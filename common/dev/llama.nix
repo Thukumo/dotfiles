@@ -247,6 +247,7 @@
       upstreamBackend =
         let
           cuda = cfg.cudaSupport;
+          vulkan = cfg.vulkanSupport;
           stdenv = if cuda then pkgs.cudaPackages.backendStdenv else pkgs.stdenv;
           runtimeLibs = [
             pkgs.openssl
@@ -257,7 +258,8 @@
               cuda_cudart
               libcublas
             ]
-          );
+          )
+          ++ lib.optionals vulkan [ pkgs.vulkan-loader ];
         in
         stdenv.mkDerivation {
           pname = "llama-cpp-upstream";
@@ -277,8 +279,16 @@
           ++ lib.optionals cuda [
             pkgs.cudaPackages.cuda_nvcc
             pkgs.autoAddDriverRunpath
-          ];
-          buildInputs = runtimeLibs ++ lib.optionals cuda [ pkgs.cudaPackages.cccl ];
+          ]
+          ++ lib.optionals vulkan [ pkgs.shaderc ];
+          buildInputs =
+            runtimeLibs
+            ++ lib.optionals cuda [ pkgs.cudaPackages.cccl ]
+            ++ lib.optionals vulkan [
+              pkgs.spirv-headers
+              pkgs.vulkan-headers
+              pkgs.vulkan-loader
+            ];
           cmakeFlags = [
             "-DCMAKE_BUILD_TYPE=Release"
             "-DLLAMA_BUILD_SERVER=ON"
@@ -297,7 +307,8 @@
           ++ lib.optionals cuda [
             "-DGGML_CUDA=ON"
             "-DCMAKE_CUDA_ARCHITECTURES=120a"
-          ];
+          ]
+          ++ lib.optionals vulkan [ "-DGGML_VULKAN=ON" ];
           doCheck = false;
           buildPhase = ''
             runHook preBuild
