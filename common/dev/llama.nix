@@ -430,6 +430,9 @@
       systemd.user.services.llama-model-sync = {
         Unit.Before = [ "llama-swap.service" ];
         Service = {
+          # Do not make this oneshot: Home Manager's activation service has a
+          # 5m TimeoutStartSec, so waiting for the download would time out
+          # nixos-rebuild switch.
           Type = "simple";
           Restart = "on-failure";
           RestartSec = "10s";

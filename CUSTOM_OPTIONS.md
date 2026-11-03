@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-03 17:30:41
+Generated on 2026-11-03 17:32:00
 
 - **custom**
   - **desktop**
@@ -253,5 +253,7 @@ Generated on 2026-11-03 17:30:41
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user
     - **shell**
+      - **chat**
+        - `enable` (Default: `true`): Whether to enable chat CLIs (GitHub Copilot CLI / Antigravity CLI) (enabled by default).
       - **private**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable private shell secrets.
