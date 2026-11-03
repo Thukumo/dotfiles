@@ -10,6 +10,8 @@
 
 {
   custom.hardware.secure-boot.enable = true;
+  # 7GB RAM; 25% (1.75GB) hit the zswap pool limit and wrote back to disk
+  custom.hardware.tune.zswap.maxPoolPercent = 40;
   custom.network.wifi.enable = true;
   # # nanoKVM
   # services.udev.extraRules = ''

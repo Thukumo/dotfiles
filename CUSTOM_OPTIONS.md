@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-04 00:18:55
+Generated on 2026-11-04 03:29:40
 
 - **custom**
   - **desktop**
@@ -61,6 +61,7 @@ Generated on 2026-11-04 00:18:55
         - `enable` (Default: `true`): Whether to enable powertop (enabled by default).
       - **zswap**
         - `enable` (Default: `true`): Whether to enable zswap (enabled by default).
+        - `maxPoolPercent` (Default: `25`): Maximum zswap pool size as a percentage of RAM.
   - **impermanence**
     - **gc**
       - `enable` (Default: `true`): Whether to enable removal of data in /persist that is no longer declared as persistent (enabled by default).
