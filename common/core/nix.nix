@@ -86,6 +86,11 @@
     {
       home.stateVersion = config.system.stateVersion;
       programs.home-manager.enable = true;
+
+      # home.stateVersionが古いマシンも新デフォルトに追従させる
+      programs.yazi.shellWrapperName = "y"; # 26.05 以降
+      programs.nushell.loadSessionVariables = true; # 26.11 以降
+      gtk.gtk4.theme = null; # 26.05 以降
     }
   ];
 
