@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-10-28 09:12:03
+Generated on 2026-11-03 17:30:41
 
 - **custom**
   - **desktop**
@@ -152,8 +152,6 @@ Generated on 2026-10-28 09:12:03
           - `enable` (Default: `false`) (Example: `true`): Whether to enable osu.
         - **prismLauncher**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Prism Launcher.
-        - **qutebrowser**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable qutebrowser.
         - **rquickshare**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable rQuickShare.
         - **sidra**

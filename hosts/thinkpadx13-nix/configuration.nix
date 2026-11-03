@@ -63,7 +63,6 @@
           rquickshare.enable = false;
           thunar.enable = true;
           steam.enable = true;
-          qutebrowser.enable = true;
           prismLauncher.enable = true;
           localsend.enable = true;
           blender.enable = true;

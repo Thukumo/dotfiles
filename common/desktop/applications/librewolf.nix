@@ -47,6 +47,10 @@
             });
           };
         };
+        # LibreWolf 158+ uses XDG paths unless ~/.librewolf/profiles.ini exists
+        # (see LibreWolf's xdg-dir.patch). Do not use programs.librewolf.settings:
+        # Home Manager writes the legacy ~/.librewolf/librewolf.overrides.cfg,
+        # which LibreWolf ignores in XDG mode.
         home.file."${config.xdg.configHome}/librewolf/librewolf/librewolf.overrides.cfg".text =
           # The first line of an autoconfig file is discarded, so start with a comment.
           ''
