@@ -55,7 +55,7 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = excludeRoutes;
+        ExecStart = "${excludeRoutes}/bin/cloudflare-warp-exclude-routes";
       };
     };
   };
