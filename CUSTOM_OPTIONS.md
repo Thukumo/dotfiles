@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-03 17:32:00
+Generated on 2026-11-04 00:18:55
 
 - **custom**
   - **desktop**
@@ -74,6 +74,7 @@ Generated on 2026-11-03 17:32:00
       - `enable` (Default: `true`): Whether to enable avahi (mDNS/DNS-SD) (enabled by default).
     - **cloudflare-warp**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
+      - `excludeRoutes` (Default: `[]`): IP ranges to exclude from the WARP tunnel (split tunnel).
     - **mycelium**
       - `enable` (Default: `true`): Whether to enable mycelium (enabled by default).
     - **ssh-server**

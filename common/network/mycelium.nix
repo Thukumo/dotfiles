@@ -12,6 +12,8 @@
       enable = true;
       openFirewall = true;
     };
+    # WARP's default ::/3 route covers 400::/7; keep Mycelium out of the tunnel.
+    custom.network.cloudflare-warp.excludeRoutes = [ "400::/7" ];
     environment.persistence."/persist".directories = [
       "/var/lib/private/mycelium"
     ];
