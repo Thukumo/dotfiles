@@ -12,7 +12,8 @@
 
   console.keyMap = lib.mkDefault "jp106";
   services.xserver.xkb = {
-    layout = lib.mkDefault "jp106";
+    layout = lib.mkDefault "jp";
+    model = lib.mkDefault "jp106";
     variant = "";
   };
 
