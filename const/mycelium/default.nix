@@ -33,7 +33,7 @@
       };
       "thinkpadx13-nix" = {
         ipv6 = "4d8:de15:85dd:7fa4:493e:f1a4:6961:bd9c";
-        hostname = "thinkpad-x13-nix";
+        hostname = "thinkpadx13-nix";
       };
       "mouse-3" = {
         ipv6 = "488:9c35:edc2:14f9:691a:53c:ef01:cb25";
