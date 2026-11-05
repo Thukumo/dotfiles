@@ -3,6 +3,7 @@
   myLib,
   config,
   inputs,
+  pkgs,
   ...
 }:
 let
@@ -35,9 +36,11 @@ in
       daemon.enable = true;
     };
 
-    # clamdscan exits 2 when some files (e.g. sockets in /tmp) could not be
-    # scanned; treat that as success so the timer job is not marked failed.
-    systemd.services.clamdscan.serviceConfig.SuccessExitStatus = lib.mkIf myCfg.enable "2";
+    # clamdscan exit codes: 0 = clean, 1 = infected files found,
+    # 2 = an error occurred. Detection and per-file errors are expected
+    # outcomes of a periodic scan; mark them successful so the timer does not
+    # leave a permanently failed unit. Infected paths remain in the journal.
+    systemd.services.clamdscan.serviceConfig.SuccessExitStatus = lib.mkIf myCfg.enable "1 2";
 
     # realtime scanning only makes sense as part of ClamAV itself.
     services.rclamonacc = lib.mkIf (myCfg.enable && myCfg.realtime.enable) {
@@ -45,6 +48,25 @@ in
       settings.directories = [ "/home" ];
     };
 
+    # clamd's socket may not exist yet immediately after clamd starts; wait
+    # instead of letting rclamonacc restart-loop into a failed unit.
+    systemd.services.rclamonacc = lib.mkIf (myCfg.enable && myCfg.realtime.enable) {
+      serviceConfig.ExecStartPre = pkgs.writeShellScript "wait-for-clamd-socket" ''
+        for _ in {1..60}; do
+          if [ -S ${lib.escapeShellArg config.services.rclamonacc.settings.socket_path} ] \
+            && [ -s ${lib.escapeShellArg config.services.rclamonacc.settings.pid_path} ]; then
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "rclamonacc: clamd socket/PID file did not appear" >&2
+        exit 1
+      '';
+    };
+
+    # This only skips syncfs in switch-to-configuration; it does not affect
+    # service startup. If you prefer not to set it system-wide, pass
+    # NIXOS_NO_SYNC=1 to the nixos-rebuild invocation instead.
     # Avoid EIO: I/O errors during nixos-rebuild switch when rclamonacc is active.
     # When rclamonacc monitors directories, it marks their parent mountpoints (which may include /).
     # Under shared-filesystem setups (e.g. Btrfs subvolumes), syncfs("/nix/store") flushes all shared subvolumes,
