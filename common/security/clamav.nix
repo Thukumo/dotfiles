@@ -42,6 +42,23 @@ in
     # leave a permanently failed unit. Infected paths remain in the journal.
     systemd.services.clamdscan.serviceConfig.SuccessExitStatus = lib.mkIf myCfg.enable "1 2";
 
+    # The unit is green for expected scan outcomes, but detection must not be
+    # silent: leave a warning in the journal (journalctl -u clamdscan -p warning).
+    systemd.services.clamdscan.serviceConfig.ExecStopPost = lib.mkIf myCfg.enable (
+      pkgs.writeShellScript "clamdscan-result" ''
+        case "''${EXIT_STATUS:-}" in
+          1)
+            ${pkgs.util-linux}/bin/logger -t clamdscan -p user.warning \
+              "ClamAV detected infected files; see journalctl -u clamdscan"
+            ;;
+          2)
+            ${pkgs.util-linux}/bin/logger -t clamdscan -p user.warning \
+              "ClamAV scan finished with errors; see journalctl -u clamdscan"
+            ;;
+        esac
+      ''
+    );
+
     # realtime scanning only makes sense as part of ClamAV itself.
     services.rclamonacc = lib.mkIf (myCfg.enable && myCfg.realtime.enable) {
       enable = true;
