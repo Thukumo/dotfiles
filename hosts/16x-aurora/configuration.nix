@@ -6,7 +6,6 @@
   security.sudo-rs.wheelNeedsPassword = false;
   custom.hardware.secure-boot.enable = true;
   custom.security.gaze = {
-    enable = true;
     # このマシンの赤外線カメラ (Realtek Integrated_Webcam_FHD, USB 0bda:558b) は
     # RGB/IR を同時ストリーミングできない。rgb/ir 共に同じ VID:PID で、
     # カラーノード / IR ノードに自動解決される。
@@ -48,7 +47,6 @@
       };
       vr.enable = true;
       voice-input = {
-        enable = true;
         backend = "whisper-cpp";
         cudaSupport = true;
         language = "ja";

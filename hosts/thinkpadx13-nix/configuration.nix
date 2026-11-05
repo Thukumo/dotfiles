@@ -63,7 +63,6 @@
           sidra.enable = true;
         };
         voice-input = {
-          enable = true;
           language = "ja";
         };
       };

@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-05 15:02:15
+Generated on 2026-11-05 15:18:52
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -92,7 +92,7 @@ Generated on 2026-11-05 15:02:15
       - `enable` (Default: `true`): Whether to enable ClamAV (enabled by default).
       - **realtime**
         - `enable` (Default: `true`): Whether to enable ClamAV real-time scanning (enabled by default).
-    - **gaze**
+    - **gaze** (Optional Submodule (null disables))
       - **customSecurity** (Submodule)
         - `detector` (Default: `"accurate"`): Face detector quality for 'securityLevel = "custom"'.
         - `hybridPolicy` (Default: `"fallback_on_dark"`): How RGB and IR results combine when both cameras are set.
@@ -100,8 +100,7 @@ Generated on 2026-11-05 15:02:15
         - `threshold` (Default: `0.4`): Match threshold (0-1) for 'securityLevel = "custom"'.
       - `darkLumaThreshold` (Default: `null`): Override '[cameras] dark_luma_threshold'. IR cameras produce inherently dim frames, so a low value (or 0) prevents spurious 'TooDark' rejections. 'null' leaves the upstream default (20). 
       - `emitterEnabled` (Default: `false`): Drive the IR emitter (IR LED) during authentication. Needed when the camera does not auto-light its infrared LED on streaming start (otherwise IR frames come out black and are rejected as too dark). Requires 'ir' to be set. 
-      - `enable` (Default: `false`) (Example: `true`): Whether to enable Gaze facial authentication (face unlock).
-      - `encryptTemplates` (Default: `false`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. Defaults to 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
+      - `encryptTemplates` (Default: `null`): Encrypt enrolled face templates at rest with a TPM 2.0-sealed key. 'null' follows 'security.tpm2.enable'. Fail-closed: if no usable TPM is found the daemon refuses to start. 
       - `gui` (Default: `true`) (Example: `true`): Whether to enable the Gaze GTK GUI for enrolling faces.
       - `ir` (Default: `null`): Infrared (Windows Hello) camera source, e.g. '"usb:0bda:558b"' or '"/dev/video3"'. Resolved by VID:PID to the mono/IR node. 'null' disables the IR camera. 
       - `pamServices` (Default: `["sudo","polkit-1","hyprlock","swaylock"]`): PAM services to enable Gaze face authentication for.
@@ -172,15 +171,13 @@ Generated on 2026-11-05 15:02:15
       - `launcher` (Default: `null`): Application launcher to use
       - `locker` (Default: `"swaylock"`): Screen locker to use
       - `mimeBrowser` (Default: `null`): Browser to set as the default MIME handler
-      - **nowplaying**
-        - `enable` (Default: `true`): Whether to enable nowplaying (enabled by default).
+      - **nowplaying** (Optional Submodule (null disables))
         - `server` (Default: `"https://api-nowplaying.tsukumo.f5.si"`): Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).
       - `panel` (Default: `"quickshell"`): On-demand widget panel (Win+A) to use
       - `terminal` (Default: `null`): Terminal emulator to use
-      - **voice-input**
+      - **voice-input** (Optional Submodule (null disables))
         - `backend` (Default: `"moonshine"`): Speech-to-text backend
         - `cudaSupport` (Default: `false`) (Example: `true`): Whether to enable CUDA GPU acceleration (whisper-cpp only).
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable voice input (speech-to-text).
         - `language` (Default: `"auto"`): Recognition language (e.g. "ja")
         - `model` (Default: `"large-v3-turbo"`): Model name
         - `server` (Default: `false`) (Example: `true`): Whether to enable persistent whisper-server (keeps model in VRAM).
@@ -188,12 +185,11 @@ Generated on 2026-11-05 15:02:15
         - `enable` (Default: `false`) (Example: `true`): Whether to enable VR support.
         - **immersed**
           - `enable` (Default: `false`): Whether to enable Immersed (VR workspace)
-      - **winapps**
+      - **winapps** (Optional Submodule (null disables))
         - `autopause` (Default: `false`) (Example: `true`): Whether to enable automatic pausing of Windows when inactive.
         - `autopauseTime` (Default: `"300"`): Duration of inactivity (in seconds) to tolerate before Windows is automatically paused
         - `cpuCores` (Default: `"4"`): CPU cores allocated to the Windows VM
         - `diskSize` (Default: `"64G"`): Size of the primary hard disk
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable WinApps RDP support.
         - `jpKeyboard` (Default: `true`): Whether to use Japanese keyboard layout (JIS) in RDP session
         - `language` (Default: `"Japanese"`): Windows system language
         - `password` (Default: `"MyWindowsPassword"`): Windows password

@@ -8,17 +8,22 @@
 
 {
   options.custom.users = myLib.mkUserOption {
-    options.desktop.nowplaying = {
-      enable = myLib.mkEnabledOption "nowplaying";
-      server = lib.mkOption {
-        type = lib.types.str;
-        default = "https://api-nowplaying.tsukumo.f5.si";
-        description = "Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).";
-      };
+    options.desktop.nowplaying = lib.mkOption {
+      type = lib.types.nullOr (
+        lib.types.submodule {
+          options.server = lib.mkOption {
+            type = lib.types.str;
+            default = "https://api-nowplaying.tsukumo.f5.si";
+            description = "Base URL of the nowplaying server (Cloudflare Tunnel on mouse-3).";
+          };
+        }
+      );
+      default = { };
+      description = "Nowplaying bridge. Set to null to disable.";
     };
   };
 
-  config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.nowplaying.enable) (
+  config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.nowplaying != null) (
     user:
     { pkgs, ... }:
     let

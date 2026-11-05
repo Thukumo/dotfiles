@@ -29,33 +29,40 @@ in
 
 {
   options.custom.users = myLib.mkUserOption {
-    options.desktop.voice-input = {
-      enable = lib.mkEnableOption "voice input (speech-to-text)";
-      server = lib.mkEnableOption "persistent whisper-server (keeps model in VRAM)";
-      backend = lib.mkOption {
-        type = lib.types.enum [
-          "moonshine"
-          "faster-whisper"
-          "whisper-cpp"
-        ];
-        default = "moonshine";
-        description = "Speech-to-text backend";
-      };
-      cudaSupport = lib.mkEnableOption "CUDA GPU acceleration (whisper-cpp only)";
-      language = lib.mkOption {
-        type = lib.types.str;
-        default = "auto";
-        description = "Recognition language (e.g. \"ja\")";
-      };
-      model = lib.mkOption {
-        type = lib.types.str;
-        default = "large-v3-turbo";
-        description = "Model name";
-      };
+    options.desktop.voice-input = lib.mkOption {
+      type = lib.types.nullOr (
+        lib.types.submodule {
+          options = {
+            server = lib.mkEnableOption "persistent whisper-server (keeps model in VRAM)";
+            backend = lib.mkOption {
+              type = lib.types.enum [
+                "moonshine"
+                "faster-whisper"
+                "whisper-cpp"
+              ];
+              default = "moonshine";
+              description = "Speech-to-text backend";
+            };
+            cudaSupport = lib.mkEnableOption "CUDA GPU acceleration (whisper-cpp only)";
+            language = lib.mkOption {
+              type = lib.types.str;
+              default = "auto";
+              description = "Recognition language (e.g. \"ja\")";
+            };
+            model = lib.mkOption {
+              type = lib.types.str;
+              default = "large-v3-turbo";
+              description = "Model name";
+            };
+          };
+        }
+      );
+      default = null;
+      description = "Voice input (speech-to-text). Set to null to disable.";
     };
   };
 
-  config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.voice-input.enable) (
+  config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.voice-input != null) (
     user:
     { config, ... }:
     let

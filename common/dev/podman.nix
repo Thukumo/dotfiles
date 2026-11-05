@@ -13,7 +13,7 @@
   };
 
   config =
-    lib.mkIf (myLib.anyUser config (user: user.dev.podman.enable || user.desktop.winapps.enable))
+    lib.mkIf (myLib.anyUser config (user: user.dev.podman.enable || user.desktop.winapps != null))
       {
         virtualisation = {
           containers.enable = true;
@@ -28,7 +28,7 @@
 
         home-manager.users =
           myLib.mkForEachUsers config
-            (user: user.custom.dev.podman.enable || user.custom.desktop.winapps.enable)
+            (user: user.custom.dev.podman.enable || user.custom.desktop.winapps != null)
             (
               _user:
               { pkgs, ... }:

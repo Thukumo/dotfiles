@@ -8,68 +8,75 @@
 }:
 
 let
-  anyWinappsEnabled = myLib.anyUser config (user: user.desktop.winapps.enable);
+  anyWinappsEnabled = myLib.anyUser config (user: user.desktop.winapps != null);
 in
 {
   options.custom.users = myLib.mkUserOption {
-    options.desktop.winapps = {
-      enable = lib.mkEnableOption "WinApps RDP support";
-      version = lib.mkOption {
-        type = lib.types.str;
-        default = "11";
-        description = "Windows version (e.g. 10, 11, tiny11)";
-      };
-      ramSize = lib.mkOption {
-        type = lib.types.str;
-        default = "4G";
-        description = "RAM size allocated to the Windows VM";
-      };
-      cpuCores = lib.mkOption {
-        type = lib.types.str;
-        default = "4";
-        description = "CPU cores allocated to the Windows VM";
-      };
-      diskSize = lib.mkOption {
-        type = lib.types.str;
-        default = "64G";
-        description = "Size of the primary hard disk";
-      };
-      username = lib.mkOption {
-        type = lib.types.str;
-        default = "MyWindowsUser";
-        description = "Windows username";
-      };
-      password = lib.mkOption {
-        type = lib.types.str;
-        default = "MyWindowsPassword";
-        description = "Windows password";
-      };
-      language = lib.mkOption {
-        type = lib.types.str;
-        default = "Japanese";
-        description = "Windows system language";
-      };
-      sharedDir = lib.mkOption {
-        type = lib.types.str;
-        default = "";
-        description = "Directory to share with the Windows container. If empty, defaults to ~/shared.";
-      };
-      rdpScale = lib.mkOption {
-        type = lib.types.str;
-        default = "140";
-        description = "Display scaling factor (e.g. '100', '140', '180')";
-      };
-      autopause = lib.mkEnableOption "automatic pausing of Windows when inactive";
-      autopauseTime = lib.mkOption {
-        type = lib.types.str;
-        default = "300";
-        description = "Duration of inactivity (in seconds) to tolerate before Windows is automatically paused";
-      };
-      jpKeyboard = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Whether to use Japanese keyboard layout (JIS) in RDP session";
-      };
+    options.desktop.winapps = lib.mkOption {
+      type = lib.types.nullOr (
+        lib.types.submodule {
+          options = {
+            version = lib.mkOption {
+              type = lib.types.str;
+              default = "11";
+              description = "Windows version (e.g. 10, 11, tiny11)";
+            };
+            ramSize = lib.mkOption {
+              type = lib.types.str;
+              default = "4G";
+              description = "RAM size allocated to the Windows VM";
+            };
+            cpuCores = lib.mkOption {
+              type = lib.types.str;
+              default = "4";
+              description = "CPU cores allocated to the Windows VM";
+            };
+            diskSize = lib.mkOption {
+              type = lib.types.str;
+              default = "64G";
+              description = "Size of the primary hard disk";
+            };
+            username = lib.mkOption {
+              type = lib.types.str;
+              default = "MyWindowsUser";
+              description = "Windows username";
+            };
+            password = lib.mkOption {
+              type = lib.types.str;
+              default = "MyWindowsPassword";
+              description = "Windows password";
+            };
+            language = lib.mkOption {
+              type = lib.types.str;
+              default = "Japanese";
+              description = "Windows system language";
+            };
+            sharedDir = lib.mkOption {
+              type = lib.types.str;
+              default = "";
+              description = "Directory to share with the Windows container. If empty, defaults to ~/shared.";
+            };
+            rdpScale = lib.mkOption {
+              type = lib.types.str;
+              default = "140";
+              description = "Display scaling factor (e.g. '100', '140', '180')";
+            };
+            autopause = lib.mkEnableOption "automatic pausing of Windows when inactive";
+            autopauseTime = lib.mkOption {
+              type = lib.types.str;
+              default = "300";
+              description = "Duration of inactivity (in seconds) to tolerate before Windows is automatically paused";
+            };
+            jpKeyboard = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = "Whether to use Japanese keyboard layout (JIS) in RDP session";
+            };
+          };
+        }
+      );
+      default = null;
+      description = "WinApps RDP support. Set to null to disable.";
     };
   };
 
@@ -82,10 +89,10 @@ in
 
     # Assign the 'kvm' group for QEMU KVM hardware acceleration
     users.users = lib.mapAttrs (_username: user: {
-      extraGroups = lib.optionals user.desktop.winapps.enable [ "kvm" ];
+      extraGroups = lib.optionals (user.desktop.winapps != null) [ "kvm" ];
     }) config.custom.users;
 
-    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.winapps.enable) (
+    home-manager.users = desktopLib.mkHome (user: user.custom.desktop.winapps != null) (
       user:
       {
         pkgs,
