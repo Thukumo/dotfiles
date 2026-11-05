@@ -180,6 +180,18 @@
       systems = lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts));
     in
     {
+      formatter = lib.genAttrs systems (
+        system:
+        inputs.treefmt-nix.lib.mkWrapper nixpkgs.legacyPackages.${system} {
+          projectRootFile = "flake.nix";
+          programs = {
+            nixfmt.enable = true;
+            deadnix.enable = true;
+            statix.enable = true;
+          };
+        }
+      );
+
       devShells = lib.genAttrs systems (
         system:
         let

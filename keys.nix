@@ -8,6 +8,9 @@
 #
 # secrets.nix はこのファイルと各ホストの age.secrets 宣言から自動生成される
 # (git commit 時に自動再生成)。
+let
+  user = import ./const/user.nix;
+in
 {
   systemKeys = {
     "16x-aurora" = "age1rq8eqfp4qsznzau3xla2ftq26d3wlhjk05l9c4tnwcpkj7ecxfqqfvtjad";
@@ -17,7 +20,7 @@
     "yoga-book" = "age1fztfqgpdc7q5z05t9zcff7skpv0xeq2a6j398yvs58qdns872faszlxyd2";
   };
   homeKeys = {
-    "tsukumo" = {
+    "${user.name}" = {
       "16x-aurora" = "age1n9duyldcz8d3dgkckn3se69kxc057g0dzz5kfadgal3ensl86utqfwjngy";
       "mouse-3" = "age18c9e7ex9q7mu39zzprcpl3t20hkp7a9fjpf26awedxgurw5vsfsq5w90yp";
       "thinkpadx13-nix" = "age1yqrh69757nsk8vtjq8dlu3738f7pgcq0v6cdulgd2uptgttdqqlsgg8tge";

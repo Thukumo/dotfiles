@@ -26,13 +26,6 @@
     users."tsukumo" = {
       network.globalProtect.enable = true;
       desktop = {
-        enable = true;
-        de = "niri";
-        mimeBrowser = "chromium";
-        browser = "librewolf";
-        launcher = "fuzzel";
-        terminal = "foot";
-        ime = "skk";
         apps = {
           google-chrome.enable = true;
           mattermost-desktop.enable = true;

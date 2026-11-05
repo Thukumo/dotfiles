@@ -6,20 +6,15 @@
 }:
 
 {
-  # options.custom.desktop = {
-  #   defaultUser = lib.mkOption {
-  #     type = lib.types.str;
-  #   };
-  # };
   config =
     lib.mkIf (config.custom.desktop.anyEnabled && config.custom.desktop.sessionManager == "greetd")
       {
         services.greetd = {
           enable = true;
           settings = {
-            default_session.user = config.users.users."tsukumo".name;
+            default_session.user = config.custom.defaultUser;
             default_session.command = config.custom.desktop.sessionCommand;
-            initial_session.user = config.users.users."tsukumo".name;
+            initial_session.user = config.custom.defaultUser;
             initial_session.command = config.custom.desktop.sessionCommand;
           };
         };

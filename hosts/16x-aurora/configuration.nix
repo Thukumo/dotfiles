@@ -27,14 +27,6 @@
       mediaDirs = [ "V,Documents/mov" ];
     };
     desktop = {
-      enable = true;
-      de = "niri";
-      mimeBrowser = "chromium";
-      browser = "librewolf";
-      launcher = "fuzzel";
-      terminal = "foot";
-      winapps.enable = false;
-      ime = "skk";
       apps = {
         bottles.enable = true;
         discord.enable = true;
@@ -42,10 +34,7 @@
         mattermost-desktop.enable = true;
         onlyoffice.enable = true;
         zoom.enable = true;
-        gnome-disk-utility.enable = false;
         osu.enable = true;
-        rquickshare.enable = false;
-        thunar.enable = false;
         steam.enable = true;
         prismLauncher.enable = true;
         localsend.enable = true;
@@ -182,7 +171,8 @@
             ];
           }
           {
-            name = "AtomicChat/LFM3-1.7B-Uncensored-GGUF:Q4_K_M";
+            # llama-swap uses the model name as a routing key; keep it path-safe.
+            name = "LFM3-1.7B-Uncensored-Q4_K_M";
             repoId = "AtomicChat/LFM3-1.7B-Uncensored-GGUF";
             file = "LFM3-1.7B-Uncensored-AD-Q4_K_M.gguf";
             backend = "upstream";

@@ -6,6 +6,8 @@
 }:
 
 let
+  inherit ((import ../../const/browser-registry.nix)) browsers;
+
   # Injected into both the NixOS and home-manager module evaluations so that
   # system modules and per-user home-manager modules share the same helpers.
   desktopLib = {
@@ -15,28 +17,7 @@ let
 
     # ブラウザ名(desktop.mimeBrowser / desktop.browser の enum) → 起動コマンドと
     # ウインドウモードのフラグ。呼び出し側で null(未設定)は弾くこと。
-    browserInfo =
-      browser:
-      let
-        browsers = {
-          chromium = {
-            command = "chromium";
-            newWindow = "--new-window";
-            privateWindow = "--incognito";
-          };
-          google-chrome = {
-            command = "google-chrome-stable";
-            newWindow = "--new-window";
-            privateWindow = "--incognito";
-          };
-          librewolf = {
-            command = "librewolf";
-            newWindow = "--new-window";
-            privateWindow = "--private-window";
-          };
-        };
-      in
-      browsers.${browser};
+    browserInfo = browser: browsers.${browser};
 
     # ターミナル名(desktop.terminal の enum) → 起動コマンド。呼び出し側で null(未設定)は弾くこと。
     terminalInfo =
@@ -97,6 +78,16 @@ in
   config = lib.mkMerge [
     {
       custom.desktop.anyEnabled = lib.mkDefault (myLib.anyUser config (u: u.desktop.enable));
+
+      assertions = lib.mapAttrsToList (name: user: {
+        assertion =
+          !user.desktop.enable
+          || (user.desktop.de != null && user.desktop.terminal != null && user.desktop.launcher != null);
+        message = ''
+          custom.users.${name}.desktop.enable = true requires de, terminal and
+          launcher to be set (the niri binds call their info lookups directly).
+        '';
+      }) config.custom.users;
 
       _module.args.desktopLib = desktopLib;
       home-manager.users = myLib.mkForEachUsers config (user: user.custom.desktop.enable) (

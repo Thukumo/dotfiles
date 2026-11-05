@@ -1,0 +1,32 @@
+name: check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Evaluate all flake outputs
+        run: nix flake check --no-build
+
+      - name: Check formatting and generated files
+        run: nix develop -c pre-commit run --all-files
+
+      - name: Fail if hooks changed files
+        run: git diff --exit-code HEAD

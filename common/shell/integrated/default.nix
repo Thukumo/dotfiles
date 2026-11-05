@@ -1,4 +1,4 @@
 { myLib, ... }:
 {
-  imports = myLib.mkImportModules ./. [ "private" ];
+  imports = myLib.mkImportModules ./. [ ];
 }

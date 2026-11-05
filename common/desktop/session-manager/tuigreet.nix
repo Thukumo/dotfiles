@@ -7,18 +7,13 @@
 }:
 
 {
-  # options.custom.desktop = {
-  #   defaultUser = lib.mkOption {
-  #     type = lib.types.str;
-  #   };
-  # };
   config =
     lib.mkIf (config.custom.desktop.anyEnabled && config.custom.desktop.sessionManager == "tuigreet")
       {
         services.greetd = {
           enable = true;
           settings = {
-            default_session.user = config.users.users."tsukumo".name;
+            default_session.user = config.custom.defaultUser;
             default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --user-menu ${
               lib.optionalString (
                 config.custom.desktop.sessionCommand != null

@@ -22,10 +22,11 @@ in
       default = with pkgs; [
         (stdenvNoCC.mkDerivation {
           name = "hellonavi";
-          src = builtins.fetchGit {
-            url = "https://github.com/yi78/hellonavi";
-            ref = "master";
+          src = pkgs.fetchFromGitHub {
+            owner = "yi78";
+            repo = "hellonavi";
             rev = "a369222fc7943e0ad59be710a5c6cf6b0137f309";
+            hash = "sha256-0A79TB2fEDJ3O8pU/+aIFYuFtuGUBj5eYYjWK5IwF4A=";
           };
           patchPhase = ''
             sed -i 's/dialog_opacity (0);/&\n      navi.sprite.SetOpacity (1);/' hellonavi/hellonavi.script

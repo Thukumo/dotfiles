@@ -10,22 +10,36 @@ let
   # Import all children of `dir` matching `pred` (pred: name -> type -> bool).
   mkImportChildren =
     dir: pred:
-    map (name: dir + "/${name}") (lib.attrNames (lib.filterAttrs pred (builtins.readDir dir)));
+    map (name: toString dir + "/${name}") (lib.attrNames (lib.filterAttrs pred (builtins.readDir dir)));
 
   # Is this entry a regular `.nix` module (excluding `default.nix`)?
   isModuleFile = name: type: type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix";
 
+  # A module directory is a directory with a default.nix. Data directories
+  # must live outside the module tree; otherwise the missing entrypoint is
+  # an error instead of being silently ignored.
+  isModuleDir =
+    dir: name: type:
+    if type != "directory" then
+      false
+    else if builtins.pathExists (toString dir + "/${name}/default.nix") then
+      true
+    else
+      throw "module directory ${toString dir}/${name} has no default.nix; move data outside the module tree or exclude it explicitly";
+
   # Import every subdirectory of `dir` (as <dir>/<name>/default.nix modules).
-  mkImportSubdirs = dir: mkImportChildren dir (_: type: type == "directory");
+  mkImportSubdirs =
+    dir: mkImportChildren dir (name: type: type == "directory" && isModuleDir dir name type);
 
-  # Import every `.nix` module file directly inside `dir`.
-  mkImportModuleFiles = dir: mkImportChildren dir isModuleFile;
-
-  # Import every `.nix` module file and subdirectory, excluding named subdirectories.
+  # Import every `.nix` module file and module subdirectory, excluding named
+  # subdirectories. Exclusions are only for conditionally imported modules
+  # such as `shell/private`.
   mkImportModules =
     dir: excludedDirs:
     mkImportChildren dir (
-      name: type: isModuleFile name type || (type == "directory" && !builtins.elem name excludedDirs)
+      name: type:
+      isModuleFile name type
+      || (type == "directory" && !builtins.elem name excludedDirs && isModuleDir dir name type)
     );
 
   mkEnabledOption =
@@ -79,7 +93,6 @@ in
     mkImportChildren
     isModuleFile
     mkImportSubdirs
-    mkImportModuleFiles
     mkImportModules
     mkEnabledOption
     mkUserOption

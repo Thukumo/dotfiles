@@ -1,12 +1,11 @@
 # Custom Options Tree
-Generated on 2026-11-04 03:29:40
+Generated on 2026-11-05 13:56:20
 
 - **custom**
+  - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
   - **desktop**
-    - `anyEnabled` (Default: `false`): Whether any user has desktop enabled
     - **pipewire**
       - `enable` (Default: `true`): Whether to enable pipewire (enabled by default).
-    - `sessionCommand` (Default: `null`): Command to start the desktop session
     - `sessionManager` (Default: `"tuigreet"`): Session manager to use
     - **sunshine**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable sunshine (game streaming).
@@ -113,7 +112,7 @@ Generated on 2026-11-04 03:29:40
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): Whether to enable plymouth (enabled by default).
-      - `packages` (Default: `["/nix/store/jbh4zqaigah587m78zh2j5asc64spr03-hellonavi"]`): Extra Plymouth theme packages
+      - `packages` (Default: `["/nix/store/2sk2xrjl12w7zdr7yhzff1razjzqrj0m-hellonavi"]`): Extra Plymouth theme packages
       - `theme` (Default: `"hellonavi"`): Plymouth theme name
   - **users** (User Options)
     - **account**

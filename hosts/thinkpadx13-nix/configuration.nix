@@ -48,13 +48,6 @@
       };
       network.globalProtect.enable = true;
       desktop = {
-        enable = true;
-        de = "niri";
-        mimeBrowser = "chromium";
-        browser = "librewolf";
-        launcher = "fuzzel";
-        terminal = "foot";
-        ime = "skk";
         apps = {
           discord.enable = true;
           google-chrome.enable = true;
@@ -62,7 +55,6 @@
           onlyoffice.enable = true;
           zoom.enable = true;
           gnome-disk-utility.enable = true;
-          rquickshare.enable = false;
           thunar.enable = true;
           steam.enable = true;
           prismLauncher.enable = true;
@@ -114,7 +106,6 @@
         };
       };
     };
-    desktop.sunshine.enable = false;
 
     hardware.keyboard.keybind.deviceIds = [ "0001:0001" ];
   };

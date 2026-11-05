@@ -1,4 +1,12 @@
-{ lib, myLib, ... }:
+{
+  lib,
+  config,
+  myLib,
+  ...
+}:
+let
+  inherit ((import ../../../const/browser-registry.nix)) browsers;
+in
 {
   options.custom.users = myLib.mkUserOption (
     { config, ... }:
@@ -10,24 +18,12 @@
     {
       options.desktop = {
         mimeBrowser = lib.mkOption {
-          type = lib.types.nullOr (
-            lib.types.enum [
-              "chromium"
-              "google-chrome"
-              "librewolf"
-            ]
-          );
+          type = lib.types.nullOr (lib.types.enum (lib.attrNames browsers));
           default = null;
           description = "Browser to set as the default MIME handler";
         };
         browser = lib.mkOption {
-          type = lib.types.nullOr (
-            lib.types.enum [
-              "chromium"
-              "google-chrome"
-              "librewolf"
-            ]
-          );
+          type = lib.types.nullOr (lib.types.enum (lib.attrNames browsers));
           default = null;
           description = "Browser opened by desktop shortcuts (e.g. Mod+Shift+C). Shortcut binds are not created when unset.";
         };
@@ -106,5 +102,22 @@
     }
   );
 
-  imports = myLib.mkImportModuleFiles ./.;
+  config.assertions = lib.mapAttrsToList (
+    name: user:
+    let
+      selected = lib.filter (b: b != null) [
+        user.desktop.mimeBrowser
+        user.desktop.browser
+      ];
+    in
+    {
+      assertion = lib.all (b: user.desktop.apps.${b}.enable) selected;
+      message = ''
+        custom.users.${name}: desktop.mimeBrowser/browser selects a browser whose
+        apps.<browser>.enable is false. Enable the app or choose another browser.
+      '';
+    }
+  ) config.custom.users;
+
+  imports = myLib.mkImportModules ./. [ ];
 }

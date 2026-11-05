@@ -1,7 +1,12 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  config,
+  ...
+}:
 
 {
-  home-manager.users."tsukumo" = {
+  home-manager.users."${config.custom.defaultUser}" = {
     home.persistence."/persist".directories = [ ".local/share/nowplaying" ];
 
     age.secrets."nowplaying_token".file =
@@ -15,7 +20,7 @@
           NOWPLAYING_BIND = "127.0.0.1:8181";
           NOWPLAYING_DATA = "/data/listens.jsonl";
         };
-        volumes = [ "/persist/home/tsukumo/.local/share/nowplaying:/data" ];
+        volumes = [ "/persist/home/${config.custom.defaultUser}/.local/share/nowplaying:/data" ];
         # agenix default secret location, %t expands to $XDG_RUNTIME_DIR
         environmentFile = [ "%t/agenix/nowplaying_token" ];
       };

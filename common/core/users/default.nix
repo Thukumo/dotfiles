@@ -5,7 +5,9 @@
   myLib,
   ...
 }:
-
+let
+  user = import ../../../const/user.nix;
+in
 {
   options.custom.users =
     myLib.mkUserOption {
@@ -60,6 +62,12 @@
       description = "Custom per-user configuration options";
     };
 
+  options.custom.defaultUser = lib.mkOption {
+    type = lib.types.str;
+    default = user.name;
+    description = "Default user for desktop sessions and host-level user services";
+  };
+
   config = {
     users.mutableUsers = false;
 
@@ -88,6 +96,10 @@
           assertion = customNotNormal == [ ];
           message = "custom.users must map to normal users (users.users.<name>.isNormalUser = true). Offenders: ${lib.concatStringsSep ", " customNotNormal}";
         }
+        {
+          assertion = builtins.hasAttr config.custom.defaultUser config.custom.users;
+          message = "custom.defaultUser '${config.custom.defaultUser}' must be present in custom.users.";
+        }
       ];
 
     users.users = lib.mkMerge (
@@ -107,7 +119,7 @@
     # enable services based on `config.custom.users`, and those services in turn
     # affect `users.users` via upstream NixOS modules.
     custom.users = {
-      "tsukumo" = {
+      "${user.name}" = {
         account = {
           userConfig = {
             hashedPasswordFile = config.age.secrets."passwd_tsukumo".path;
@@ -121,8 +133,7 @@
           shell = "nushell";
         };
 
-        email = "contact@tsukumo.f5.si";
-        dotfilesPath = "dotfiles";
+        inherit (user) email dotfilesPath;
 
         persistence = {
           directories = [
@@ -140,6 +151,8 @@
           terminal = lib.mkDefault "foot";
           launcher = lib.mkDefault "fuzzel";
           ime = lib.mkDefault "skk";
+          mimeBrowser = lib.mkDefault "chromium";
+          browser = lib.mkDefault "librewolf";
         };
 
         shell.private.enable = lib.mkDefault true;

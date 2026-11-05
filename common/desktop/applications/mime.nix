@@ -7,13 +7,7 @@
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.mimeBrowser != null) (
       user:
       let
-        desktopFile =
-          {
-            chromium = "chromium-browser.desktop";
-            google-chrome = "google-chrome.desktop";
-            librewolf = "librewolf.desktop";
-          }
-          .${user.custom.desktop.mimeBrowser};
+        inherit ((desktopLib.browserInfo user.custom.desktop.mimeBrowser)) desktopFile;
       in
       {
         xdg.mimeApps = {

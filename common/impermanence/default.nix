@@ -35,47 +35,99 @@ let
     in
     (lib.optionalString (lib.hasPrefix "/" (builtins.head parts)) "/") + joined;
 
+  # Keep paths are used as find(1) patterns. Normalize them first: a trailing
+  # slash or a relative path would pass the old prefix assertion but never
+  # match, letting find delete the data it was supposed to keep.
+  hasDotComponent = p: lib.any (part: part == "." || part == "..") (lib.splitString "/" p);
+
+  normalizePersistPath =
+    p:
+    let
+      normalized = concatPaths [ p ];
+    in
+    if !(lib.hasPrefix "/" p) then
+      throw "custom.impermanence: path '${p}' must be absolute"
+    else if hasDotComponent p then
+      throw "custom.impermanence: path '${p}' must not contain '.' or '..'"
+    else
+      normalized;
+
   entryPath =
-    home: entry:
+    root: home: entry:
     concatPaths [
-      entry.persistentStoragePath
+      root
       home
-      (entry.directory or entry.file)
+      (if builtins.isString entry then entry else entry.directory or entry.file)
     ];
 
-  declaredPaths = lib.unique (
-    lib.filter (p: lib.hasPrefix "${persistRoot}/" p) (
+  persistenceStores = lib.filter (s: s.enable) (lib.attrValues config.environment.persistence);
+
+  systemEntryPaths = lib.concatLists (
+    map (
+      store:
+      map (entryPath (store.persistentStoragePath or persistRoot) "/") (store.directories ++ store.files)
+    ) persistenceStores
+  );
+
+  userEntryPaths = lib.concatLists (
+    map (
+      store:
       lib.concatLists (
-        map (store: map (entryPath "/") (store.directories ++ store.files)) (
-          lib.filter (s: s.enable) (lib.attrValues config.environment.persistence)
+        lib.mapAttrsToList (
+          name: user:
+          map (entryPath (store.persistentStoragePath or persistRoot) config.users.users.${name}.home) (
+            user.directories ++ user.files
+          )
+        ) store.users
+      )
+    ) persistenceStores
+  );
+
+  homeEntryPaths = lib.concatLists (
+    lib.mapAttrsToList (
+      _: hm:
+      let
+        persist = hm.home.persistence.${persistRoot} or null;
+      in
+      lib.optionals (persist != null && persist.enable) (
+        map (entryPath (persist.persistentStoragePath or persistRoot) hm.home.homeDirectory) (
+          persist.directories ++ persist.files
         )
       )
-      ++ lib.concatLists (
-        map (
-          store:
-          lib.concatLists (
-            lib.mapAttrsToList (
-              name: user: map (entryPath config.users.users.${name}.home) (user.directories ++ user.files)
-            ) store.users
-          )
-        ) (lib.filter (s: s.enable) (lib.attrValues config.environment.persistence))
-      )
-      ++ lib.concatLists (
-        lib.mapAttrsToList (
-          _: hm:
-          let
-            persist = hm.home.persistence.${persistRoot} or null;
-          in
-          lib.optionals (persist != null && persist.enable) (
-            map (entryPath hm.home.homeDirectory) (persist.directories ++ persist.files)
-          )
-        ) config.home-manager.users
-      )
-      # Modules that write directly into /persist (e.g. ssh host keys)
-      # append their paths to custom.impermanence.gc.keep.
-      ++ gcCfg.keep
-    )
+    ) config.home-manager.users
   );
+
+  allPersistencePaths = systemEntryPaths ++ userEntryPaths ++ homeEntryPaths;
+
+  # A path that resolves to /persist itself is dropped by the strict-child
+  # filter below. If that happens, fail instead of silently not protecting it.
+  rootPersistencePaths = lib.filter (p: p == persistRoot) allPersistencePaths;
+
+  # find(1) does not resolve '.' or '..'; such a path would pass the prefix
+  # check but not protect the real target.
+  unsafePersistencePaths = lib.filter (
+    p: lib.hasPrefix persistRoot p && hasDotComponent p
+  ) allPersistencePaths;
+
+  persistencePaths = lib.unique (
+    lib.filter (p: lib.hasPrefix "${persistRoot}/" p) allPersistencePaths
+  );
+
+  # Modules that write directly into /persist (e.g. ssh host keys)
+  # append their paths to custom.impermanence.gc.keep.
+  normalizedKeep = map normalizePersistPath (lib.optionals gcCfg.enable gcCfg.keep);
+
+  # Small self-check for the normalization used by find(1) patterns.
+  _pathNormalizationCheck =
+    assert normalizePersistPath "${persistRoot}/foo/" == "${persistRoot}/foo";
+    assert normalizePersistPath "${persistRoot}//foo" == "${persistRoot}/foo";
+    assert !(builtins.tryEval (normalizePersistPath "${persistRoot}/../etc")).success;
+    assert !(builtins.tryEval (normalizePersistPath "etc/foo")).success;
+    true;
+
+  declaredPaths =
+    assert _pathNormalizationCheck;
+    lib.unique (persistencePaths ++ normalizedKeep);
 
   # All ancestors of the declared paths, including the paths themselves.
   parentsOf =
@@ -186,17 +238,36 @@ in
     });
     assertions = [
       {
-        assertion = !gcCfg.enable || declaredPaths != [ ];
+        # Do not count the built-in persistence entries or gc.keep here: those
+        # are always present, so they would hide a broken user/home collection
+        # and let the GC delete everything else.
+        assertion = !gcCfg.enable || persistencePaths != [ ];
         message = ''
-          custom.impermanence.gc: no persistence paths were collected from the
-          configuration; refusing to run, as that would delete all of ${persistRoot}.
+          custom.impermanence.gc: no user/system persistence paths were collected
+          from the configuration; refusing to run, as that would delete all of
+          ${persistRoot}.
+        '';
+      }
+      {
+        assertion = !gcCfg.enable || rootPersistencePaths == [ ];
+        message = ''
+          custom.impermanence.gc: a persistence entry resolves to ${persistRoot}
+          itself. Declare a strict child instead; GC cannot protect the root.
+        '';
+      }
+      {
+        assertion = !gcCfg.enable || unsafePersistencePaths == [ ];
+        message = ''
+          custom.impermanence.gc: persistence paths below ${persistRoot} must
+          not contain '.' or '..': ${lib.concatStringsSep ", " unsafePersistencePaths}
         '';
       }
       {
         assertion =
-          !gcCfg.enable || lib.all (p: p != persistRoot && lib.hasPrefix "${persistRoot}/" p) gcCfg.keep;
+          !gcCfg.enable || lib.all (p: p != persistRoot && lib.hasPrefix "${persistRoot}/" p) normalizedKeep;
         message = ''
-          custom.impermanence.gc.keep entries must be strict children of ${persistRoot}.
+          custom.impermanence.gc.keep entries must be absolute strict children of
+          ${persistRoot}, without trailing slashes, '.' or '..'.
           To keep all of ${persistRoot}, disable custom.impermanence.gc instead.
         '';
       }

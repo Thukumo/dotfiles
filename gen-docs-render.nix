@@ -44,6 +44,8 @@ let
       renderSubmoduleChildren "User Options" (
         if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [ ] else { }
       )
+    else if isOption && (opt.internal or false) then
+      ""
     else if isOption then
       let
         desc = if opt ? description then cleanDesc opt.description else "No description";
