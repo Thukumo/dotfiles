@@ -86,6 +86,11 @@
     {
       home.stateVersion = config.system.stateVersion;
       programs.home-manager.enable = true;
+
+      # home.stateVersionが古いマシンも新デフォルトに追従させる
+      programs.yazi.shellWrapperName = "y"; # 26.05 以降
+      programs.nushell.loadSessionVariables = true; # 26.11 以降
+      gtk.gtk4.theme = null; # 26.05 以降
     }
   ];
 
@@ -98,5 +103,31 @@
     ];
   };
 
-  home-manager.backupCommand = "rm -rf";
+  # Preserve conflicting files instead of deleting them.
+  home-manager.backupCommand = "${
+    pkgs.writeShellApplication {
+      name = "hm-backup";
+      runtimeInputs = [ pkgs.coreutils ];
+      text = ''
+        session="/tmp/hm-backup/''${INVOCATION_ID:?INVOCATION_ID is not set; run this under the Home Manager systemd service}"
+        umask 077
+
+        if [[ -L /tmp/hm-backup ]]; then
+          echo "hm-backup: /tmp/hm-backup is a symlink; refusing" >&2
+          exit 1
+        fi
+        mkdir -p "$session"
+
+        if [[ "$1" == "$HOME"/* ]]; then
+          rel="''${1#"$HOME"/}"
+        else
+          rel=$(basename "$1")
+        fi
+
+        mkdir -p "$session/$(dirname "$rel")"
+        mv -- "$1" "$session/$rel"
+        printf 'home-manager: backed up %s -> %s\n' "$1" "$session/$rel" >&2
+      '';
+    }
+  }/bin/hm-backup";
 }

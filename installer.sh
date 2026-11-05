@@ -133,9 +133,11 @@ LOCAL_KEY_ARGS=()
 if [[ -f "/etc/age/key.txt" ]]; then
   LOCAL_KEY_ARGS+=(-i "/etc/age/key.txt")
 fi
-if [[ -f "$HOME/.config/age/home-manager_key" ]]; then
+# 現在のユーザーの鍵を優先し、$HOME が永続化パスでない場合と
+# 対象ユーザーの鍵がある場合もフォールバックとして見る
+if [[ -n "${HOME:-}" && -f "$HOME/.config/age/home-manager_key" ]]; then
   LOCAL_KEY_ARGS+=(-i "$HOME/.config/age/home-manager_key")
-elif [[ -f "/persist/home/$USER/.config/age/home-manager_key" ]]; then
+elif [[ -n "${USER:-}" && -f "/persist/home/$USER/.config/age/home-manager_key" ]]; then
   LOCAL_KEY_ARGS+=(-i "/persist/home/$USER/.config/age/home-manager_key")
 elif [[ -f "/persist/home/$USER_NAME/.config/age/home-manager_key" ]]; then
   LOCAL_KEY_ARGS+=(-i "/persist/home/$USER_NAME/.config/age/home-manager_key")

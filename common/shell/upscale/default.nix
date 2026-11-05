@@ -1,7 +1,12 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  osConfig,
+  ...
+}:
 
 {
-  home.packages = [
+  home.packages = lib.mkIf osConfig.custom.hardware.gpu.nvidia.enable [
     (pkgs.writeShellApplication {
       name = "upscale";
       runtimeInputs = with pkgs; [

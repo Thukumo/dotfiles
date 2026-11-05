@@ -5,7 +5,7 @@ _:
     # cmdline補完
     cmp-cmdline.enable = true;
 
-    luasnip.enable = false;
+    luasnip.enable = true;
 
     # Treesitter
     treesitter = {

@@ -27,13 +27,15 @@
 
   config = {
     custom.mycelium.hosts = {
+      # TODO: 16x-aurora に旧 Termux の f-51b / Port 8022 が入っている。
+      # 16x 用の mycelium アドレスか確認する。
       "16x-aurora" = {
         ipv6 = "482:d00b:576e:de40:7f7a:564f:515f:cb7a";
         hostname = "f-51b";
       };
       "thinkpadx13-nix" = {
         ipv6 = "4d8:de15:85dd:7fa4:493e:f1a4:6961:bd9c";
-        hostname = "thinkpad-x13-nix";
+        hostname = "thinkpadx13-nix";
       };
       "mouse-3" = {
         ipv6 = "488:9c35:edc2:14f9:691a:53c:ef01:cb25";

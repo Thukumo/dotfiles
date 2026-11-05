@@ -8,7 +8,10 @@
 
 {
   options.custom.users = myLib.mkUserOption {
-    options.shell.private.enable = lib.mkEnableOption "private shell secrets";
+    options.shell = {
+      private.enable = lib.mkEnableOption "private shell secrets";
+      chat.enable = myLib.mkEnabledOption "chat CLIs (GitHub Copilot CLI / Antigravity CLI)";
+    };
   };
 
   config = {

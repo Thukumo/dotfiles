@@ -43,6 +43,8 @@
   };
 
   custom.hardware.keyboard.keybind.deviceIds = [ "18d1:00ff" ];
+  # 4GB RAM + eMMC; 25% (1GB) is too small to absorb the swap working set
+  custom.hardware.tune.zswap.maxPoolPercent = 40;
 
   custom.secrets.systemAgeKey.enable = true;
 

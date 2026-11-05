@@ -72,7 +72,7 @@
             map (n: {
               name = toString n;
               value = focus-workspace n;
-            }) (lib.range 0 9)
+            }) (lib.range 1 9)
           );
           moveW = {
             "Shift+W" = move-column-to-monitor-up;

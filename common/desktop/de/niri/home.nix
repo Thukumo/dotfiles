@@ -15,10 +15,9 @@
 
   programs.niri = {
     enable = true;
-    package = pkgs.niri.overrideAttrs (_old: {
-      doCheck = false;
-      checkPhase = "";
-    });
+    # niri-flake's main branch is stale and its package lags nixpkgs.
+    # TODO: migrate to Home Manager's official wayland.windowManager.niri.
+    package = pkgs.niri;
     settings = {
       prefer-no-csd = true;
       hotkey-overlay.skip-at-startup = true;

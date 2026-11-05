@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-10-28 09:12:03
+Generated on 2026-11-04 03:29:40
 
 - **custom**
   - **desktop**
@@ -61,6 +61,7 @@ Generated on 2026-10-28 09:12:03
         - `enable` (Default: `true`): Whether to enable powertop (enabled by default).
       - **zswap**
         - `enable` (Default: `true`): Whether to enable zswap (enabled by default).
+        - `maxPoolPercent` (Default: `25`): Maximum zswap pool size as a percentage of RAM.
   - **impermanence**
     - **gc**
       - `enable` (Default: `true`): Whether to enable removal of data in /persist that is no longer declared as persistent (enabled by default).
@@ -74,6 +75,7 @@ Generated on 2026-10-28 09:12:03
       - `enable` (Default: `true`): Whether to enable avahi (mDNS/DNS-SD) (enabled by default).
     - **cloudflare-warp**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Cloudflare Warp.
+      - `excludeRoutes` (Default: `[]`): IP ranges to exclude from the WARP tunnel (split tunnel).
     - **mycelium**
       - `enable` (Default: `true`): Whether to enable mycelium (enabled by default).
     - **ssh-server**
@@ -152,8 +154,6 @@ Generated on 2026-10-28 09:12:03
           - `enable` (Default: `false`) (Example: `true`): Whether to enable osu.
         - **prismLauncher**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable Prism Launcher.
-        - **qutebrowser**
-          - `enable` (Default: `false`) (Example: `true`): Whether to enable qutebrowser.
         - **rquickshare**
           - `enable` (Default: `false`) (Example: `true`): Whether to enable rQuickShare.
         - **sidra**
@@ -255,5 +255,7 @@ Generated on 2026-10-28 09:12:03
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user
     - **shell**
+      - **chat**
+        - `enable` (Default: `true`): Whether to enable chat CLIs (GitHub Copilot CLI / Antigravity CLI) (enabled by default).
       - **private**
         - `enable` (Default: `false`) (Example: `true`): Whether to enable private shell secrets.

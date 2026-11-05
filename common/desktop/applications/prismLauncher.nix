@@ -10,7 +10,7 @@
       {
         home.packages = [ pkgs.prismlauncher ];
         home.persistence."/persist".directories = [
-          ".local/share/prismlauncher"
+          ".local/share/PrismLauncher"
         ];
       }
     );

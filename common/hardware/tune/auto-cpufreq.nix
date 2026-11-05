@@ -10,13 +10,15 @@
   config = lib.mkIf config.custom.hardware.tune.auto-cpufreq.enable {
     # auto-cpufreq 3.1.0 writes EPP after setting the governor. intel_pstate
     # rejects EPP changes while the performance policy is active (EBUSY), so
-    # use powersave here; it still boosts via HWP. Do not run thermald
-    # alongside auto-cpufreq; both write cpufreq sysfs.
+    # avoid performance here. schedutil scales on both intel_pstate and
+    # acpi-cpufreq; acpi-cpufreq's powersave is a static minimum-frequency
+    # governor and would pin the CPU to its lowest P-state. Do not run
+    # thermald alongside auto-cpufreq; both write cpufreq sysfs.
     services.auto-cpufreq = {
       enable = true;
       settings = {
         charger = {
-          governor = "powersave";
+          governor = "schedutil";
           energy_performance_preference = "balance_performance";
           turbo = "auto";
         };

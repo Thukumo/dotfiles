@@ -62,7 +62,6 @@
           };
           osu.enable = lib.mkEnableOption "osu";
           prismLauncher.enable = lib.mkEnableOption "Prism Launcher";
-          qutebrowser.enable = lib.mkEnableOption "qutebrowser";
           rquickshare.enable = lib.mkEnableOption "rQuickShare";
           slack.enable = lib.mkEnableOption "Slack";
           steam.enable = lib.mkEnableOption "Steam";

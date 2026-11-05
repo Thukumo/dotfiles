@@ -1,6 +1,11 @@
-{ pkgs, ... }:
-
 {
+  pkgs,
+  lib,
+  myConfig,
+  ...
+}:
+
+lib.mkIf myConfig.shell.chat.enable {
   home.packages = with pkgs; [
     github-copilot-cli
   ];

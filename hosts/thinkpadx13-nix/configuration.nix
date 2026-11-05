@@ -10,6 +10,8 @@
 
 {
   custom.hardware.secure-boot.enable = true;
+  # 7GB RAM; 25% (1.75GB) hit the zswap pool limit and wrote back to disk
+  custom.hardware.tune.zswap.maxPoolPercent = 40;
   custom.network.wifi.enable = true;
   # # nanoKVM
   # services.udev.extraRules = ''
@@ -63,7 +65,6 @@
           rquickshare.enable = false;
           thunar.enable = true;
           steam.enable = true;
-          qutebrowser.enable = true;
           prismLauncher.enable = true;
           localsend.enable = true;
           blender.enable = true;
@@ -78,6 +79,39 @@
         gns3.enable = true;
         unityhub.enable = true;
         pi.enable = true;
+        llama = {
+          enable = true;
+          # 内蔵Radeon (RADV RENOIR) でVulkanオフロードを試す
+          vulkanSupport = true;
+          # 7GB RAMなのでmlockせずページキャッシュに任せる
+          mlock = false;
+          models = [
+            {
+              name = "LFM3-1.7B";
+              repoId = "LiquidAI/LFM3-1.7B-GGUF";
+              file = "LFM3-1.7B-Q4_K_M.gguf";
+              # LFM3はnixpkgs 0.6.0 / Prism forkに未収録
+              backend = "upstream";
+              gpuLayers = 99;
+              contextLength = 32768;
+              extraArgs = [
+                "--jinja"
+                "-np"
+                "1"
+                "--temp"
+                "0.1"
+                "--top-p"
+                "1.0"
+                "--top-k"
+                "50"
+                "--min-p"
+                "0.0"
+                "--repeat-penalty"
+                "1.1"
+              ];
+            }
+          ];
+        };
       };
     };
     desktop.sunshine.enable = false;

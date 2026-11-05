@@ -36,27 +36,30 @@ in
       }
     ];
 
-    initContent = ''
-      if command -v gh >/dev/null 2>&1; then
-        export NIX_CONFIG="access-tokens = github.com=\$(gh auth token 2>/dev/null)"
-      fi
+    initContent = lib.mkMerge [
+      (lib.mkOrder 550 ''
+        # Add zsh-completions to fpath before compinit
+        fpath+=(
+          ${pkgs.zsh-completions}/share/zsh-completions
+          ${pkgs.nix-zsh-completions}/share/zsh/site-functions
+        )
+      '')
+      ''
+        if command -v gh >/dev/null 2>&1; then
+          export NIX_CONFIG="access-tokens = github.com=\$(gh auth token 2>/dev/null)"
+        fi
 
-      # Add zsh-completions to fpath before compinit
-      fpath+=(
-        ${pkgs.zsh-completions}/share/zsh-completions
-        ${pkgs.nix-zsh-completions}/share/zsh/site-functions
-      )
+        # history-substring-search bindings (fish-like)
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
 
-      # history-substring-search bindings (fish-like)
-      bindkey '^[[A' history-substring-search-up
-      bindkey '^[[B' history-substring-search-down
+        # Case-insensitive completion
+        zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-      # Case-insensitive completion
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-      # Completion menu selection (like fish)
-      zstyle ':completion:*' menu select
-    '';
+        # Completion menu selection (like fish)
+        zstyle ':completion:*' menu select
+      ''
+    ];
   };
   home.persistence."/persist".directories = lib.optionals isEnabled [
     ".local/state/zsh"
