@@ -25,7 +25,6 @@
             trusted = true;
             programs = [
               "ssh"
-              "git"
               "ssh-keygen"
             ];
           };
@@ -34,10 +33,7 @@
             file = ./git/gh_hosts_tsukumo.age;
             path = ".config/gh/hosts.yml";
             trusted = true;
-            programs = [
-              "gh"
-              "git"
-            ];
+            programs = [ "gh" ];
           };
 
           nix_access_tokens = {

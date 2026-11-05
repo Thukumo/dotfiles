@@ -1,5 +1,5 @@
 # Secrets Access Matrix
-Generated on 2026-11-06 04:36:59
+Generated on 2026-11-06 04:42:27
 
 > **GENERATED FILE** - do not edit manually.
 > Regenerate with `pre-commit run gen-docs --all-files`.
@@ -25,11 +25,11 @@ Generated on 2026-11-06 04:36:59
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh`, `git` | trusted |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | trusted |
 | `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | trusted |
 | `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | `nowplaying-client` | trusted |
 | `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | trusted |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `git`, `ssh`, `ssh-keygen` | trusted |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | trusted |
 
 ## mouse-3
 
@@ -44,12 +44,12 @@ Generated on 2026-11-06 04:36:59
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh`, `git` | trusted |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | trusted |
 | `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | trusted |
 | `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `podman-nowplaying` | `podman` | trusted |
 | `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | trusted |
 | `opencode_web_password` | `common/dev/opencode/opencode-web-password.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_web_password` | — | `opencode-web` | `opencode` | trusted |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `git`, `ssh`, `ssh-keygen` | trusted |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | trusted |
 
 ## thinkpadx13-nix
 
@@ -65,11 +65,11 @@ Generated on 2026-11-06 04:36:59
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh`, `git` | trusted |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | trusted |
 | `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | trusted |
 | `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | `nowplaying-client` | trusted |
 | `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | trusted |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `git`, `ssh`, `ssh-keygen` | trusted |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | trusted |
 
 ## yoga-book
 
@@ -85,8 +85,8 @@ Generated on 2026-11-06 04:36:59
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh`, `git` | trusted |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | trusted |
 | `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | trusted |
 | `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | `nowplaying-client` | trusted |
 | `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | trusted |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `git`, `ssh`, `ssh-keygen` | trusted |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | trusted |
