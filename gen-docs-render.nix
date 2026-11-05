@@ -29,6 +29,12 @@ let
       # attrsOf (submodule) の判定
       isAttrsOfSubmodule =
         isOption && (lib.hasPrefix "attribute set of (submodule)" (opt.type.description or ""));
+      # attrsOf (attrsOf (submodule)) の判定
+      isAttrsOfAttrsOfSubmodule =
+        isOption
+        && (opt.type.name or "") == "attrsOf"
+        && (opt.type.nestedTypes.elemType.name or "") == "attrsOf"
+        && (opt.type.nestedTypes.elemType.nestedTypes.elemType.name or "") == "submodule";
 
       # プレフィックスの空白
       p = lib.concatStrings (builtins.genList (_: "  ") indent);
@@ -52,6 +58,13 @@ let
     else if isAttrsOfSubmodule then
       renderSubmoduleChildren "User Options" (
         if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [ ] else { }
+      )
+    else if isAttrsOfAttrsOfSubmodule then
+      renderSubmoduleChildren "User → Secret Options" (
+        if opt.type ? nestedTypes && opt.type.nestedTypes.elemType ? nestedTypes then
+          opt.type.nestedTypes.elemType.nestedTypes.elemType.getSubOptions [ ]
+        else
+          { }
       )
     else if isOption && (opt.internal or false) then
       ""

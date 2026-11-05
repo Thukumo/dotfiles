@@ -32,6 +32,29 @@ in
   };
 
   config = {
+    custom.secrets.access.home = lib.mapAttrs (
+      _: user:
+      if user.dev.opencode.enable then
+        {
+          opencode_auth = {
+            file = ./auth_tsukumo.age;
+            path = ".local/share/opencode/auth.json";
+            trusted = true;
+            programs = [ "opencode" ];
+          };
+        }
+        // lib.optionalAttrs user.dev.opencode.web.enable {
+          opencode_web_password = {
+            file = ./opencode-web-password.age;
+            trusted = true;
+            programs = [ "opencode" ];
+            consumers = [ "opencode-web" ];
+          };
+        }
+      else
+        { }
+    ) config.custom.users;
+
     home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.opencode.enable) (
       user:
       {
@@ -48,15 +71,6 @@ in
           );
       in
       {
-        age.secrets."opencode_auth" = {
-          file = ./auth_tsukumo.age;
-          path = ".local/share/opencode/auth.json";
-        };
-
-        age.secrets."opencode_web_password" = lib.mkIf user.custom.dev.opencode.web.enable {
-          file = ./opencode-web-password.age;
-        };
-
         systemd.user.services.opencode-web = lib.mkIf user.custom.dev.opencode.web.enable {
           Unit = {
             Description = "opencode web server";

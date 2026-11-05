@@ -6,11 +6,17 @@
 }:
 
 {
+  custom.secrets.access.home."${config.custom.defaultUser}" = {
+    nowplaying_token = {
+      file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
+      trusted = true;
+      programs = [ "podman" ];
+      consumers = [ "podman-nowplaying" ];
+    };
+  };
+
   home-manager.users."${config.custom.defaultUser}" = {
     home.persistence."/persist".directories = [ ".local/share/nowplaying" ];
-
-    age.secrets."nowplaying_token".file =
-      ../../../common/desktop/services/nowplaying/nowplaying-token.age;
 
     services.podman.containers = {
       nowplaying = {

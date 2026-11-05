@@ -8,6 +8,7 @@ _:
     ./hardware.nix
     ./hardware-configuration.nix
     ./ingress.nix
+    ./secrets.nix
     ./services
   ];
 }

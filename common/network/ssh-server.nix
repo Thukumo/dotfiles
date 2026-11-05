@@ -23,6 +23,8 @@
       ];
       settings = {
         PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        AuthenticationMethods = "publickey";
         PermitRootLogin = "no";
       };
     };

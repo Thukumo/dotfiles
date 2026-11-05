@@ -1,7 +1,6 @@
 { config, ... }:
 
 {
-  age.secrets."cloudflared_nowplaying".file = ./secrets/cloudflared-nowplaying-credentials.age;
   services.cloudflared = {
     enable = true;
     tunnels.mouse-3 = {

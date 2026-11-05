@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-05 21:01:26
+Generated on 2026-11-06 03:18:57
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -83,6 +83,24 @@ Generated on 2026-11-05 21:01:26
     - **zapret**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
   - **secrets**
+    - **access**
+      - **home** (User → Secret Options)
+        - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
+        - `consumers` (Default: `[]`): Units that consume the secret.
+        - `file` (Default: `No default`): Encrypted age file.
+        - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
+        - `programs` (Default: `[]`): Programs expected to read the secret (metadata for AppArmor/bwrap generation).
+        - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
+      - **system** (User Options)
+        - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
+        - `consumers` (Default: `[]`): Units that consume the secret.
+        - `file` (Default: `No default`): Encrypted age file.
+        - `group` (Default: `null`): Group override; null uses the agenix default.
+        - `kind` (Default: `No default`): How the secret is delivered and who may read it.
+        - `owner` (Default: `null`): Owner override; null uses the agenix default.
+        - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
+        - `programs` (Default: `[]`): Programs expected to read the secret (metadata for AppArmor/bwrap generation).
+        - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
     - **systemAgeKey**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable a system-wide age identity key for secrets not tied to a user.

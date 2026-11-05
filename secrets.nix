@@ -44,12 +44,9 @@ in
   ];
 
   # common/network/sras-vpn/sras-vpn.age
-  #   referenced by: 16x-aurora, mouse-3, thinkpadx13-nix, yoga-book
+  #   referenced by: 16x-aurora
   "common/network/sras-vpn/sras-vpn.age".publicKeys = [
     keys.systemKeys."16x-aurora"
-    keys.systemKeys."mouse-3"
-    keys.systemKeys."thinkpadx13-nix"
-    keys.systemKeys."yoga-book"
     keys.systemKeys."backup-pixel9a"
   ];
 
