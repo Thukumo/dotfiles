@@ -81,6 +81,16 @@ in
     keys.systemKeys."backup-pixel9a"
   ];
 
+  # common/shell/private/nix-access-tokens.age
+  #   referenced by: tsukumo@16x-aurora, tsukumo@mouse-3, tsukumo@thinkpadx13-nix, tsukumo@yoga-book
+  "common/shell/private/nix-access-tokens.age".publicKeys = [
+    keys.homeKeys."tsukumo"."16x-aurora"
+    keys.homeKeys."tsukumo"."mouse-3"
+    keys.homeKeys."tsukumo"."thinkpadx13-nix"
+    keys.homeKeys."tsukumo"."yoga-book"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
   # common/shell/ssh/ssh-key_tsukumo.age
   #   referenced by: tsukumo@16x-aurora, tsukumo@mouse-3, tsukumo@thinkpadx13-nix, tsukumo@yoga-book
   "common/shell/ssh/ssh-key_tsukumo.age".publicKeys = [
