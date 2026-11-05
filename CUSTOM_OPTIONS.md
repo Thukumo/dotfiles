@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-05 15:18:52
+Generated on 2026-11-05 21:01:26
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -212,7 +212,7 @@ Generated on 2026-11-05 15:18:52
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): Models to serve ("owner/repo/file.gguf" or submodule)
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/wl9fcc5hqwsvylds4666skrczmyql6rf-llama-cpp-0.6.0"`): llama-cpp package to use
+        - `package` (Default: `"/nix/store/y8p4y1c58xxmrvz03jdqwhzb7hz08cbk-llama-cpp-0.8.0"`): llama-cpp package to use
         - `port` (Default: `11434`): Port of the llama-server
         - `prismFork` (Default: `false`) (Example: `true`): Whether to enable PrismML fork of llama-cpp (required for Ternary Bonsai 2 PTQ1_0/PQ2_0).
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.

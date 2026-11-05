@@ -125,8 +125,8 @@
               repoId = "LiquidAI/LFM3-VL-2B-GGUF";
               file = "mmproj-LFM3-VL-2B-F16.gguf";
             };
-            # nixpkgs 0.6.0 / Prism fork には LFM3 が無いので upstream master を使う
-            backend = "upstream";
+            # Prism fork には LFM3 が無いので nixpkgs の llama-cpp を使う
+            backend = "nixpkgs";
             gpuLayers = 99;
             contextLength = 128000;
             extraArgs = [
@@ -149,7 +149,7 @@
             name = "LFM3-1.7B";
             repoId = "LiquidAI/LFM3-1.7B-GGUF";
             file = "LFM3-1.7B-Q4_K_M.gguf";
-            backend = "upstream";
+            backend = "nixpkgs";
             gpuLayers = 99;
             contextLength = 256000;
             extraArgs = [
@@ -173,7 +173,7 @@
             name = "LFM3-1.7B-Uncensored-Q4_K_M";
             repoId = "AtomicChat/LFM3-1.7B-Uncensored-GGUF";
             file = "LFM3-1.7B-Uncensored-AD-Q4_K_M.gguf";
-            backend = "upstream";
+            backend = "nixpkgs";
             gpuLayers = 99;
             contextLength = 256000;
             extraArgs = [

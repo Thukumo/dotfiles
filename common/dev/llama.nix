@@ -67,13 +67,14 @@
                     backend = lib.mkOption {
                       type = lib.types.enum [
                         "default"
-                        "upstream"
+                        "nixpkgs"
                       ];
                       default = "default";
                       description = ''
                         llama.cpp backend for this model.
-                        "upstream" builds ggml-org master (needed for architectures such as LFM3
-                        that are not in the pinned Prism fork / nixpkgs 0.6.0).
+                        "nixpkgs" selects the nixpkgs package even when `prismFork` is
+                        enabled. Use it for architectures missing from the Prism fork,
+                        such as LFM3.
                       '';
                     };
                     flashAttn = lib.mkOption {
@@ -213,7 +214,7 @@
     { config, ... }:
     let
       cfg = user.custom.dev.llama;
-      baseBackend = cfg.package.override {
+      nixpkgsBackend = cfg.package.override {
         inherit (cfg)
           cudaSupport
           rocmSupport
@@ -221,113 +222,25 @@
           openclSupport
           ;
       };
-      # ponytail: forkはupstream b10754ベース (tip c96baf4)。nixpkgs 0.6.0のtest patchは適用不可、npm hash/doCheckもfork用に戻す
-      llamaBackend =
-        if cfg.prismFork then
-          baseBackend.overrideAttrs (_old: {
-            version = "prism-b10754-c96baf4";
-            src = pkgs.fetchFromGitHub {
-              owner = "PrismML-Eng";
-              repo = "llama.cpp";
-              rev = "c96baf4abe24d11a50f326e40b6223b687449d63";
-              hash = "sha256-qNGpilbhVGX2SFwWGtCOgsD+SmhtgIUmTqGhR/YYcck=";
-            };
-            # Backport of upstream #28469 (9e0e220): llama.cpp rejects exactly 2000
-            # repetitions (>= vs >); the goal plugin's plan schema uses maxLength: 2000.
-            patches = [ ./llama-grammar-repetition.patch ];
-            doCheck = false;
-            npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
-          })
-        else
-          baseBackend;
-
-      # Upstream master for architectures not yet in nixpkgs 0.6.0 / the Prism fork.
-      # LFM3 (LiquidAI) landed after both; keep this separate so the Bonsai pin stays put.
-      # CUDA arch is fixed to the 16x-aurora GPU (RTX 5060, sm_120a); adjust for other hosts.
-      upstreamBackend =
-        let
-          cuda = cfg.cudaSupport;
-          vulkan = cfg.vulkanSupport;
-          stdenv = if cuda then pkgs.cudaPackages.backendStdenv else pkgs.stdenv;
-          runtimeLibs = [
-            pkgs.openssl
-          ]
-          ++ lib.optionals cuda (
-            with pkgs.cudaPackages;
-            [
-              cuda_cudart
-              libcublas
-            ]
-          )
-          ++ lib.optionals vulkan [ pkgs.vulkan-loader ];
-        in
-        stdenv.mkDerivation {
-          pname = "llama-cpp-upstream";
-          version = "0.7.0-8ca4060";
-          src = pkgs.fetchFromGitHub {
-            owner = "ggml-org";
-            repo = "llama.cpp";
-            rev = "8ca4060b7e30e76baaa5670ee1ec1b760b7f8552";
-            hash = "sha256-tcHjp0tU23+jbXVHARZ7OBeT6M70Bi0MS4NKa3/rFhQ=";
-          };
-          nativeBuildInputs = [
-            pkgs.cmake
-            pkgs.ninja
-            pkgs.pkg-config
-            pkgs.patchelf
-          ]
-          ++ lib.optionals cuda [
-            pkgs.cudaPackages.cuda_nvcc
-            pkgs.autoAddDriverRunpath
-          ]
-          ++ lib.optionals vulkan [ pkgs.shaderc ];
-          buildInputs =
-            runtimeLibs
-            ++ lib.optionals cuda [ pkgs.cudaPackages.cccl ]
-            ++ lib.optionals vulkan [
-              pkgs.spirv-headers
-              pkgs.vulkan-headers
-              pkgs.vulkan-loader
-            ];
-          cmakeFlags = [
-            "-DCMAKE_BUILD_TYPE=Release"
-            "-DLLAMA_BUILD_SERVER=ON"
-            "-DLLAMA_BUILD_TESTS=OFF"
-            "-DLLAMA_BUILD_EXAMPLES=OFF"
-            "-DLLAMA_BUILD_UI=OFF"
-            "-DLLAMA_USE_PREBUILT_UI=OFF"
-            "-DLLAMA_CURL=OFF"
-            "-DBUILD_SHARED_LIBS=ON"
-            "-DGGML_NATIVE=OFF"
-            "-DGGML_BACKEND_DL=ON"
-            "-DGGML_BACKEND_DIR=${placeholder "out"}/bin"
-            "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
-            "-DCMAKE_INSTALL_RPATH=${placeholder "out"}/bin:${lib.makeLibraryPath runtimeLibs}"
-          ]
-          ++ lib.optionals cuda [
-            "-DGGML_CUDA=ON"
-            "-DCMAKE_CUDA_ARCHITECTURES=120a"
-          ]
-          ++ lib.optionals vulkan [ "-DGGML_VULKAN=ON" ];
-          doCheck = false;
-          buildPhase = ''
-            runHook preBuild
-            cmake --build . -j $NIX_BUILD_CORES --target llama-server llama-cli llama-mtmd-cli
-            runHook postBuild
-          '';
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/bin
-            cp -a bin/. $out/bin/
-            runHook postInstall
-          '';
-          postFixup = ''
-            for f in $out/bin/*; do
-              [ -e "$f" ] || continue
-              patchelf --add-rpath "$out/bin:${lib.makeLibraryPath runtimeLibs}" "$f" 2>/dev/null || true
-            done
-          '';
+      # Prism fork based on upstream b10754; keep the Bonsai pin here.
+      # LFM3 and other models missing from the fork use nixpkgsBackend.
+      prismBackend = nixpkgsBackend.overrideAttrs (_old: {
+        version = "prism-b10754-c96baf4";
+        src = pkgs.fetchFromGitHub {
+          owner = "PrismML-Eng";
+          repo = "llama.cpp";
+          rev = "c96baf4abe24d11a50f326e40b6223b687449d63";
+          hash = "sha256-qNGpilbhVGX2SFwWGtCOgsD+SmhtgIUmTqGhR/YYcck=";
         };
+        # Backport of upstream #28469 (9e0e220): llama.cpp rejects exactly 2000
+        # repetitions (>= vs >); the goal plugin's plan schema uses maxLength: 2000.
+        patches = [ ./llama-grammar-repetition.patch ];
+        doCheck = false;
+        npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+      });
+      defaultBackend = if cfg.prismFork then prismBackend else nixpkgsBackend;
+      backendFor = m: if m.backend == "nixpkgs" then nixpkgsBackend else defaultBackend;
+      usesNixpkgsBackend = m: m.backend == "nixpkgs" || !cfg.prismFork;
 
       modelDir = "${config.home.homeDirectory}/.local/share/llama/models";
 
@@ -343,7 +256,7 @@
     in
     {
       home.packages = [
-        llamaBackend
+        defaultBackend
       ];
 
       systemd.user.services.llama-swap = {
@@ -383,7 +296,7 @@
                     cacheKArg = if m.cacheTypeK != null then "-ctk ${m.cacheTypeK}" else "";
                     cacheVArg = if m.cacheTypeV != null then "-ctv ${m.cacheTypeV}" else "";
                     mlockArg =
-                      if cfg.mlock then if m.backend == "upstream" then "--load-mode mlock" else "--mlock" else "";
+                      if cfg.mlock then if usesNixpkgsBackend m then "--load-mode mlock" else "--mlock" else "";
                     cacheReuseArg =
                       if cfg.cacheReuse != null then "--cache-reuse ${builtins.toString cfg.cacheReuse}" else "";
                     extraArgsStr = lib.concatStringsSep " " m.extraArgs;
@@ -393,7 +306,7 @@
                     value = {
                       cmd = ''
                         # ''${PORT} is a macro placeholder replaced dynamically by llama-swap at launch
-                        ${lib.getExe' (if m.backend == "upstream" then upstreamBackend else llamaBackend) "llama-server"} \
+                        ${lib.getExe' (backendFor m) "llama-server"} \
                           --port ''${PORT} \
                           -m ${modelDir}/${m.file} \
                           -ngl ${builtins.toString m.gpuLayers} \

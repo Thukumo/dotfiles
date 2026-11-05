@@ -81,8 +81,8 @@
               name = "LFM3-1.7B";
               repoId = "LiquidAI/LFM3-1.7B-GGUF";
               file = "LFM3-1.7B-Q4_K_M.gguf";
-              # LFM3はnixpkgs 0.6.0 / Prism forkに未収録
-              backend = "upstream";
+              # Prism fork には LFM3 が無いため nixpkgs の llama-cpp を使う
+              backend = "nixpkgs";
               gpuLayers = 99;
               contextLength = 32768;
               extraArgs = [
