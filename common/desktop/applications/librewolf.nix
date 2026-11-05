@@ -47,6 +47,10 @@
             });
           };
         };
+        # Stylix's LibreWolf target requires programs.librewolf.profiles, which
+        # writes ~/.librewolf/profiles.ini and forces LibreWolf's legacy layout.
+        # We use the XDG layout instead, so disable the target explicitly.
+        stylix.targets.librewolf.enable = false;
         # LibreWolf 158+ uses XDG paths unless ~/.librewolf/profiles.ini exists
         # (see LibreWolf's xdg-dir.patch). Do not use programs.librewolf.settings:
         # Home Manager writes the legacy ~/.librewolf/librewolf.overrides.cfg,
