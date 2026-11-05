@@ -8,7 +8,7 @@
 {
   config =
     let
-      isEnabled = myLib.anyUser config (user: user.desktop.vr.immersed.enable);
+      isEnabled = myLib.anyUser config (user: user.desktop.vr.enable && user.desktop.vr.immersed.enable);
     in
     lib.mkIf isEnabled {
       nixpkgs.config.allowUnfreePackages = [ pkgs.immersed.pname ];

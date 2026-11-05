@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   desktopLib,
   myLib,
   ...
@@ -62,6 +63,31 @@ in
     };
   };
 
+  config.assertions = lib.concatLists (
+    lib.mapAttrsToList (
+      name: user:
+      let
+        cfg = user.desktop.voice-input;
+      in
+      lib.optionals (cfg != null) [
+        {
+          assertion = !cfg.server || cfg.backend == "whisper-cpp";
+          message = ''
+            custom.users.${name}.desktop.voice-input: server = true requires
+            backend = "whisper-cpp" (got "${cfg.backend}").
+          '';
+        }
+        {
+          assertion = cfg.backend != "moonshine" || cfg.language != "auto";
+          message = ''
+            custom.users.${name}.desktop.voice-input: the moonshine backend
+            requires an explicit language (got "auto").
+          '';
+        }
+      ]
+    ) config.custom.users
+  );
+
   config.home-manager.users = desktopLib.mkHome (user: user.custom.desktop.voice-input != null) (
     user:
     { config, ... }:
@@ -71,17 +97,10 @@ in
       fw = pkgs.whisper-ctranslate2;
       modelDir = "${config.home.homeDirectory}/.local/share/whisper/models";
       modelName = "ggml-${cfg.model}";
-      modelFile =
-        lib.throwIf (cfg.server && cfg.backend != "whisper-cpp")
-          "voice-input: `server` (persistent whisper-server) is only supported with the whisper-cpp backend, but got `${cfg.backend}`"
-          "${modelDir}/${modelName}.bin";
+      modelFile = "${modelDir}/${modelName}.bin";
 
       toggleScript =
         if cfg.backend == "moonshine" then
-          let
-            msLang =
-              if cfg.language == "auto" then throw "moonshine requires an explicit language" else cfg.language;
-          in
           pkgs.writeShellScriptBin "voice-typing" ''
               export LC_ALL=C.UTF-8
               STATE_DIR="''${XDG_STATE_HOME:-$HOME/.local}/moonshine-typing"
@@ -97,7 +116,7 @@ in
               ${pkgs.libnotify}/bin/notify-send "音声入力" "認識中..."
               mkfifo "$PIPE"; export PYTHONUNBUFFERED=1
               set -m
-              ( ${moonshinePkg}/bin/moonshine-voice mic --language ${lib.escapeShellArg msLang} \
+              ( ${moonshinePkg}/bin/moonshine-voice mic --language ${lib.escapeShellArg cfg.language} \
                 2>"$STATE_DIR/log" > "$PIPE" ) &
               for _ in 1 2 3; do
                 GPID=$(ps -o pgid= -p $! 2>/dev/null | tr -d ' ')

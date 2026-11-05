@@ -39,7 +39,8 @@ in
     # scanned; treat that as success so the timer job is not marked failed.
     systemd.services.clamdscan.serviceConfig.SuccessExitStatus = lib.mkIf myCfg.enable "2";
 
-    services.rclamonacc = lib.mkIf myCfg.realtime.enable {
+    # realtime scanning only makes sense as part of ClamAV itself.
+    services.rclamonacc = lib.mkIf (myCfg.enable && myCfg.realtime.enable) {
       enable = true;
       settings.directories = [ "/home" ];
     };
@@ -50,7 +51,7 @@ in
     # triggering sync on monitored files, which can block on rclamonacc scan timeouts and return EIO.
     # Note: Bypassing syncfs sacrifices atomicity during switch. If a crash occurs mid-write, the new generation
     # may be corrupted, but you can recover by booting into a previous generation from the boot menu and rebuilding.
-    environment.variables = lib.mkIf myCfg.realtime.enable {
+    environment.variables = lib.mkIf (myCfg.enable && myCfg.realtime.enable) {
       NIXOS_NO_SYNC = "1";
     };
 
