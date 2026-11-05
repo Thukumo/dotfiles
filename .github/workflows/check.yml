@@ -22,6 +22,11 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
+      # stylix reads base16-schemes at evaluation time; `--no-build` cannot
+      # realise that IFD dependency on a clean store.
+      - name: Build evaluation-time dependencies
+        run: nix build --no-link .#nixosConfigurations.16x-aurora.pkgs.base16-schemes
+
       - name: Evaluate all flake outputs
         run: nix flake check --no-build
 
