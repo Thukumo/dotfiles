@@ -245,6 +245,14 @@
                         sed "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" "$SECRETS_TEMP_FILE" > SECRETS.md
                         git add SECRETS.md
                       fi
+
+                      # 生成物にプレースホルダーが残っている場合は日付行だけ直す
+                      for file in CUSTOM_OPTIONS.md SECRETS.md; do
+                        if grep -q '__DATE_PLACEHOLDER__' "$file" 2>/dev/null; then
+                          sed -i "2s/.*/Generated on $(date '+%Y-%m-%d %H:%M:%S')/" "$file"
+                          git add "$file"
+                        fi
+                      done
                     '';
                   }
                 }/bin/gen-docs";
@@ -291,7 +299,7 @@
           };
         }
       );
-      nixosConfigurations = lib.mapAttrs mkHost hosts // {
+      nixosConfigurations = hostConfigs // {
         installer = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
@@ -389,7 +397,20 @@
           system = lib.mapAttrs (
             name: entry: entry // { path = cfg.config.age.secrets.${name}.path; }
           ) cfg.config.custom.secrets.access.report;
-          home = cfg.config.custom.secrets.access.home;
+          home = lib.mapAttrs (
+            user: entries:
+            let
+              hm = cfg.config.home-manager.users.${user};
+            in
+            lib.mapAttrs (
+              name: entry:
+              let
+                secret = hm.age.secrets.${name};
+                runtimeName = secret.name or name;
+              in
+              entry // { runtime = "${hm.age.secretsDir}/${runtimeName}"; }
+            ) entries
+          ) cfg.config.custom.secrets.access.home;
         }) hostConfigs;
       };
     };

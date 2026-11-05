@@ -21,8 +21,6 @@ let
 
   sanitize = s: lib.replaceStrings [ "\r\n" "\r" "\n" ] [ " " " " " " ] (toString s);
 
-  escapeCellText = s: lib.replaceStrings [ "|" ] [ "\\|" ] (sanitize s);
-
   fenceFor =
     s:
     let
@@ -84,7 +82,7 @@ let
     if entry.trusted or false then
       "trusted"
     else if (entry.acceptedRisk or null) != null then
-      "accepted risk: ${escapeCellText entry.acceptedRisk}"
+      "accepted risk: ${cellCode entry.acceptedRisk}"
     else
       "**unmarked**";
 
@@ -129,7 +127,7 @@ let
     [
       (cellCode item.name)
       (cellCode (rel e.file))
-      (cellCode "$XDG_RUNTIME_DIR/agenix/${item.name}")
+      (cellCode (e.runtime or "$XDG_RUNTIME_DIR/agenix/${item.name}"))
       (pathCell (e.path or null))
       (listCell (e.consumers or [ ]))
       (listCell (e.programs or [ ]))
@@ -194,13 +192,13 @@ let
     Generated on __DATE_PLACEHOLDER__
 
     > **GENERATED FILE** - do not edit manually.
-    > Regenerate with `nix eval --raw --apply 'x: x.render x.hostsData' .#genSecretsDocs`.
+    > Regenerate with `pre-commit run gen-docs --all-files`.
 
     ## Legend
 
-    - All secret files are mode `0400`.
-    - System secrets use the reported runtime path.
-    - Home secrets decrypt to `$XDG_RUNTIME_DIR/agenix/<name>`; `path` is the optional home symlink.
+    - Decrypted secrets are mode `0400`.
+    - System secrets are exposed at the runtime path shown.
+    - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
   '';
 
   body = lib.concatStringsSep "\n\n" hostSections;
