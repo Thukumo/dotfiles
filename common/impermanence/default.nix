@@ -6,8 +6,16 @@
   ...
 }:
 let
-  cfgLuks = config.custom.hardware.disk.disko.luks;
-  cryptsetupUnit = "systemd-cryptsetup@${cfgLuks.deviceName}.service";
+  diskoCfg = config.custom.hardware.disk.disko;
+  luksCfg =
+    if diskoCfg == null then
+      {
+        enable = false;
+        deviceName = "";
+      }
+    else
+      diskoCfg.luks;
+  cryptsetupUnit = "systemd-cryptsetup@${luksCfg.deviceName}.service";
 
   # Garbage collection for /persist.
   #
@@ -307,15 +315,15 @@ in
         "d /var/lib/private 0700 root root -"
       ];
 
-    boot.initrd.systemd.services.rollback = lib.mkIf config.custom.hardware.disk.disko.enable {
+    boot.initrd.systemd.services.rollback = lib.mkIf (diskoCfg != null) {
       description = "Rollback Btrfs root subvolume";
       wantedBy = [ "initrd.target" ];
       after = [
         "dev-vg-root.device"
         "systemd-hibernate-resume.service"
       ]
-      ++ lib.optionals cfgLuks.enable [ cryptsetupUnit ];
-      wants = lib.mkIf cfgLuks.enable [ cryptsetupUnit ];
+      ++ lib.optionals luksCfg.enable [ cryptsetupUnit ];
+      wants = lib.mkIf luksCfg.enable [ cryptsetupUnit ];
       before = [ "sysroot.mount" ];
       conflicts = [ "initrd-switch-root.target" ];
       unitConfig.DefaultDependencies = "no";

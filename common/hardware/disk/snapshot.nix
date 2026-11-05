@@ -10,7 +10,7 @@
   };
   config = lib.mkMerge [
     {
-      custom.hardware.disk.snapshot.enable = lib.mkDefault config.custom.hardware.disk.disko.enable;
+      custom.hardware.disk.snapshot.enable = lib.mkDefault (config.custom.hardware.disk.disko != null);
       # btrbk snapshots are read-only subvolumes and must never be GC'd.
       custom.impermanence.gc.keep = [ "/persist/.snapshots" ];
     }

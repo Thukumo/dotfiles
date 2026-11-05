@@ -9,8 +9,9 @@
   };
   config = lib.mkMerge [
     {
-      custom.hardware.disk.btrfs-autoScrub.enable =
-        lib.mkDefault config.custom.hardware.disk.disko.enable;
+      custom.hardware.disk.btrfs-autoScrub.enable = lib.mkDefault (
+        config.custom.hardware.disk.disko != null
+      );
     }
     (lib.mkIf config.custom.hardware.disk.btrfs-autoScrub.enable {
       services.btrfs.autoScrub = {

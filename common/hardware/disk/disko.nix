@@ -1,49 +1,58 @@
 {
   config,
   lib,
-  myLib,
   ...
 }:
+let
+  cfg = config.custom.hardware.disk.disko;
+in
 {
-  options.custom.hardware.disk.disko = {
-    enable = myLib.mkEnabledOption "disko (disk formatting)";
-    diskName = lib.mkOption {
-      type = lib.types.str;
-      description = "Path to the disk device (e.g. /dev/disk/by-id/...)";
-    };
-    swapSize = lib.mkOption {
-      type = lib.types.str;
-      description = "Size of the swap partition (e.g. \"8G\")";
-    };
-    ESPSize = lib.mkOption {
-      type = lib.types.str;
-      default = "2G";
-      description = "Size of the EFI System Partition (e.g. \"2G\")";
-    };
-    luks = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable LUKS encryption";
-      };
-      deviceName = lib.mkOption {
-        type = lib.types.str;
-        default = "cryptedpart";
-        description = "Name of the LUKS device";
-      };
-    };
+  options.custom.hardware.disk.disko = lib.mkOption {
+    type = lib.types.nullOr (
+      lib.types.submodule {
+        options = {
+          diskName = lib.mkOption {
+            type = lib.types.str;
+            description = "Path to the disk device (e.g. /dev/disk/by-id/...)";
+          };
+          swapSize = lib.mkOption {
+            type = lib.types.str;
+            description = "Size of the swap partition (e.g. \"8G\")";
+          };
+          ESPSize = lib.mkOption {
+            type = lib.types.str;
+            default = "2G";
+            description = "Size of the EFI System Partition (e.g. \"2G\")";
+          };
+          luks = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = "Enable LUKS encryption";
+            };
+            deviceName = lib.mkOption {
+              type = lib.types.str;
+              default = "cryptedpart";
+              description = "Name of the LUKS device";
+            };
+          };
+        };
+      }
+    );
+    default = null;
+    description = "Disk layout for disko. Set to null to disable disko.";
   };
-  config = lib.mkIf config.custom.hardware.disk.disko.enable {
+  config = lib.mkIf (cfg != null) {
     disko.devices = {
       disk = {
         "main" = {
           type = "disk";
-          device = config.custom.hardware.disk.disko.diskName;
+          device = cfg.diskName;
           content = {
             type = "gpt";
             partitions = {
               ESP = {
-                size = config.custom.hardware.disk.disko.ESPSize;
+                size = cfg.ESPSize;
                 type = "EF00";
                 content = {
                   type = "filesystem";
@@ -61,10 +70,10 @@
                       vg = "vg";
                     };
                   in
-                  if config.custom.hardware.disk.disko.luks.enable then
+                  if cfg.luks.enable then
                     {
                       type = "luks";
-                      name = config.custom.hardware.disk.disko.luks.deviceName;
+                      name = cfg.luks.deviceName;
                       settings.allowDiscards = true;
                       content = lvmPv;
                     }
@@ -80,7 +89,7 @@
           type = "lvm_vg";
           lvs = {
             swap = {
-              size = config.custom.hardware.disk.disko.swapSize;
+              size = cfg.swapSize;
               content = {
                 type = "swap";
                 discardPolicy = "both";

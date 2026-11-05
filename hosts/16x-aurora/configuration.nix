@@ -220,7 +220,9 @@
       diskName = "/dev/disk/by-id/nvme-PM9C1b_Samsung_1024GB_______S7UKNF1Y956462";
       swapSize = "70G";
     };
-    beesd.hashTableSizeMB = 2048;
+    beesd = {
+      hashTableSizeMB = 2048;
+    };
   };
 
   # auto-cpufreq's performance governor makes intel_pstate reject EPP writes

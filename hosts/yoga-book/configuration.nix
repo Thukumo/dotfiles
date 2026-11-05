@@ -42,12 +42,8 @@
   custom.secrets.systemAgeKey.enable = true;
 
   custom.hardware.disk = {
-    beesd = {
-      enable = false;
-      hashTableSizeMB = 256;
-    };
+    beesd = null;
     disko = {
-      enable = true;
       diskName = "/dev/disk/by-id/mmc-064G70_0x432c5b54";
       swapSize = "6G";
     };

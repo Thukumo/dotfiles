@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-05 13:56:20
+Generated on 2026-11-05 15:02:15
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -11,15 +11,13 @@ Generated on 2026-11-05 13:56:20
       - `enable` (Default: `false`) (Example: `true`): Whether to enable sunshine (game streaming).
   - **hardware**
     - **disk**
-      - **beesd**
-        - `enable` (Default: `false`): Whether to enable beesd (btrfs deduplication)
+      - **beesd** (Optional Submodule (null disables))
         - `hashTableSizeMB` (Default: `No default`): Size of the beesd hash table in MiB
       - **btrfs-autoScrub**
         - `enable` (Default: `false`): Whether to enable btrfs auto scrub
-      - **disko**
+      - **disko** (Optional Submodule (null disables))
         - `ESPSize` (Default: `"2G"`): Size of the EFI System Partition (e.g. "2G")
         - `diskName` (Default: `No default`): Path to the disk device (e.g. /dev/disk/by-id/...)
-        - `enable` (Default: `true`): Whether to enable disko (disk formatting) (enabled by default).
         - **luks**
           - `deviceName` (Default: `"cryptedpart"`): Name of the LUKS device
           - `enable` (Default: `true`): Enable LUKS encryption

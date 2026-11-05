@@ -21,6 +21,11 @@ let
 
       # サブモジュールの判定
       isSubmodule = isOption && (opt.type.name or "") == "submodule";
+      # nullOr (submodule) の判定
+      isNullableSubmodule =
+        isOption
+        && (opt.type.name or "") == "nullOr"
+        && (opt.type.nestedTypes.elemType.name or "") == "submodule";
       # attrsOf (submodule) の判定
       isAttrsOfSubmodule =
         isOption && (lib.hasPrefix "attribute set of (submodule)" (opt.type.description or ""));
@@ -40,6 +45,10 @@ let
     in
     if isSubmodule then
       renderSubmoduleChildren "Submodule" (opt.type.getSubOptions [ ])
+    else if isNullableSubmodule then
+      renderSubmoduleChildren "Optional Submodule (null disables)" (
+        opt.type.nestedTypes.elemType.getSubOptions [ ]
+      )
     else if isAttrsOfSubmodule then
       renderSubmoduleChildren "User Options" (
         if opt.type ? nestedTypes then opt.type.nestedTypes.elemType.getSubOptions [ ] else { }
