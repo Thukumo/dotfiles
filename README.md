@@ -25,6 +25,8 @@ mDNS(Avahi)が動作している環境でないと、installer.localの名前解
 
 ## シークレット管理 (ragenix / age)
 
+`SECRETS.md` は `custom.secrets.access` からホストごとのシークレットアクセスを自動生成した一覧です。手で編集せず、`.nix` 変更時に pre-commit フックが更新します。
+
 ### 秘密ファイルの作成・編集
 
 ```sh

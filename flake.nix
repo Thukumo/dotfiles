@@ -177,6 +177,8 @@
           modules = (commonModules name) ++ (host.modules or [ ]);
         };
 
+      hostConfigs = lib.mapAttrs mkHost hosts;
+
       systems = lib.unique (builtins.catAttrs "system" (builtins.attrValues hosts));
     in
     {
@@ -213,7 +215,7 @@
                 enable = true;
                 files = "\\.nix$";
                 require_serial = true;
-                name = "Generate custom options documentation";
+                name = "Generate documentation";
                 entry = "${
                   pkgs.writeShellApplication {
                     name = "gen-docs";
@@ -224,18 +226,24 @@
                       gnused
                       coreutils
                     ];
-                    # レンダリング本体は flake の genDocs 出力 (gen-docs-render.nix) にある
+                    # レンダリング本体は flake の genDocs / genSecretsDocs 出力にある
                     text = ''
                       TEMP_FILE=$(mktemp)
-                      trap 'rm -f "$TEMP_FILE"' EXIT
+                      SECRETS_TEMP_FILE=$(mktemp)
+                      trap 'rm -f "$TEMP_FILE" "$SECRETS_TEMP_FILE"' EXIT
 
                       # 一時ファイルに生成
                       nix eval --raw --apply 'x: x.render x.options' .#genDocs > "$TEMP_FILE"
+                      nix eval --raw --apply 'x: x.render x.hostsData' .#genSecretsDocs > "$SECRETS_TEMP_FILE"
 
                       # 日付行(2行目)を除いて比較。変わっていなければ何もしない
                       if ! diff <(sed '2d' CUSTOM_OPTIONS.md) <(sed '2d' "$TEMP_FILE") > /dev/null 2>&1; then
                         sed "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" "$TEMP_FILE" > CUSTOM_OPTIONS.md
                         git add CUSTOM_OPTIONS.md
+                      fi
+                      if ! diff <(sed '2d' SECRETS.md 2>/dev/null) <(sed '2d' "$SECRETS_TEMP_FILE") > /dev/null 2>&1; then
+                        sed "s/__DATE_PLACEHOLDER__/$(date '+%Y-%m-%d %H:%M:%S')/" "$SECRETS_TEMP_FILE" > SECRETS.md
+                        git add SECRETS.md
                       fi
                     '';
                   }
@@ -347,7 +355,7 @@
         in
         {
           render = import ./gen-docs-render.nix { inherit lib; };
-          options = (lib.mapAttrs mkHost hosts).${docHost}.options.custom;
+          options = hostConfigs.${docHost}.options.custom;
         };
 
       # secrets.nix の生成用:
@@ -365,12 +373,24 @@
                 }) hmCfg.age.secrets
               ) cfg.config.home-manager.users
             );
-          }) (lib.mapAttrs mkHost hosts);
+          }) hostConfigs;
         in
         {
           render = import ./gen-secrets-render.nix { inherit lib self; };
           inherit hostsData;
           keys = import ./keys.nix;
         };
+
+      # SECRETS.md の生成用:
+      #   nix eval --raw --apply 'x: x.render x.hostsData' .#genSecretsDocs
+      genSecretsDocs = {
+        render = import ./gen-secrets-docs-render.nix { inherit lib self; };
+        hostsData = lib.mapAttrs (_hostName: cfg: {
+          system = lib.mapAttrs (
+            name: entry: entry // { path = cfg.config.age.secrets.${name}.path; }
+          ) cfg.config.custom.secrets.access.report;
+          home = cfg.config.custom.secrets.access.home;
+        }) hostConfigs;
+      };
     };
 }
