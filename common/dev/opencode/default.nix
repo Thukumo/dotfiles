@@ -34,7 +34,12 @@ in
   config = {
     home-manager.users = myLib.mkForEachUsers config (user: user.custom.dev.opencode.enable) (
       user:
-      { lib, config, ... }:
+      {
+        lib,
+        config,
+        pkgs,
+        ...
+      }:
       let
         models =
           user.custom.dev.opencode.models
@@ -68,6 +73,22 @@ in
 
         programs.opencode = {
           enable = true;
+          # shortcut: nixpkgs-unstable 1d060 has opencode 2.2.5 with a stale
+          # node_modules FOD hash; upstream fixed it in c399e1b7fb90. Remove
+          # this override once nixpkgs includes that fix.
+          package =
+            if pkgs.opencode.version == "2.2.5" then
+              pkgs.opencode.overrideAttrs (old: {
+                node_modules = old.node_modules.overrideAttrs (_: {
+                  outputHash =
+                    if pkgs.stdenv.hostPlatform.isLinux then
+                      "sha256-prx9dX7kUvs/E3zopkaPk5LXh3xJAy5sZeum/W8L7cA="
+                    else
+                      "sha256-dIveiaiPFGSItwLyeMuPDxTE9gpvvnlTCB/+nG24qCc=";
+                });
+              })
+            else
+              pkgs.opencode;
           settings = {
             "$schema" = "https://opencode.ai/config.json";
 
