@@ -3,6 +3,8 @@ _:
 {
   security.tpm2.enable = false;
 
+  security.sudo-rs.wheelNeedsPassword = true;
+
   services.journald.settings.Journal = {
     Storage = "volatile";
     RuntimeMaxUse = "64M";
