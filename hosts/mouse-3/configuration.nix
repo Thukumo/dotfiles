@@ -1,9 +1,33 @@
-_:
+{ config, ... }:
 
 {
   security.tpm2.enable = false;
 
   security.sudo-rs.wheelNeedsPassword = true;
+
+  # Headless recovery: a boot with failed units is not marked good, and
+  # systemd-boot falls back to an older generation after a few attempts.
+  boot.loader.systemd-boot.bootCounting.enable = true;
+
+  # Best-effort auditing of the per-user manager. This is complain-only;
+  # systemd-run can still select AppArmorProfile=unconfined.
+  systemd.services."user@".serviceConfig.AppArmorProfile = "systemd-user";
+
+  systemd.services.systemd-boot-check-no-failures = {
+    description = "Check if Any System Units Failed";
+    requiredBy = [ "boot-complete.target" ];
+    after = [
+      "default.target"
+      "graphical.target"
+      "multi-user.target"
+    ];
+    before = [ "boot-complete.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${config.systemd.package}/lib/systemd/systemd-boot-check-no-failures";
+    };
+  };
 
   services.journald.settings.Journal = {
     Storage = "volatile";

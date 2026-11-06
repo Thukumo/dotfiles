@@ -199,6 +199,9 @@ let
     - Decrypted secrets are mode `0400`.
     - System secrets are exposed at the runtime path shown.
     - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
+    - Each program listed in `Programs` gets an AppArmor profile limited to its listed secrets. Child processes inherit it.
+    - A fallback profile denies read access to home secrets, identity keys, and normal-user-owned system secrets. `age`/`ragenix` are allowed identity keys; systemd --user and podman are allowed secrets delivered via `Consumers`.
+    - Program profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched.
   '';
 
   body = lib.concatStringsSep "\n\n" hostSections;

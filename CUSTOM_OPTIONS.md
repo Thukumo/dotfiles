@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-06 03:18:57
+Generated on 2026-11-07 03:29:18
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -89,7 +89,7 @@ Generated on 2026-11-06 03:18:57
         - `consumers` (Default: `[]`): Units that consume the secret.
         - `file` (Default: `No default`): Encrypted age file.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Programs expected to read the secret (metadata for AppArmor/bwrap generation).
+        - `programs` (Default: `[]`): Executable basenames expected to read the secret; profiles attach to /nix/store/*/bin/<name> and are limited to their listed secrets.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
       - **system** (User Options)
         - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
@@ -99,7 +99,7 @@ Generated on 2026-11-06 03:18:57
         - `kind` (Default: `No default`): How the secret is delivered and who may read it.
         - `owner` (Default: `null`): Owner override; null uses the agenix default.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Programs expected to read the secret (metadata for AppArmor/bwrap generation).
+        - `programs` (Default: `[]`): Executable basenames expected to read the secret; profiles attach to /nix/store/*/bin/<name> and are limited to their listed secrets.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
     - **systemAgeKey**
@@ -258,10 +258,6 @@ Generated on 2026-11-06 03:18:57
         - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): DNS domains routed through the VPN
         - `enable` (Default: `false`) (Example: `true`): Whether to enable GlobalProtect VPN.
         - `vpnPortal` (Default: `"gpvpn.sic.shibaura-it.ac.jp"`): GlobalProtect portal address
-      - **sstp**
-        - `dnsDomains` (Default: `["shibaura-it.ac.jp"]`): DNS domains routed through the VPN
-        - `enable` (Default: `false`) (Example: `true`): Whether to enable SSTP VPN.
-        - `vpnServer` (Default: `"srasvpn.sic.shibaura-it.ac.jp"`): SSTP VPN server address
     - **persistence**
       - `directories` (Default: `[]`): Additional directories to persist for this user
       - `files` (Default: `[]`): Additional files to persist for this user

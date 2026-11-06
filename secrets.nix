@@ -43,13 +43,6 @@ in
     keys.systemKeys."backup-pixel9a"
   ];
 
-  # common/network/sras-vpn/sras-vpn.age
-  #   referenced by: 16x-aurora
-  "common/network/sras-vpn/sras-vpn.age".publicKeys = [
-    keys.systemKeys."16x-aurora"
-    keys.systemKeys."backup-pixel9a"
-  ];
-
   # common/network/wifi/eduroam.age
   #   referenced by: 16x-aurora, thinkpadx13-nix, yoga-book
   "common/network/wifi/eduroam.age".publicKeys = [

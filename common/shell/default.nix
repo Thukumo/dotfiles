@@ -40,6 +40,8 @@
             file = ./private/nix-access-tokens.age;
             path = ".config/nix/access-tokens";
             trusted = true;
+            # nix is a multi-call binary shared with nix-daemon; its profile
+            # runs in complain mode with attach_disconnected.
             programs = [ "nix" ];
           };
         }

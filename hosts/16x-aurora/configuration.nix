@@ -19,7 +19,6 @@
   custom.users."tsukumo" = {
     network = {
       globalProtect.enable = true;
-      sstp.enable = true;
     };
     network.dlna = {
       enable = false;

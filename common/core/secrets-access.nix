@@ -28,7 +28,7 @@ let
     programs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      description = "Programs expected to read the secret (metadata for AppArmor/bwrap generation).";
+      description = "Executable basenames expected to read the secret; profiles attach to /nix/store/*/bin/<name> and are limited to their listed secrets.";
     };
 
     trusted = lib.mkOption {

@@ -10,7 +10,8 @@
     nowplaying_token = {
       file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
       trusted = true;
-      programs = [ "podman" ];
+      # Quadlet passes this as --env-file; podman reads it directly. The
+      # technical podman profile allows consumer-delivered secrets.
       consumers = [ "podman-nowplaying" ];
     };
   };
