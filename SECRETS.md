@@ -1,5 +1,5 @@
 # Secrets Access Matrix
-Generated on 2026-11-07 06:14:37
+Generated on 2026-11-07 06:35:19
 
 > **GENERATED FILE** - do not edit manually.
 > Regenerate with `pre-commit run gen-docs --all-files`.
@@ -10,8 +10,10 @@ Generated on 2026-11-07 06:14:37
 - System secrets are exposed at the runtime path shown.
 - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
 - Dedicated service daemons get an AppArmor profile limited to their secrets. Programs marked `accepted risk` are interactive and are not profiled; their secrets are intentionally user-readable.
-- The fallback denies consumer-delivered home secrets and identity keys. systemd --user is allowed consumer-delivered secrets; the home-manager agenix service gets a trusted profile for the home identity key. `age`/`ragenix` may read the root-only system identity key during activation but deny the home identity key.
-- Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched.
+- Complain mode still enforces explicit deny rules; a reader not listed under `Programs` or `Consumers` is denied the protected path.
+- The fallback denies consumer-delivered home secrets and identity keys. systemd --user (on every host) is allowed consumer-delivered secrets; the home-manager agenix service gets a trusted profile for the home identity key. `age`/`ragenix` may read the root-only system identity key during activation but deny the home identity key.
+- Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename, so same-named binaries from different packages share a profile.
+- Helper binaries (jq, ssh-add, git, ...) are not profiled. Interactive secrets marked `accepted risk` are readable by the user's processes, including helpers.
 
 ## 16x-aurora
 

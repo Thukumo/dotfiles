@@ -194,6 +194,46 @@
         }
       );
 
+      # Build-time syntax check for every generated AppArmor profile. The
+      # NixOS module only writes profile text; without this, a typo would
+      # first show up when apparmor.service loads the profiles at boot.
+      checks = lib.genAttrs systems (
+        system:
+        let
+          checkHosts = lib.filterAttrs (_: host: host.system == system) hosts;
+        in
+        lib.mapAttrs' (
+          hostName: _:
+          let
+            cfg = hostConfigs.${hostName};
+            policies = cfg.config.security.apparmor.policies;
+            profileFiles = lib.mapAttrsToList (
+              name: policy: cfg.pkgs.writeText "${hostName}-${name}.profile" policy.profile
+            ) policies;
+            profileList = lib.concatMapStringsSep "\n" toString profileFiles;
+          in
+          lib.nameValuePair "${hostName}-apparmor" (
+            cfg.pkgs.runCommand "${hostName}-apparmor-parse"
+              {
+                nativeBuildInputs = [ cfg.pkgs.apparmor-parser ];
+                inherit profileList;
+              }
+              ''
+                mkdir -p $out
+                printf '%s\n' "$profileList" | while IFS= read -r p; do
+                  [ -n "$p" ] || continue
+                  base="''${p##*/}"
+                  cp "$p" "$out/$base"
+                  ${cfg.pkgs.apparmor-parser}/bin/apparmor_parser -Q \
+                    -I ${cfg.pkgs.apparmor-profiles}/etc/apparmor.d \
+                    "$out/$base"
+                done
+                touch $out/passed
+              ''
+          )
+        ) checkHosts
+      );
+
       devShells = lib.genAttrs systems (
         system:
         let

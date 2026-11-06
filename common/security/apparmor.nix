@@ -17,6 +17,13 @@ let
     in
     lib.replaceStrings [ "\${XDG_RUNTIME_DIR}" ] [ "/run/user/*" ] dir;
 
+  homeMountDir =
+    hm:
+    let
+      dir = toString (hm.age.secretsMountPoint or "/run/user/*/agenix.d");
+    in
+    lib.replaceStrings [ "\${XDG_RUNTIME_DIR}" ] [ "/run/user/*" ] dir;
+
   systemEntries = lib.mapAttrsToList (
     name: secret:
     let
@@ -55,6 +62,7 @@ let
       user: hm:
       let
         runtimeDir = homeRuntimeDir hm;
+        mountDir = homeMountDir hm;
         homeDir = hm.home.homeDirectory;
       in
       lib.mapAttrsToList (
@@ -63,16 +71,20 @@ let
           a = (access.home.${user} or { }).${name} or null;
           runtimeName = secret.name or name;
           runtime = "${runtimeDir}/${runtimeName}";
-          # agenix rotates /run/user/<uid>/agenix -> agenix.d/<generation>;
-          # both spellings must be denied/allowed or the rule is bypassed.
-          generation =
-            if lib.hasSuffix "/agenix" runtimeDir then
-              "${lib.removeSuffix "/agenix" runtimeDir}/agenix.d/*/${runtimeName}"
-            else
-              null;
+          # The HM path option defaults to the runtime path; only a different
+          # value is an actual home link.
+          secretsDir = toString (hm.age.secretsDir or "/run/user/*/agenix");
+          defaultPath = "${secretsDir}/${runtimeName}";
+          # agenix symlinks secretsDir to secretsMountPoint/<generation>.
+          # Use the actual HM mount point instead of guessing from the
+          # secretsDir suffix.
+          generation = if secret.symlink or false then "${mountDir}/*/${runtimeName}" else null;
           link =
-            if a != null && a.path != null && a.path != "" then
-              if lib.hasPrefix "/" a.path then a.path else "${homeDir}/${a.path}"
+            if secret.path != null && toString secret.path != "" && toString secret.path != defaultPath then
+              let
+                p = toString secret.path;
+              in
+              if lib.hasPrefix "/" p then p else "${homeDir}/${p}"
             else
               null;
           paths = lib.unique (
@@ -123,6 +135,19 @@ let
     )
   );
   identityPaths = lib.unique (systemIdentityPaths ++ homeIdentityPaths);
+
+  allPolicyPaths = lib.unique (lib.concatMap (entry: entry.paths) entries ++ identityPaths);
+  invalidAppArmorPaths = lib.filter (
+    path:
+    lib.any (bad: lib.hasInfix bad (toString path)) [
+      "\""
+      "\\"
+      "\n"
+      "\r"
+      "{"
+      "}"
+    ]
+  ) allPolicyPaths;
 
   # System secrets are normally protected by service-user ownership. The
   # exception is kind = "owner" with a normal-user owner.
@@ -200,8 +225,9 @@ let
   deniedPaths =
     program: lib.filter (path: !(builtins.elem path (allowedPaths program))) protectedPaths;
 
-  # Read-only deny; agenix must still be able to write the decrypted files.
-  denyReadRules = paths: lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" r,") paths;
+  # Deny read, hardlink, and write/rename for untrusted profiles. agenix
+  # writes through its own trusted profile.
+  denyReadRules = paths: lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" rlw,") paths;
 
   # Dedicated service daemons only. `all` keeps the daemon working; the deny
   # rules remove access to secrets that do not belong to it.
@@ -216,7 +242,7 @@ let
 
       include <tunables/global>
 
-      profile ${name} /nix/store/*/bin/${name} {
+      profile ${name} /nix/store/*/bin/${name} flags=(attach_disconnected) {
         all,
         "/run/nscd/socket" rw,
       ${denyRules}
@@ -357,6 +383,10 @@ in
     {
       assertion = invalidProgramNames == [ ];
       message = "custom.secrets.access: program names must be executable basenames matching [A-Za-z0-9][A-Za-z0-9._+-]*: ${lib.concatStringsSep ", " invalidProgramNames}";
+    }
+    {
+      assertion = invalidAppArmorPaths == [ ];
+      message = "custom.secrets.access: AppArmor paths must not contain quotes, backslashes, newlines, or braces: ${lib.concatStringsSep ", " (map toString invalidAppArmorPaths)}";
     }
     {
       assertion = sharedPrograms == [ ];
