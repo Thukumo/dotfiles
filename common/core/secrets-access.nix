@@ -28,7 +28,7 @@ let
     programs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      description = "Executable basenames expected to read the secret; profiles attach to /nix/store/*/bin/<name> and are limited to their listed secrets.";
+      description = "Executable basenames expected to read the secret. Only dedicated service daemons are profiled; interactive user programs are skipped and should use acceptedRisk.";
     };
 
     trusted = lib.mkOption {

@@ -32,7 +32,6 @@
           nowplaying_token = {
             file = ./nowplaying-token.age;
             trusted = true;
-            programs = [ "nowplaying-client" ];
             consumers = [ "nowplaying-bridge" ];
           };
         }

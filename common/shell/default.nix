@@ -22,7 +22,7 @@
           ssh_key = {
             file = ./ssh/ssh-key_tsukumo.age;
             path = ".ssh/id_ed25519";
-            trusted = true;
+            acceptedRisk = "interactive user program; AppArmor profile skipped";
             programs = [
               "ssh"
               "ssh-keygen"
@@ -32,16 +32,14 @@
           github_credential = {
             file = ./git/gh_hosts_tsukumo.age;
             path = ".config/gh/hosts.yml";
-            trusted = true;
+            acceptedRisk = "interactive user program; AppArmor profile skipped";
             programs = [ "gh" ];
           };
 
           nix_access_tokens = {
             file = ./private/nix-access-tokens.age;
             path = ".config/nix/access-tokens";
-            trusted = true;
-            # nix is a multi-call binary shared with nix-daemon; its profile
-            # runs in complain mode with attach_disconnected.
+            acceptedRisk = "interactive user program; AppArmor profile skipped";
             programs = [ "nix" ];
           };
         }

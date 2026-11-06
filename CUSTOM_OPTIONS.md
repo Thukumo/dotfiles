@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-07 03:29:18
+Generated on 2026-11-07 05:51:20
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -89,7 +89,7 @@ Generated on 2026-11-07 03:29:18
         - `consumers` (Default: `[]`): Units that consume the secret.
         - `file` (Default: `No default`): Encrypted age file.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Executable basenames expected to read the secret; profiles attach to /nix/store/*/bin/<name> and are limited to their listed secrets.
+        - `programs` (Default: `[]`): Executable basenames expected to read the secret. Only dedicated service daemons are profiled; interactive user programs are skipped and should use acceptedRisk.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
       - **system** (User Options)
         - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
@@ -99,7 +99,7 @@ Generated on 2026-11-07 03:29:18
         - `kind` (Default: `No default`): How the secret is delivered and who may read it.
         - `owner` (Default: `null`): Owner override; null uses the agenix default.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Executable basenames expected to read the secret; profiles attach to /nix/store/*/bin/<name> and are limited to their listed secrets.
+        - `programs` (Default: `[]`): Executable basenames expected to read the secret. Only dedicated service daemons are profiled; interactive user programs are skipped and should use acceptedRisk.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
     - **systemAgeKey**

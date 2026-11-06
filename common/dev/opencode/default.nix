@@ -39,7 +39,7 @@ in
           opencode_auth = {
             file = ./auth_tsukumo.age;
             path = ".local/share/opencode/auth.json";
-            trusted = true;
+            acceptedRisk = "interactive user program; AppArmor profile skipped";
             programs = [ "opencode" ];
           };
         }
@@ -47,7 +47,6 @@ in
           opencode_web_password = {
             file = ./opencode-web-password.age;
             trusted = true;
-            programs = [ "opencode" ];
             consumers = [ "opencode-web" ];
           };
         }

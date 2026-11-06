@@ -92,15 +92,13 @@ let
 
   entries = systemEntries ++ homeEntries;
 
-  # Root/service-user-owned system secrets are left to DAC so boot activation
-  # keeps working; fallback also hides identity keys and the separate
-  # systemUserProtectedPaths below.
+  # Protected home secrets without a consumer: only these need to be hidden
+  # from systemd --user. Consumer-delivered secrets must stay readable by the
+  # user manager (EnvironmentFile/--env-file).
   homeProtectedPaths = lib.unique (
     lib.concatMap (entry: if entry.protected then entry.paths else [ ]) homeEntries
   );
 
-  # Secrets with consumers are read by systemd/podman (EnvironmentFile /
-  # --env-file); the systemd --user profile must leave those readable.
   homeDirectProtectedPaths = lib.unique (
     lib.concatMap (
       entry: if entry.protected && entry.consumers == [ ] then entry.paths else [ ]
@@ -118,12 +116,13 @@ let
     ++ lib.optional (lib.hasPrefix "/persist/" p) (lib.removePrefix "/persist" p)
     ++ lib.optional (!lib.hasPrefix "/persist/" p) "/persist${p}";
 
-  identityPaths = lib.unique (
-    lib.concatMap bothPersistPaths config.age.identityPaths
-    ++ lib.concatMap (hm: lib.concatMap bothPersistPaths (hm.age.identityPaths or [ ])) (
+  systemIdentityPaths = lib.unique (lib.concatMap bothPersistPaths config.age.identityPaths);
+  homeIdentityPaths = lib.unique (
+    lib.concatMap (hm: lib.concatMap bothPersistPaths (hm.age.identityPaths or [ ])) (
       lib.attrValues homeUsers
     )
   );
+  identityPaths = lib.unique (systemIdentityPaths ++ homeIdentityPaths);
 
   # System secrets are normally protected by service-user ownership. The
   # exception is kind = "owner" with a normal-user owner.
@@ -156,6 +155,22 @@ let
 
   programNames = lib.unique (lib.concatMap (entry: entry.programs) entries);
 
+  # AppArmor profiles are per executable, not per invocation. General-purpose
+  # interactive programs can print or copy their own secrets (nix config show,
+  # gh auth token, ssh ProxyCommand) and are therefore not treated as a
+  # boundary. Their secrets are marked acceptedRisk and are not denied.
+  skippedPrograms = [
+    "ssh"
+    "ssh-keygen"
+    "gh"
+    "nix"
+    "opencode"
+    "nowplaying-client"
+    "podman"
+    "vpn-sstp-connect"
+  ];
+  profiledPrograms = lib.filter (name: !(builtins.elem name skippedPrograms)) programNames;
+
   # An AppArmor profile is per executable, not per user. If the same program
   # is used by two users' home secrets, one profile would allow both users'
   # secrets, so refuse to pretend it is isolated.
@@ -185,122 +200,88 @@ let
   deniedPaths =
     program: lib.filter (path: !(builtins.elem path (allowedPaths program))) protectedPaths;
 
-  # nix is shared by nix-daemon/nix-store/nix-env; complain +
-  # attach_disconnected avoids breaking them while explicit deny still works.
-  programFlags = {
-    nix = " flags=(attach_disconnected)";
-  };
-  programStates = {
-    nix = "complain";
-  };
+  # Read-only deny; agenix must still be able to write the decrypted files.
+  denyReadRules = paths: lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" r,") paths;
 
-  # shortcut: this is secret isolation, not a general sandbox; `all` permits
-  # everything except the deny rules. Upgrade to deny-by-default if full
-  # confinement is needed.
+  # Dedicated service daemons only. `all` keeps the daemon working; the deny
+  # rules remove access to secrets that do not belong to it.
   makeProfile =
     name:
     let
       denyRules = lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" rwklmx,") (deniedPaths name);
     in
     ''
-      # all keeps the program working; the deny rules are the secret access
-      # matrix from custom.secrets.access. Child processes inherit this
-      # profile, so they cannot exec their way around the deny rules. Add the
-      # parent program to a secret if a delegated child needs it.
+      # Dedicated service daemon profile generated from custom.secrets.access.
       abi <abi/5.0>,
 
       include <tunables/global>
 
-      profile ${name} /nix/store/*/bin/${name}${programFlags.${name} or ""} {
+      profile ${name} /nix/store/*/bin/${name} {
         all,
-        # nscd lives outside the DynamicUser mount namespace; all alone
-        # cannot resolve this disconnected path.
         "/run/nscd/socket" rw,
       ${denyRules}
       }
     '';
 
-  # Read-only deny; agenix must still be able to write the decrypted files.
-  denyReadRules = paths: lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" r,") paths;
-
-  # Complain mode still enforces explicit deny rules, but allows missing
-  # permissions. attach_disconnected is needed for dbus-broker/podman, which
-  # resolve paths from their own mount namespaces.
-  makeFallbackProfile = ''
-    # fallback catches every executable without a more specific profile.
-    abi <abi/5.0>,
-
-    include <tunables/global>
-
-    profile fallback /** flags=(attach_disconnected) {
-      /** rwklm,
-      /** pix,
-      capability,
-      network,
-      unix,
-      dbus,
-      signal,
-      ptrace,
-      mount,
-      umount,
-      remount,
-      pivot_root,
-      userns,
-      io_uring,
-      mqueue,
-      "/run/nscd/socket" rw,
-    ${denyReadRules fallbackProtectedPaths}
-    }
+  # fallback and systemd-user share the same broad rule set; only the deny
+  # list differs. Keeping the block in one place avoids drift.
+  broadRules = ''
+    /** rwklm,
+    /** pix,
+    capability,
+    network,
+    unix,
+    dbus,
+    signal,
+    ptrace,
+    mount,
+    umount,
+    remount,
+    pivot_root,
+    userns,
+    io_uring,
+    mqueue,
+    "/run/nscd/socket" rw,
+    # Let the user/system executor attach the trusted agenix profile to the
+    # home-manager agenix service. The profile is not attached to any binary.
+    change_profile -> agenix,
   '';
 
-  # systemd --user reads EnvironmentFile secrets and launches user services.
-  # It is explicitly allowed to read consumer-delivered secrets.
-  makeSystemdUserProfile = ''
-    # systemd --user and podman need attach_disconnected for their namespaces.
-    abi <abi/5.0>,
+  makeBroadProfile =
+    {
+      name,
+      attachment ? "",
+      deny,
+    }:
+    ''
+      # The broad profile is a secret deny-list, not a general sandbox.
+      abi <abi/5.0>,
 
-    include <tunables/global>
+      include <tunables/global>
 
-    profile systemd-user flags=(attach_disconnected) {
-      /** rwklm,
-      /** pix,
-      capability,
-      network,
-      unix,
-      dbus,
-      signal,
-      ptrace,
-      mount,
-      umount,
-      remount,
-      pivot_root,
-      userns,
-      io_uring,
-      mqueue,
-      "/run/nscd/socket" rw,
-    ${denyReadRules serviceProtectedPaths}
-    }
-  '';
+      profile ${name}${attachment} flags=(attach_disconnected) {
+        ${broadRules}
+      ${denyReadRules deny}
+      }
+    '';
 
-  # podman reads --env-file and needs attach_disconnected for rootless user
-  # namespaces. It may read consumer-delivered secrets but not direct ones.
-  makePodmanProfile = ''
-    # podman needs attach_disconnected for rootless user namespaces.
-    abi <abi/5.0>,
+  makeFallbackProfile = makeBroadProfile {
+    name = "fallback";
+    attachment = " /**";
+    deny = fallbackProtectedPaths;
+  };
 
-    include <tunables/global>
+  makeSystemdUserProfile = makeBroadProfile {
+    name = "systemd-user";
+    deny = serviceProtectedPaths;
+  };
 
-    profile podman /nix/store/*/bin/podman flags=(attach_disconnected) {
-      all,
-      "/run/nscd/socket" rw,
-    ${denyReadRules serviceProtectedPaths}
-    }
-  '';
-
-  # age/ragenix are the only programs allowed to read identity keys.
-  # They may decrypt .age files but must not read plaintext home secrets.
-  makeIdentityToolProfile = tool: ''
-    # ${tool} is the explicit identity-key reader.
+  # The global age/ragenix profiles are needed by the system activation, which
+  # runs as root. They may read the system identity key (root-only), but must
+  # not read the home identity key or plaintext home secrets: otherwise any
+  # unconfined process could run age with the user's key and decrypt
+  # everything. Home secrets are decrypted by the trusted agenix user service.
+  makeSystemIdentityToolProfile = tool: ''
     abi <abi/5.0>,
 
     include <tunables/global>
@@ -308,7 +289,19 @@ let
     profile ${tool} /nix/store/*/bin/${tool} {
       all,
       "/run/nscd/socket" rw,
-    ${denyReadRules (lib.unique (homeProtectedPaths ++ systemUserProtectedPaths))}
+    ${denyReadRules (lib.unique (homeIdentityPaths ++ homeProtectedPaths ++ systemUserProtectedPaths))}
+    }
+  '';
+
+  # Trusted only through AppArmorProfile= on the home-manager agenix service.
+  makeAgenixProfile = ''
+    abi <abi/5.0>,
+
+    include <tunables/global>
+
+    profile agenix flags=(attach_disconnected) {
+      all,
+      "/run/nscd/socket" rw,
     }
   '';
 
@@ -325,25 +318,23 @@ in
         map (name: {
           inherit name;
           value = {
-            state = programStates.${name} or "enforce";
+            state = "enforce";
             profile = makeProfile name;
           };
-        }) programNames
+        }) profiledPrograms
       )
-      // lib.optionalAttrs config.virtualisation.podman.enable {
-        podman = {
-          state = "complain";
-          profile = makePodmanProfile;
-        };
-      }
       // {
         age = {
           state = "complain";
-          profile = makeIdentityToolProfile "age";
+          profile = makeSystemIdentityToolProfile "age";
         };
         ragenix = {
           state = "complain";
-          profile = makeIdentityToolProfile "ragenix";
+          profile = makeSystemIdentityToolProfile "ragenix";
+        };
+        agenix = {
+          state = "enforce";
+          profile = makeAgenixProfile;
         };
         fallback = {
           state = "complain";
@@ -351,12 +342,16 @@ in
         };
         systemd-user = {
           # Best-effort only: complain keeps the user manager from reading
-          # direct secrets, but systemd-run can still select unconfined.
+          # identity keys, but systemd-run can still select unconfined.
           state = "complain";
           profile = makeSystemdUserProfile;
         };
       };
   };
+
+  # Consumer secrets (EnvironmentFile/--env-file) must be readable by the
+  # user manager on every host, not only mouse-3.
+  systemd.services."user@".serviceConfig.AppArmorProfile = "systemd-user";
 
   assertions = [
     {
@@ -376,12 +371,12 @@ in
       message = "custom.secrets.access: 'systemd-user' is reserved for the systemd user manager profile";
     }
     {
-      assertion = !(config.virtualisation.podman.enable && builtins.elem "podman" programNames);
-      message = "custom.secrets.access: 'podman' is reserved for the technical podman profile";
+      assertion = !(builtins.elem "agenix" programNames);
+      message = "custom.secrets.access: 'agenix' is reserved for the trusted agenix service profile";
     }
     {
       assertion = !(builtins.elem "age" programNames || builtins.elem "ragenix" programNames);
-      message = "custom.secrets.access: 'age' and 'ragenix' are reserved for identity-key profiles";
+      message = "custom.secrets.access: 'age' and 'ragenix' are reserved for identity-key handling";
     }
   ];
 }

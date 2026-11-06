@@ -9,10 +9,6 @@
   # systemd-boot falls back to an older generation after a few attempts.
   boot.loader.systemd-boot.bootCounting.enable = true;
 
-  # Best-effort auditing of the per-user manager. This is complain-only;
-  # systemd-run can still select AppArmorProfile=unconfined.
-  systemd.services."user@".serviceConfig.AppArmorProfile = "systemd-user";
-
   systemd.services.systemd-boot-check-no-failures = {
     description = "Check if Any System Units Failed";
     requiredBy = [ "boot-complete.target" ];

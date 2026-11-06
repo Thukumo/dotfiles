@@ -92,6 +92,17 @@
       programs.nushell.loadSessionVariables = true; # 26.11 以降
       gtk.gtk4.theme = null; # 26.05 以降
     }
+    (
+      { config, lib, ... }:
+      {
+        # The home-manager agenix service is the only user process trusted
+        # with the home identity key; user-run age/ragenix fall back and are
+        # denied.
+        systemd.user.services.agenix = lib.mkIf (config.age.secrets != { }) {
+          Service.AppArmorProfile = "agenix";
+        };
+      }
+    )
   ];
 
   nix.settings = {
