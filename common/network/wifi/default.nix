@@ -27,21 +27,16 @@
       };
     };
 
-    custom.secrets.access.system = {
-      "wifi-pwds" = {
-        file = ./pwds.age;
-        kind = "owner";
-        trusted = true;
-        owner = "wpa_supplicant";
-        group = "wpa_supplicant";
-      };
-      "eduroam" = {
-        file = ./eduroam.age;
-        kind = "owner";
-        trusted = true;
-        owner = "wpa_supplicant";
-        group = "wpa_supplicant";
-      };
+    age.secrets."wifi-pwds" = {
+      file = ./pwds.age;
+      owner = "wpa_supplicant";
+      group = "wpa_supplicant";
+    };
+
+    age.secrets.eduroam = {
+      file = ./eduroam.age;
+      owner = "wpa_supplicant";
+      group = "wpa_supplicant";
     };
   };
 }

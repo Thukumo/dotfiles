@@ -51,15 +51,6 @@ let
   # 表の区切り文字より先に pipe をエスケープする
   cellCode = s: codeSpan (lib.replaceStrings [ "|" ] [ "\\|" ] (sanitize s));
 
-  listCell =
-    values:
-    let
-      sorted = lib.sort (a: b: a < b) values;
-    in
-    if sorted == [ ] then empty else lib.concatMapStringsSep ", " cellCode sorted;
-
-  kindCell = entry: if (entry.kind or null) == null then empty else cellCode entry.kind;
-
   pathCell = value: if value == null then empty else cellCode value;
 
   principal = value: if value == "0" then "root" else toString value;
@@ -76,15 +67,6 @@ let
       cellCode "${if owner == null then empty else principal owner}:${
         if group == null then empty else principal group
       }";
-
-  trustCell =
-    entry:
-    if entry.trusted or false then
-      "trusted"
-    else if (entry.acceptedRisk or null) != null then
-      "accepted risk: ${cellCode entry.acceptedRisk}"
-    else
-      "**unmarked**";
 
   table =
     headers: rows:
@@ -110,12 +92,10 @@ let
     in
     [
       (cellCode item.name)
-      (kindCell e)
       (cellCode (rel e.file))
       (pathCell (e.path or null))
       (ownerGroup e)
-      (listCell (e.consumers or [ ]))
-      (trustCell e)
+      (cellCode (e.mode or empty))
     ];
 
   homeRow =
@@ -126,10 +106,9 @@ let
     [
       (cellCode item.name)
       (cellCode (rel e.file))
-      (cellCode (e.runtime or "$XDG_RUNTIME_DIR/agenix/${item.name}"))
+      (cellCode (e.runtime or empty))
       (pathCell (e.path or null))
-      (listCell (e.consumers or [ ]))
-      (trustCell e)
+      (cellCode (e.mode or empty))
     ];
 
   renderHomeUser =
@@ -140,8 +119,7 @@ let
       "File"
       "Runtime"
       "Home path"
-      "Consumers"
-      "Trust"
+      "Mode"
     ] (map homeRow entries);
 
   renderHost =
@@ -164,12 +142,10 @@ let
           "### System secrets\n\n"
           + table [
             "Secret"
-            "Kind"
             "File"
             "Runtime"
             "Owner:Group"
-            "Consumers"
-            "Trust"
+            "Mode"
           ] (map systemRow systemEntries);
 
       homeSection =
@@ -184,7 +160,7 @@ let
   hostSections = map (hostName: renderHost hostName hostsData.${hostName}) hosts;
 
   preamble = ''
-    # Secrets Access Matrix
+    # Secrets Inventory
     Generated on __DATE_PLACEHOLDER__
 
     > **GENERATED FILE** - do not edit manually.
@@ -192,11 +168,9 @@ let
 
     ## Legend
 
-    - Decrypted secrets are mode `0400`.
-    - System secrets are exposed at the runtime path shown.
-    - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
     - System secrets are protected by DAC and `LoadCredential`; no AppArmor profiles are used.
-    - Home secrets are decrypted to user-owned runtime paths and are user-level. AppArmor does not isolate home secrets; they are marked accepted risk.
+    - Home secrets are decrypted to user-owned runtime paths and are user-level; AppArmor is not used. `Home path` is an optional symlink (`—` means no symlink).
+    - `Runtime` is the path consumed by services.
   '';
 
   body = lib.concatStringsSep "\n\n" hostSections;

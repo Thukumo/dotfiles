@@ -15,38 +15,26 @@
   };
 
   config = {
-    custom.secrets.access.home = lib.mapAttrs (
-      _: user:
-      if user.shell.private.enable then
-        {
-          ssh_key = {
-            file = ./ssh/ssh-key_tsukumo.age;
-            path = ".ssh/id_ed25519";
-            acceptedRisk = "home secret; user-level (AppArmor not used)";
-          };
-
-          github_credential = {
-            file = ./git/gh_hosts_tsukumo.age;
-            path = ".config/gh/hosts.yml";
-            acceptedRisk = "home secret; user-level (AppArmor not used)";
-          };
-
-          nix_access_tokens = {
-            file = ./private/nix-access-tokens.age;
-            path = ".config/nix/access-tokens";
-            acceptedRisk = "home secret; user-level (AppArmor not used)";
-          };
-        }
-      else
-        { }
-    ) config.custom.users;
-
     home-manager.users = lib.mkMerge [
       (myLib.mkForEachUsers config (_: true) (_: {
         imports = myLib.mkImportModules ./. [ "private" ];
       }))
       (myLib.mkForEachUsers config (user: user.custom.shell.private.enable) {
         imports = [ ./private ];
+        age.secrets = {
+          ssh_key = {
+            file = ./ssh/ssh-key_tsukumo.age;
+            path = ".ssh/id_ed25519";
+          };
+          github_credential = {
+            file = ./git/gh_hosts_tsukumo.age;
+            path = ".config/gh/hosts.yml";
+          };
+          nix_access_tokens = {
+            file = ./private/nix-access-tokens.age;
+            path = ".config/nix/access-tokens";
+          };
+        };
         home.persistence."/persist".files = [ ".config/age/home-manager_key" ];
       })
     ];

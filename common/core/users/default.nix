@@ -160,10 +160,8 @@ in
       };
     };
 
-    custom.secrets.access.system.passwd_tsukumo = {
+    age.secrets.passwd_tsukumo = {
       file = ./passwd_tsukumo.age;
-      kind = "root";
-      trusted = true;
     };
 
     # for shell

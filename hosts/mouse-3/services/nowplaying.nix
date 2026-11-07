@@ -6,16 +6,11 @@
 }:
 
 {
-  custom.secrets.access.home."${config.custom.defaultUser}" = {
-    nowplaying_token = {
-      file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
-      # Quadlet passes this as --env-file; podman reads it as the user.
-      acceptedRisk = "home secret; user-level (AppArmor not used)";
-      consumers = [ "podman-nowplaying" ];
-    };
-  };
-
   home-manager.users."${config.custom.defaultUser}" = {
+    age.secrets.nowplaying_token = {
+      file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
+    };
+
     home.persistence."/persist".directories = [ ".local/share/nowplaying" ];
 
     services.podman.containers = {

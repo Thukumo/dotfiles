@@ -1,12 +1,23 @@
+{ config, lib, ... }:
+
+let
+  service = config.systemd.services.cloudflared-tunnel-mouse-3;
+  credentialValue = service.serviceConfig.LoadCredential or [ ];
+  credentials = builtins.filter builtins.isString (
+    if builtins.isList credentialValue then credentialValue else [ credentialValue ]
+  );
+in
 {
-  custom.secrets.access = {
-    system = {
-      cloudflared_nowplaying = {
-        file = ./secrets/cloudflared-nowplaying-credentials.age;
-        kind = "credential";
-        trusted = true;
-        consumers = [ "cloudflared-tunnel-mouse-3" ];
-      };
-    };
+  age.secrets.cloudflared_nowplaying = {
+    file = ./secrets/cloudflared-nowplaying-credentials.age;
   };
+
+  assertions = [
+    {
+      assertion = lib.any (
+        credential: lib.hasSuffix ":${config.age.secrets.cloudflared_nowplaying.path}" credential
+      ) credentials;
+      message = "cloudflared-tunnel-mouse-3 must load cloudflared_nowplaying via LoadCredential";
+    }
+  ];
 }

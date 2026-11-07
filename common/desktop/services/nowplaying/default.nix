@@ -3,7 +3,6 @@
   myLib,
   desktopLib,
   inputs,
-  config,
   ...
 }:
 
@@ -25,20 +24,6 @@
   };
 
   config = {
-    custom.secrets.access.home = lib.mapAttrs (
-      _: user:
-      if user.desktop.enable && user.desktop.nowplaying != null then
-        {
-          nowplaying_token = {
-            file = ./nowplaying-token.age;
-            acceptedRisk = "home secret; user-level (AppArmor not used)";
-            consumers = [ "nowplaying-bridge" ];
-          };
-        }
-      else
-        { }
-    ) config.custom.users;
-
     home-manager.users = desktopLib.mkHome (user: user.custom.desktop.nowplaying != null) (
       user:
       { pkgs, ... }:
@@ -47,6 +32,10 @@
         client = inputs.nowplaying.packages.${pkgs.stdenv.hostPlatform.system}.client;
       in
       {
+        age.secrets.nowplaying_token = {
+          file = ./nowplaying-token.age;
+        };
+
         systemd.user.services.nowplaying-bridge = {
           Unit.Description = "MPRIS to nowplaying server bridge";
           Service = {

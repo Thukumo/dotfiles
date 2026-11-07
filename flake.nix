@@ -416,23 +416,30 @@
       genSecretsDocs = {
         render = import ./gen-secrets-docs-render.nix { inherit lib self; };
         hostsData = lib.mapAttrs (_hostName: cfg: {
-          system = lib.mapAttrs (
-            name: entry: entry // { path = cfg.config.age.secrets.${name}.path; }
-          ) cfg.config.custom.secrets.access.report;
+          system = lib.mapAttrs (_name: secret: {
+            inherit (secret)
+              file
+              path
+              owner
+              group
+              mode
+              ;
+          }) cfg.config.age.secrets;
           home = lib.mapAttrs (
-            user: entries:
-            let
-              hm = cfg.config.home-manager.users.${user};
-            in
+            _user: hm:
             lib.mapAttrs (
-              name: entry:
+              name: secret:
               let
-                secret = hm.age.secrets.${name};
                 runtimeName = secret.name or name;
+                runtime = "${hm.age.secretsDir}/${runtimeName}";
               in
-              entry // { runtime = "${hm.age.secretsDir}/${runtimeName}"; }
-            ) entries
-          ) cfg.config.custom.secrets.access.home;
+              {
+                inherit (secret) file mode;
+                inherit runtime;
+                path = if secret.path == runtime then null else secret.path;
+              }
+            ) hm.age.secrets
+          ) cfg.config.home-manager.users;
         }) hostConfigs;
       };
     };
