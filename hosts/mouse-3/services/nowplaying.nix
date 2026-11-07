@@ -10,8 +10,9 @@
     nowplaying_token = {
       file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
       trusted = true;
-      # Quadlet passes this as --env-file; podman and systemd --user read it
-      # under the systemd-user profile, which allows consumer-delivered secrets.
+      # Quadlet passes this as --env-file; podman reads it directly and gets
+      # its own profile for this token.
+      programs = [ "podman" ];
       consumers = [ "podman-nowplaying" ];
     };
   };

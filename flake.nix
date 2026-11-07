@@ -211,12 +211,15 @@
               name: policy: cfg.pkgs.writeText "${hostName}-${name}.profile" policy.profile
             ) policies;
             profileList = lib.concatMapStringsSep "\n" toString profileFiles;
+            failedAssertions = lib.filter (a: !a.assertion) cfg.config.assertions;
+            assertionMessage = lib.concatMapStringsSep "\n" (a: a.message) failedAssertions;
+            assertionsOk = lib.boolToString (lib.asserts.assertMsg (failedAssertions == [ ]) assertionMessage);
           in
           lib.nameValuePair "${hostName}-apparmor" (
             cfg.pkgs.runCommand "${hostName}-apparmor-parse"
               {
                 nativeBuildInputs = [ cfg.pkgs.apparmor-parser ];
-                inherit profileList;
+                inherit profileList assertionsOk;
               }
               ''
                 mkdir -p $out

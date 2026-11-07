@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-07 05:51:20
+Generated on 2026-11-07 19:33:49
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -89,7 +89,7 @@ Generated on 2026-11-07 05:51:20
         - `consumers` (Default: `[]`): Units that consume the secret.
         - `file` (Default: `No default`): Encrypted age file.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Executable basenames expected to read the secret. Only dedicated service daemons are profiled; interactive user programs are skipped and should use acceptedRisk.
+        - `programs` (Default: `[]`): Executable basenames expected to read the secret directly. Direct readers get a profile unless they are interactive accepted-risk programs. Container runtimes such as podman can be listed for --env-file consumers.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
       - **system** (User Options)
         - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
@@ -99,7 +99,7 @@ Generated on 2026-11-07 05:51:20
         - `kind` (Default: `No default`): How the secret is delivered and who may read it.
         - `owner` (Default: `null`): Owner override; null uses the agenix default.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Executable basenames expected to read the secret. Only dedicated service daemons are profiled; interactive user programs are skipped and should use acceptedRisk.
+        - `programs` (Default: `[]`): Executable basenames expected to read the secret directly. Direct readers get a profile unless they are interactive accepted-risk programs. Container runtimes such as podman can be listed for --env-file consumers.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
     - **systemAgeKey**

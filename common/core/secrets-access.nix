@@ -28,7 +28,7 @@ let
     programs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      description = "Executable basenames expected to read the secret. Only dedicated service daemons are profiled; interactive user programs are skipped and should use acceptedRisk.";
+      description = "Executable basenames expected to read the secret directly. Direct readers get a profile unless they are interactive accepted-risk programs. Container runtimes such as podman can be listed for --env-file consumers.";
     };
 
     trusted = lib.mkOption {

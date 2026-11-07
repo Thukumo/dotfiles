@@ -104,9 +104,9 @@ let
 
   entries = systemEntries ++ homeEntries;
 
-  # Protected home secrets without a consumer: only these need to be hidden
-  # from systemd --user. Consumer-delivered secrets must stay readable by the
-  # user manager (EnvironmentFile/--env-file).
+  # Protected home secrets, including consumer-delivered ones. The subset
+  # without a consumer is homeDirectProtectedPaths, which systemd --user
+  # actually has to hide.
   homeProtectedPaths = lib.unique (
     lib.concatMap (entry: if entry.protected then entry.paths else [ ]) homeEntries
   );
@@ -191,7 +191,6 @@ let
     "nix"
     "opencode"
     "nowplaying-client"
-    "podman"
     "vpn-sstp-connect"
   ];
   profiledPrograms = lib.filter (name: !(builtins.elem name skippedPrograms)) programNames;
@@ -225,19 +224,23 @@ let
   deniedPaths =
     program: lib.filter (path: !(builtins.elem path (allowedPaths program))) protectedPaths;
 
-  # Deny read, hardlink, and write/rename for untrusted profiles. agenix
-  # writes through its own trusted profile.
-  denyReadRules = paths: lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" rlw,") paths;
+  # Deny read, hardlink, write/rename, and append for untrusted profiles.
+  # agenix writes through its own trusted profile.
+  denyReadRules =
+    paths: lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" rlw,\n  deny \"${path}\" a,") paths;
 
-  # Dedicated service daemons only. `all` keeps the daemon working; the deny
-  # rules remove access to secrets that do not belong to it.
+  # Direct reader profiles (dedicated service daemons, container runtimes).
+  # `all` keeps the reader working; the deny rules remove access to secrets
+  # that do not belong to it.
   makeProfile =
     name:
     let
-      denyRules = lib.concatMapStringsSep "\n" (path: "  deny \"${path}\" rwklmx,") (deniedPaths name);
+      denyRules = lib.concatMapStringsSep "\n" (
+        path: "  deny \"${path}\" rwklmx,\n  deny \"${path}\" a,"
+      ) (deniedPaths name);
     in
     ''
-      # Dedicated service daemon profile generated from custom.secrets.access.
+      # Direct reader profile generated from custom.secrets.access.
       abi <abi/5.0>,
 
       include <tunables/global>
@@ -268,9 +271,6 @@ let
     io_uring,
     mqueue,
     "/run/nscd/socket" rw,
-    # Let the user/system executor attach the trusted agenix profile to the
-    # home-manager agenix service. The profile is not attached to any binary.
-    change_profile -> agenix,
   '';
 
   makeBroadProfile =
@@ -278,6 +278,7 @@ let
       name,
       attachment ? "",
       deny,
+      allowAgenixProfile ? false,
     }:
     ''
       # The broad profile is a secret deny-list, not a general sandbox.
@@ -287,6 +288,12 @@ let
 
       profile ${name}${attachment} flags=(attach_disconnected) {
         ${broadRules}
+      ${lib.optionalString allowAgenixProfile ''
+        # The user manager's executor runs under fallback, so the home
+        # agenix service needs this transition. fallback is complain; this
+        # is a known best-effort bypass (like systemd-run's profile choice).
+        change_profile -> agenix,
+      ''}
       ${denyReadRules deny}
       }
     '';
@@ -294,6 +301,8 @@ let
   makeFallbackProfile = makeBroadProfile {
     name = "fallback";
     attachment = " /**";
+    # Required by the user manager's executor for the home agenix service.
+    allowAgenixProfile = true;
     deny = fallbackProtectedPaths;
   };
 

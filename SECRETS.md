@@ -1,5 +1,5 @@
 # Secrets Access Matrix
-Generated on 2026-11-07 06:35:19
+Generated on 2026-11-07 19:33:49
 
 > **GENERATED FILE** - do not edit manually.
 > Regenerate with `pre-commit run gen-docs --all-files`.
@@ -9,9 +9,10 @@ Generated on 2026-11-07 06:35:19
 - Decrypted secrets are mode `0400`.
 - System secrets are exposed at the runtime path shown.
 - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
-- Dedicated service daemons get an AppArmor profile limited to their secrets. Programs marked `accepted risk` are interactive and are not profiled; their secrets are intentionally user-readable.
+- Programs listed under `Programs` that are not accepted risk get a profile limited to their secrets. This includes dedicated service daemons and container runtimes. Interactive programs marked `accepted risk` are not profiled; their secrets are intentionally user-readable.
 - Complain mode still enforces explicit deny rules; a reader not listed under `Programs` or `Consumers` is denied the protected path.
 - The fallback denies consumer-delivered home secrets and identity keys. systemd --user (on every host) is allowed consumer-delivered secrets; the home-manager agenix service gets a trusted profile for the home identity key. `age`/`ragenix` may read the root-only system identity key during activation but deny the home identity key.
+- The home agenix service needs `change_profile -> agenix` under fallback; a process under fallback can also switch to the trusted agenix profile. AppArmor remains best-effort against the user's own processes.
 - Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename, so same-named binaries from different packages share a profile.
 - Helper binaries (jq, ssh-add, git, ...) are not profiled. Interactive secrets marked `accepted risk` are readable by the user's processes, including helpers.
 
@@ -50,7 +51,7 @@ Generated on 2026-11-07 06:35:19
 | --- | --- | --- | --- | --- | --- | --- |
 | `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | accepted risk: `interactive user program; AppArmor profile skipped` |
 | `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `podman-nowplaying` | — | trusted |
+| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `podman-nowplaying` | `podman` | trusted |
 | `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | accepted risk: `interactive user program; AppArmor profile skipped` |
 | `opencode_web_password` | `common/dev/opencode/opencode-web-password.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_web_password` | — | `opencode-web` | — | trusted |
 | `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | accepted risk: `interactive user program; AppArmor profile skipped` |
