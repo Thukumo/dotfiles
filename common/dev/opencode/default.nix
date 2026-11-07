@@ -55,9 +55,7 @@ in
           };
         }
         // lib.optionalAttrs user.custom.dev.opencode.web.enable {
-          opencode_web_password = {
-            file = ./opencode-web-password.age;
-          };
+          opencode_web_password.file = ./opencode-web-password.age;
         };
 
         systemd.user.services.opencode-web = lib.mkIf user.custom.dev.opencode.web.enable {

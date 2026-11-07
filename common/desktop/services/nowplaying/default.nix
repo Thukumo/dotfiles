@@ -32,9 +32,7 @@
         client = inputs.nowplaying.packages.${pkgs.stdenv.hostPlatform.system}.client;
       in
       {
-        age.secrets.nowplaying_token = {
-          file = ./nowplaying-token.age;
-        };
+        age.secrets.nowplaying_token.file = ./nowplaying-token.age;
 
         systemd.user.services.nowplaying-bridge = {
           Unit.Description = "MPRIS to nowplaying server bridge";

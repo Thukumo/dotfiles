@@ -7,9 +7,7 @@
 
 {
   home-manager.users."${config.custom.defaultUser}" = {
-    age.secrets.nowplaying_token = {
-      file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
-    };
+    age.secrets.nowplaying_token.file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
 
     home.persistence."/persist".directories = [ ".local/share/nowplaying" ];
 

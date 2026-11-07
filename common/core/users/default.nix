@@ -160,9 +160,7 @@ in
       };
     };
 
-    age.secrets.passwd_tsukumo = {
-      file = ./passwd_tsukumo.age;
-    };
+    age.secrets.passwd_tsukumo.file = ./passwd_tsukumo.age;
 
     # for shell
     programs.fish.enable = lib.any (u: u.account.shell == "fish") (lib.attrValues config.custom.users);
