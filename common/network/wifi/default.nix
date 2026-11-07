@@ -34,7 +34,6 @@
         trusted = true;
         owner = "wpa_supplicant";
         group = "wpa_supplicant";
-        programs = [ "wpa_supplicant" ];
       };
       "eduroam" = {
         file = ./eduroam.age;
@@ -42,7 +41,6 @@
         trusted = true;
         owner = "wpa_supplicant";
         group = "wpa_supplicant";
-        programs = [ "wpa_supplicant" ];
       };
     };
   };

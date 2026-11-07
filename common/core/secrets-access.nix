@@ -25,12 +25,6 @@ let
       description = "Units that consume the secret.";
     };
 
-    programs = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "Executable basenames for system secret service profiles. Home secrets are user-level and do not generate profiles.";
-    };
-
     trusted = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -255,7 +249,6 @@ in
           file
           path
           consumers
-          programs
           trusted
           acceptedRisk
           ;

@@ -115,7 +115,6 @@ let
       (pathCell (e.path or null))
       (ownerGroup e)
       (listCell (e.consumers or [ ]))
-      (listCell (e.programs or [ ]))
       (trustCell e)
     ];
 
@@ -130,7 +129,6 @@ let
       (cellCode (e.runtime or "$XDG_RUNTIME_DIR/agenix/${item.name}"))
       (pathCell (e.path or null))
       (listCell (e.consumers or [ ]))
-      (listCell (e.programs or [ ]))
       (trustCell e)
     ];
 
@@ -143,7 +141,6 @@ let
       "Runtime"
       "Home path"
       "Consumers"
-      "Programs"
       "Trust"
     ] (map homeRow entries);
 
@@ -172,7 +169,6 @@ let
             "Runtime"
             "Owner:Group"
             "Consumers"
-            "Programs"
             "Trust"
           ] (map systemRow systemEntries);
 
@@ -199,9 +195,8 @@ let
     - Decrypted secrets are mode `0400`.
     - System secrets are exposed at the runtime path shown.
     - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
-    - System secrets are protected by DAC and `LoadCredential`. Dedicated service daemons (cloudflared, wpa_supplicant) get a profile limited to their system secrets.
+    - System secrets are protected by DAC and `LoadCredential`; no AppArmor profiles are used.
     - Home secrets are decrypted to user-owned runtime paths and are user-level. AppArmor does not isolate home secrets; they are marked accepted risk.
-    - Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename.
   '';
 
   body = lib.concatStringsSep "\n\n" hostSections;

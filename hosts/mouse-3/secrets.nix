@@ -6,7 +6,6 @@
         kind = "credential";
         trusted = true;
         consumers = [ "cloudflared-tunnel-mouse-3" ];
-        programs = [ "cloudflared" ];
       };
     };
   };
