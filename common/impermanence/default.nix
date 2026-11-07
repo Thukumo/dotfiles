@@ -107,6 +107,10 @@ let
 
   allPersistencePaths = systemEntryPaths ++ userEntryPaths ++ homeEntryPaths;
 
+  # Built-in system entries are always present; they must not hide a broken
+  # user/home collection when checking that persistence was collected at all.
+  userHomePersistencePaths = userEntryPaths ++ homeEntryPaths;
+
   # A path that resolves to /persist itself is dropped by the strict-child
   # filter below. If that happens, fail instead of silently not protecting it.
   rootPersistencePaths = lib.filter (p: p == persistRoot) allPersistencePaths;
@@ -246,14 +250,14 @@ in
     });
     assertions = [
       {
-        # Do not count the built-in persistence entries or gc.keep here: those
-        # are always present, so they would hide a broken user/home collection
-        # and let the GC delete everything else.
-        assertion = !gcCfg.enable || persistencePaths != [ ];
+        # Do not count the built-in system entries or gc.keep here: those are
+        # always present, so they would hide a broken user/home collection and
+        # let the GC delete everything else.
+        assertion = !gcCfg.enable || userHomePersistencePaths != [ ];
         message = ''
-          custom.impermanence.gc: no user/system persistence paths were collected
-          from the configuration; refusing to run, as that would delete all of
-          ${persistRoot}.
+          custom.impermanence.gc: no user/home persistence paths were collected
+          from the configuration; refusing to run, as that would delete
+          ${persistRoot}/home and other user data.
         '';
       }
       {
