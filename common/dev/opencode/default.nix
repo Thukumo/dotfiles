@@ -39,14 +39,13 @@ in
           opencode_auth = {
             file = ./auth_tsukumo.age;
             path = ".local/share/opencode/auth.json";
-            acceptedRisk = "interactive user program; AppArmor profile skipped";
-            programs = [ "opencode" ];
+            acceptedRisk = "home secret; user-level (AppArmor not used)";
           };
         }
         // lib.optionalAttrs user.dev.opencode.web.enable {
           opencode_web_password = {
             file = ./opencode-web-password.age;
-            trusted = true;
+            acceptedRisk = "home secret; user-level (AppArmor not used)";
             consumers = [ "opencode-web" ];
           };
         }

@@ -9,10 +9,8 @@
   custom.secrets.access.home."${config.custom.defaultUser}" = {
     nowplaying_token = {
       file = ../../../common/desktop/services/nowplaying/nowplaying-token.age;
-      trusted = true;
-      # Quadlet passes this as --env-file; podman reads it directly and gets
-      # its own profile for this token.
-      programs = [ "podman" ];
+      # Quadlet passes this as --env-file; podman reads it as the user.
+      acceptedRisk = "home secret; user-level (AppArmor not used)";
       consumers = [ "podman-nowplaying" ];
     };
   };

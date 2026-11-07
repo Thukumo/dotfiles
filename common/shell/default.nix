@@ -22,25 +22,19 @@
           ssh_key = {
             file = ./ssh/ssh-key_tsukumo.age;
             path = ".ssh/id_ed25519";
-            acceptedRisk = "interactive user program; AppArmor profile skipped";
-            programs = [
-              "ssh"
-              "ssh-keygen"
-            ];
+            acceptedRisk = "home secret; user-level (AppArmor not used)";
           };
 
           github_credential = {
             file = ./git/gh_hosts_tsukumo.age;
             path = ".config/gh/hosts.yml";
-            acceptedRisk = "interactive user program; AppArmor profile skipped";
-            programs = [ "gh" ];
+            acceptedRisk = "home secret; user-level (AppArmor not used)";
           };
 
           nix_access_tokens = {
             file = ./private/nix-access-tokens.age;
             path = ".config/nix/access-tokens";
-            acceptedRisk = "interactive user program; AppArmor profile skipped";
-            programs = [ "nix" ];
+            acceptedRisk = "home secret; user-level (AppArmor not used)";
           };
         }
       else

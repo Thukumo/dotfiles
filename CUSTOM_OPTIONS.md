@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-07 19:33:49
+Generated on 2026-11-07 21:51:32
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -85,21 +85,21 @@ Generated on 2026-11-07 19:33:49
   - **secrets**
     - **access**
       - **home** (User → Secret Options)
-        - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
+        - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated; home secrets are user-level.
         - `consumers` (Default: `[]`): Units that consume the secret.
         - `file` (Default: `No default`): Encrypted age file.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Executable basenames expected to read the secret directly. Direct readers get a profile unless they are interactive accepted-risk programs. Container runtimes such as podman can be listed for --env-file consumers.
+        - `programs` (Default: `[]`): Executable basenames for system secret service profiles. Home secrets are user-level and do not generate profiles.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
       - **system** (User Options)
-        - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated.
+        - `acceptedRisk` (Default: `null`): Reason this secret is intentionally not isolated; home secrets are user-level.
         - `consumers` (Default: `[]`): Units that consume the secret.
         - `file` (Default: `No default`): Encrypted age file.
         - `group` (Default: `null`): Group override; null uses the agenix default.
         - `kind` (Default: `No default`): How the secret is delivered and who may read it.
         - `owner` (Default: `null`): Owner override; null uses the agenix default.
         - `path` (Default: `null`): Decrypted path override; null uses the agenix default.
-        - `programs` (Default: `[]`): Executable basenames expected to read the secret directly. Direct readers get a profile unless they are interactive accepted-risk programs. Container runtimes such as podman can be listed for --env-file consumers.
+        - `programs` (Default: `[]`): Executable basenames for system secret service profiles. Home secrets are user-level and do not generate profiles.
         - `trusted` (Default: `false`): Whether the consumer is intentionally trusted to read this secret.
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
     - **systemAgeKey**

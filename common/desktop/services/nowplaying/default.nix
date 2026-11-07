@@ -31,7 +31,7 @@
         {
           nowplaying_token = {
             file = ./nowplaying-token.age;
-            trusted = true;
+            acceptedRisk = "home secret; user-level (AppArmor not used)";
             consumers = [ "nowplaying-bridge" ];
           };
         }

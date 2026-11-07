@@ -28,7 +28,7 @@ let
     programs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      description = "Executable basenames expected to read the secret directly. Direct readers get a profile unless they are interactive accepted-risk programs. Container runtimes such as podman can be listed for --env-file consumers.";
+      description = "Executable basenames for system secret service profiles. Home secrets are user-level and do not generate profiles.";
     };
 
     trusted = lib.mkOption {
@@ -40,7 +40,7 @@ let
     acceptedRisk = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      description = "Reason this secret is intentionally not isolated.";
+      description = "Reason this secret is intentionally not isolated; home secrets are user-level.";
     };
   };
 

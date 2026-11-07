@@ -199,12 +199,9 @@ let
     - Decrypted secrets are mode `0400`.
     - System secrets are exposed at the runtime path shown.
     - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
-    - Programs listed under `Programs` that are not accepted risk get a profile limited to their secrets. This includes dedicated service daemons and container runtimes. Interactive programs marked `accepted risk` are not profiled; their secrets are intentionally user-readable.
-    - Complain mode still enforces explicit deny rules; a reader not listed under `Programs` or `Consumers` is denied the protected path.
-    - The fallback denies consumer-delivered home secrets and identity keys. systemd --user (on every host) is allowed consumer-delivered secrets; the home-manager agenix service gets a trusted profile for the home identity key. `age`/`ragenix` may read the root-only system identity key during activation but deny the home identity key.
-    - The home agenix service needs `change_profile -> agenix` under fallback; a process under fallback can also switch to the trusted agenix profile. AppArmor remains best-effort against the user's own processes.
-    - Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename, so same-named binaries from different packages share a profile.
-    - Helper binaries (jq, ssh-add, git, ...) are not profiled. Interactive secrets marked `accepted risk` are readable by the user's processes, including helpers.
+    - System secrets are protected by DAC and `LoadCredential`. Dedicated service daemons (cloudflared, wpa_supplicant) get a profile limited to their system secrets.
+    - Home secrets are decrypted to user-owned runtime paths and are user-level. AppArmor does not isolate home secrets; they are marked accepted risk.
+    - Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename.
   '';
 
   body = lib.concatStringsSep "\n\n" hostSections;

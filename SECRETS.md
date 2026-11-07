@@ -1,5 +1,5 @@
 # Secrets Access Matrix
-Generated on 2026-11-07 19:33:49
+Generated on 2026-11-07 21:51:32
 
 > **GENERATED FILE** - do not edit manually.
 > Regenerate with `pre-commit run gen-docs --all-files`.
@@ -9,12 +9,9 @@ Generated on 2026-11-07 19:33:49
 - Decrypted secrets are mode `0400`.
 - System secrets are exposed at the runtime path shown.
 - Home secrets are exposed at the runtime path shown; `Home path` is the optional symlink relative to the user's home (`—` means no symlink).
-- Programs listed under `Programs` that are not accepted risk get a profile limited to their secrets. This includes dedicated service daemons and container runtimes. Interactive programs marked `accepted risk` are not profiled; their secrets are intentionally user-readable.
-- Complain mode still enforces explicit deny rules; a reader not listed under `Programs` or `Consumers` is denied the protected path.
-- The fallback denies consumer-delivered home secrets and identity keys. systemd --user (on every host) is allowed consumer-delivered secrets; the home-manager agenix service gets a trusted profile for the home identity key. `age`/`ragenix` may read the root-only system identity key during activation but deny the home identity key.
-- The home agenix service needs `change_profile -> agenix` under fallback; a process under fallback can also switch to the trusted agenix profile. AppArmor remains best-effort against the user's own processes.
-- Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename, so same-named binaries from different packages share a profile.
-- Helper binaries (jq, ssh-add, git, ...) are not profiled. Interactive secrets marked `accepted risk` are readable by the user's processes, including helpers.
+- System secrets are protected by DAC and `LoadCredential`. Dedicated service daemons (cloudflared, wpa_supplicant) get a profile limited to their system secrets.
+- Home secrets are decrypted to user-owned runtime paths and are user-level. AppArmor does not isolate home secrets; they are marked accepted risk.
+- Service profiles attach to `/nix/store/*/bin/<name>`; executables outside `bin` are not matched. Profiles are per executable basename.
 
 ## 16x-aurora
 
@@ -30,11 +27,11 @@ Generated on 2026-11-07 19:33:49
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | — | trusted |
-| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | accepted risk: `interactive user program; AppArmor profile skipped` |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
 
 ## mouse-3
 
@@ -49,12 +46,12 @@ Generated on 2026-11-07 19:33:49
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `podman-nowplaying` | `podman` | trusted |
-| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `opencode_web_password` | `common/dev/opencode/opencode-web-password.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_web_password` | — | `opencode-web` | — | trusted |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | accepted risk: `interactive user program; AppArmor profile skipped` |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `podman-nowplaying` | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `opencode_web_password` | `common/dev/opencode/opencode-web-password.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_web_password` | — | `opencode-web` | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
 
 ## thinkpadx13-nix
 
@@ -70,11 +67,11 @@ Generated on 2026-11-07 19:33:49
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | — | trusted |
-| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | accepted risk: `interactive user program; AppArmor profile skipped` |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
 
 ## yoga-book
 
@@ -90,8 +87,8 @@ Generated on 2026-11-07 19:33:49
 
 | Secret | File | Runtime | Home path | Consumers | Programs | Trust |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | `gh` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | `nix` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | — | trusted |
-| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | `opencode` | accepted risk: `interactive user program; AppArmor profile skipped` |
-| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | `ssh`, `ssh-keygen` | accepted risk: `interactive user program; AppArmor profile skipped` |
+| `github_credential` | `common/shell/git/gh_hosts_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/github_credential` | `.config/gh/hosts.yml` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nix_access_tokens` | `common/shell/private/nix-access-tokens.age` | `${XDG_RUNTIME_DIR}/agenix/nix_access_tokens` | `.config/nix/access-tokens` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `nowplaying_token` | `common/desktop/services/nowplaying/nowplaying-token.age` | `${XDG_RUNTIME_DIR}/agenix/nowplaying_token` | — | `nowplaying-bridge` | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `opencode_auth` | `common/dev/opencode/auth_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/opencode_auth` | `.local/share/opencode/auth.json` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
+| `ssh_key` | `common/shell/ssh/ssh-key_tsukumo.age` | `${XDG_RUNTIME_DIR}/agenix/ssh_key` | `.ssh/id_ed25519` | — | — | accepted risk: `home secret; user-level (AppArmor not used)` |
