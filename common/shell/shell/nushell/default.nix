@@ -14,8 +14,11 @@ in
       history = {
         file_format = "sqlite";
         max_size = 1000000;
+        # 端末間で履歴を分ける。plaintext では効かない (sqlite 専用)。
+        isolation = true;
+        # plaintext では isolation が効かないので、プロンプト毎の同期をやめ、起動/終了時だけマージする。
+        # sqlite では sync 自体が no-op。
         sync_on_enter = false;
-
       };
       show_banner = false;
       completions = {
