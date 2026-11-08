@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   inputs,
   ...
 }:
@@ -151,6 +152,11 @@ in
   config = lib.mkIf (myCfg != null) {
     services.gaze = {
       enable = true;
+      # 上流の Nix パッケージが zstd を宣言していないため、cargo hook の
+      # システムライブラリ強制 (ZSTD_SYS_USE_PKG_CONFIG) 用に追加する。
+      package = inputs.gaze.packages.${pkgs.stdenv.hostPlatform.system}.gaze.overrideAttrs (old: {
+        buildInputs = old.buildInputs ++ [ pkgs.zstd ];
+      });
       gui.enable = myCfg.gui;
       mutableConfig = false;
       pam.defaultServices = myCfg.pamServices;

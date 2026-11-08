@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-07 23:57:32
+Generated on 2026-11-09 05:10:31
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -109,7 +109,7 @@ Generated on 2026-11-07 23:57:32
   - **style**
     - **plymouth**
       - `enable` (Default: `true`): Whether to enable plymouth (enabled by default).
-      - `packages` (Default: `["/nix/store/2sk2xrjl12w7zdr7yhzff1razjzqrj0m-hellonavi"]`): Extra Plymouth theme packages
+      - `packages` (Default: `["/nix/store/b50dz7dmfbw371mb9v2jqk95b4ccycqg-hellonavi"]`): Extra Plymouth theme packages
       - `theme` (Default: `"hellonavi"`): Plymouth theme name
   - **users** (User Options)
     - **account**
@@ -212,7 +212,7 @@ Generated on 2026-11-07 23:57:32
         - `mlock` (Default: `true`): Force system to keep model in RAM rather than swapping or compressing.
         - `models` (Default: `[]`): Models to serve ("owner/repo/file.gguf" or submodule)
         - `openclSupport` (Default: `false`) (Example: `true`): Whether to enable OpenCL GPU acceleration.
-        - `package` (Default: `"/nix/store/y8p4y1c58xxmrvz03jdqwhzb7hz08cbk-llama-cpp-0.8.0"`): llama-cpp package to use
+        - `package` (Default: `"/nix/store/wwckhddihwfcvyicpv33i2r2hadl22x4-llama-cpp-0.9.0"`): llama-cpp package to use
         - `port` (Default: `11434`): Port of the llama-server
         - `prismFork` (Default: `false`) (Example: `true`): Whether to enable PrismML fork of llama-cpp (required for Ternary Bonsai 2 PTQ1_0/PQ2_0).
         - `rocmSupport` (Default: `false`) (Example: `true`): Whether to enable ROCm GPU acceleration.
