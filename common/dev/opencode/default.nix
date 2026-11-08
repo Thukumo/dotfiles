@@ -73,6 +73,9 @@ in
 
         programs.opencode = {
           enable = true;
+          # OpenCode 2 は cli.json を TUI から書き換えるため、宣言設定は
+          # home-manager-cli.json / OPENCODE_CLI_CONFIG_CONTENT 側に逃がす。
+          mutableSettings = true;
           settings = {
             "$schema" = "https://opencode.ai/config.json";
 
@@ -134,7 +137,10 @@ in
           tui = lib.mkForce { };
           cli = {
             plugins = [ "opencode-tps-meter" ];
-            session.thinking = "show";
+            session = {
+              thinking = "show";
+              verbosity = "high";
+            };
             theme = {
               name = "stylix";
               mode = "system";
