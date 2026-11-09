@@ -45,6 +45,9 @@
                   enableTypeChecks = true;
                   autoUpdate.onCalendar = "daily";
                 };
+                # rootlessのautoPrune
+                systemd.user.services.podman-auto-update.Service.ExecStartPost =
+                  lib.mkForce "${pkgs.podman}/bin/podman image prune -a -f";
                 home.persistence."/persist".directories = [
                   ".local/share/containers"
                 ];
