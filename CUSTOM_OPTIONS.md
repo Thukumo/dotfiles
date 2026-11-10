@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-09 05:10:31
+Generated on 2026-11-10 11:18:08
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -107,8 +107,10 @@ Generated on 2026-11-09 05:10:31
       - `rgb` (Default: `"primary"`): RGB camera source for Gaze. A GStreamer source, 'primary' (PipeWire), a 'usb:VVVV:PPPP' VID:PID, or a '/dev/video*' node. Set to "" to disable RGB and use the IR camera only. 
       - `securityLevel` (Default: `"maximum"`): Gaze security level. 'low'/'medium' use MobileFaceNet (faster), 'high'/'maximum' use ResNet50 (more accurate, stricter). Ignored when 'securityLevel = "custom"' (set thresholds via 'services.gaze.settings.security' directly). 
   - **style**
+    - `bootScreen` (Default: `"bootvine"`) (Example: `"plymouth"`): Which program draws the boot screen:  - '"bootvine"': systemd dependency tree on tty12 - '"plymouth"': graphical splash - 'null': no custom boot screen 
+    - **bootvine**
+      - `startAfterUnlock` (Default: `true`): Start bootvine in the initrd only after cryptsetup.target, so the TPM2 TOTP and LUKS prompt stay on the normal console. Defaults to on when TPM2 TOTP is enabled. 
     - **plymouth**
-      - `enable` (Default: `true`): Whether to enable plymouth (enabled by default).
       - `packages` (Default: `["/nix/store/b50dz7dmfbw371mb9v2jqk95b4ccycqg-hellonavi"]`): Extra Plymouth theme packages
       - `theme` (Default: `"hellonavi"`): Plymouth theme name
   - **users** (User Options)

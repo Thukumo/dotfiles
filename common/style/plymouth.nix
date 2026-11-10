@@ -2,7 +2,6 @@
   pkgs,
   config,
   lib,
-  myLib,
   ...
 }:
 let
@@ -10,7 +9,6 @@ let
 in
 {
   options.custom.style.plymouth = {
-    enable = myLib.mkEnabledOption "plymouth";
     theme = lib.mkOption {
       type = lib.types.str;
       default = "hellonavi";
@@ -55,7 +53,7 @@ in
       ];
     };
   };
-  config = lib.mkIf myConfig.enable {
+  config = lib.mkIf (config.custom.style.bootScreen == "plymouth") {
     stylix.targets.plymouth.enable = false;
     boot = {
       consoleLogLevel = 3;
