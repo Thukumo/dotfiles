@@ -30,6 +30,14 @@
         202.18.64.0/18 1;
         2001:df3:4c0::/48 1;
       }
+
+      # Keep rickrolling a client that has already been caught once, even
+      # after it leaves the university network.
+      map "$from_shibaura:$cookie_sit_rickroll" $sit_rickroll {
+        default 0;
+        ~^1 1;
+        ~:1$ 1;
+      }
     '';
 
     virtualHosts =
@@ -79,9 +87,9 @@
         "blog.tsukumo.f5.si" = {
           listen = tunnelListener;
           locations."/" = {
-            # その内301にするかも
             extraConfig = ''
-              if ($from_shibaura) {
+              if ($sit_rickroll) {
+                add_header Set-Cookie "sit_rickroll=1; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax" always;
                 add_header Cache-Control "no-store" always;
                 return 302 https://www.youtube.com/watch?v=dQw4w9WgXcQ;
               }
