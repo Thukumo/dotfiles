@@ -14,6 +14,24 @@
 
   services.nginx = {
     enable = true;
+
+    # cloudflared connects to nginx over loopback, so the original client
+    # address is only available in the header Cloudflare adds to tunneled
+    # requests.
+    commonHttpConfig = ''
+      set_real_ip_from 127.0.0.1;
+      set_real_ip_from ::1;
+      real_ip_header CF-Connecting-IP;
+
+      # Shibaura Institute of Technology (SITNET-AS, AS55910)
+      # https://stat.ripe.net/AS55910
+      geo $from_shibaura {
+        default 0;
+        202.18.64.0/18 1;
+        2001:df3:4c0::/48 1;
+      }
+    '';
+
     virtualHosts =
       let
         tunnelListener = [
@@ -55,6 +73,19 @@
             extraConfig = ''
               proxy_buffering off;
               proxy_read_timeout 3600s;
+            '';
+          };
+        };
+        "blog.tsukumo.f5.si" = {
+          listen = tunnelListener;
+          locations."/" = {
+            # その内301にするかも
+            extraConfig = ''
+              if ($from_shibaura) {
+                add_header Cache-Control "no-store" always;
+                return 302 https://www.youtube.com/watch?v=dQw4w9WgXcQ;
+              }
+              return 404;
             '';
           };
         };
