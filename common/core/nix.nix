@@ -6,6 +6,9 @@
   ...
 }:
 
+let
+  cache = import ../../const/cache.nix;
+in
 {
   documentation.nixos.enable = false;
 
@@ -94,13 +97,18 @@
     }
   ];
 
+  # Keep cache.nixos.org (added by nixpkgs) first; append our caches so the
+  # narrow uplink prefers the official cache whenever possible.
   nix.settings = {
-    substituters = [
+    extra-substituters = [
+      cache.substituter
       "https://tsukumo.cachix.org"
     ];
-    trusted-public-keys = [
+    extra-trusted-public-keys = [
+      cache.publicKey
       "tsukumo.cachix.org-1:qkC2tQg2tP1HVH6A45QzRwhFKgry6YPlE9CmBYl/Vmc="
     ];
+    connect-timeout = 10;
   };
 
   # Preserve conflicting files instead of deleting them.

@@ -1,5 +1,10 @@
 { config, ... }:
 
+let
+  # mycelium is untrusted internet. All public subdomains enter through the
+  # Cloudflare Tunnel and nginx; nothing binds to a mycelium address.
+  cache = import ../../const/cache.nix;
+in
 {
   services.cloudflared = {
     enable = true;
@@ -94,6 +99,34 @@
                 return 302 https://www.youtube.com/watch?v=dQw4w9WgXcQ;
               }
               return 404;
+            '';
+          };
+        };
+        "git.tsukumo.f5.si" = {
+          listen = tunnelListener;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:3000";
+            proxyWebsockets = true;
+            extraConfig = ''
+              client_max_body_size 512M;
+              proxy_read_timeout 3600s;
+              proxy_set_header Host $host;
+              proxy_set_header X-Forwarded-Proto https;
+            '';
+          };
+        };
+        "${cache.domain}" = {
+          listen = tunnelListener;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString cache.port}";
+            extraConfig = ''
+              client_max_body_size 0;
+              proxy_http_version 1.1;
+              proxy_request_buffering off;
+              proxy_buffering off;
+              proxy_read_timeout 3600s;
+              proxy_set_header Host $host;
+              proxy_set_header X-Forwarded-Proto $scheme;
             '';
           };
         };

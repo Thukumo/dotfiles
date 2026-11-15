@@ -1,0 +1,6 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-global-schema.json",
+  "platform": "forgejo",
+  "endpoint": "http://127.0.0.1:3000/api/v1",
+  "repositories": ["tsukumo/dotfiles"]
+}

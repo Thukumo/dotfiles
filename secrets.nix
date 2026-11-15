@@ -91,9 +91,44 @@ in
     keys.systemKeys."backup-pixel9a"
   ];
 
+  # hosts/mouse-3/secrets/attic-signing-key.age
+  #   referenced by: mouse-3
+  "hosts/mouse-3/secrets/attic-signing-key.age".publicKeys = [
+    keys.systemKeys."mouse-3"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
+  # hosts/mouse-3/secrets/atticd-env.age
+  #   referenced by: mouse-3
+  "hosts/mouse-3/secrets/atticd-env.age".publicKeys = [
+    keys.systemKeys."mouse-3"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
   # hosts/mouse-3/secrets/cloudflared-nowplaying-credentials.age
   #   referenced by: mouse-3
   "hosts/mouse-3/secrets/cloudflared-nowplaying-credentials.age".publicKeys = [
+    keys.systemKeys."mouse-3"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
+  # hosts/mouse-3/secrets/forgejo-admin-password.age
+  #   referenced by: mouse-3
+  "hosts/mouse-3/secrets/forgejo-admin-password.age".publicKeys = [
+    keys.systemKeys."mouse-3"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
+  # hosts/mouse-3/secrets/forgejo-runner-token.age
+  #   referenced by: mouse-3
+  "hosts/mouse-3/secrets/forgejo-runner-token.age".publicKeys = [
+    keys.systemKeys."mouse-3"
+    keys.systemKeys."backup-pixel9a"
+  ];
+
+  # hosts/mouse-3/secrets/github-push-mirror-token.age
+  #   referenced by: mouse-3
+  "hosts/mouse-3/secrets/github-push-mirror-token.age".publicKeys = [
     keys.systemKeys."mouse-3"
     keys.systemKeys."backup-pixel9a"
   ];

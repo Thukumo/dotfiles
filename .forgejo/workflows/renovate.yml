@@ -1,0 +1,64 @@
+# Weekly flake.lock update workflow.
+#
+# Renovate uses the Forgejo Actions automatic token. If the automatic token's
+# scopes turn out to be insufficient for pull-request creation, replace the
+# RENOVATE_TOKEN value with a dedicated Renovate service-account token stored
+# as a repository Actions secret.
+name: renovate
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+      timezone: Asia/Tokyo
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: nix
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Renovate
+        env:
+          RENOVATE_TOKEN: ${{ forgejo.token }}
+          LOG_LEVEL: info
+        run: |
+          set -euo pipefail
+          export RENOVATE_CONFIG_FILE="$PWD/.forgejo/renovate-global.json"
+          renovate --version
+          renovate
+
+      # Renovate uses the automatic token, whose events Forgejo suppresses.
+      # Check each open Renovate branch here and close the PR if it fails,
+      # instead of requiring a separate bot token for normal PR CI.
+      - name: Validate Renovate PRs
+        env:
+          FORGEJO_TOKEN: ${{ forgejo.token }}
+        run: |
+          set -euo pipefail
+          api="http://127.0.0.1:3000/api/v1/repos/tsukumo/dotfiles"
+          prs="$(curl -fsS -H "Authorization: token $FORGEJO_TOKEN" "$api/pulls?state=open&limit=50")"
+          failed=0
+          while IFS=$'\t' read -r number branch; do
+            [ -n "$number" ] || continue
+            dir="$(mktemp -d)"
+            git fetch origin "$branch"
+            git worktree add --detach "$dir" FETCH_HEAD
+            if ! (cd "$dir" && nix flake check --no-build --option eval-cache false); then
+              echo "Renovate PR #$number ($branch) failed nix flake check" >&2
+              curl -fsS -X PATCH -H "Authorization: token $FORGEJO_TOKEN" \
+                -H 'Content-Type: application/json' --data '{"state":"closed"}' \
+                "$api/pulls/$number" >/dev/null || true
+              branch_encoded="$(printf '%s' "$branch" | jq -sRr @uri)"
+              curl -fsS -X DELETE -H "Authorization: token $FORGEJO_TOKEN" \
+                "$api/branches/$branch_encoded" >/dev/null || true
+              failed=1
+            fi
+            git worktree remove --force "$dir"
+          done < <(printf '%s' "$prs" | jq -r \
+            '.[] | select(.head.ref | startswith("renovate/")) | [.number, .head.ref] | @tsv')
+          exit "$failed"

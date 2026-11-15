@@ -1,5 +1,5 @@
 # Secrets Inventory
-Generated on 2026-11-07 23:57:32
+Generated on 2026-11-11 09:49:14
 
 > **GENERATED FILE** - do not edit manually.
 > Regenerate with `pre-commit run gen-docs --all-files`.
@@ -36,7 +36,12 @@ Generated on 2026-11-07 23:57:32
 
 | Secret | File | Runtime | Owner:Group | Mode |
 | --- | --- | --- | --- | --- |
+| `attic_signing_key` | `hosts/mouse-3/secrets/attic-signing-key.age` | `/run/agenix/attic_signing_key` | `root:root` | `0400` |
+| `atticd_env` | `hosts/mouse-3/secrets/atticd-env.age` | `/run/agenix/atticd_env` | `root:root` | `0400` |
 | `cloudflared_nowplaying` | `hosts/mouse-3/secrets/cloudflared-nowplaying-credentials.age` | `/run/agenix/cloudflared_nowplaying` | `root:root` | `0400` |
+| `forgejo_admin_password` | `hosts/mouse-3/secrets/forgejo-admin-password.age` | `/run/agenix/forgejo_admin_password` | `root:root` | `0400` |
+| `forgejo_runner_token` | `hosts/mouse-3/secrets/forgejo-runner-token.age` | `/run/agenix/forgejo_runner_token` | `root:root` | `0400` |
+| `github_push_mirror_token` | `hosts/mouse-3/secrets/github-push-mirror-token.age` | `/run/agenix/github_push_mirror_token` | `root:root` | `0400` |
 | `passwd_tsukumo` | `common/core/users/passwd_tsukumo.age` | `/run/agenix/passwd_tsukumo` | `root:root` | `0400` |
 
 ### Home secrets (`tsukumo`)
