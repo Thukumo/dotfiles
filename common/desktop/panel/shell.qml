@@ -35,6 +35,12 @@ PanelWindow {
         precision: SystemClock.Minutes
     }
 
+    // 秒表示用。カレンダーが毎秒再評価されないよう分けている。
+    SystemClock {
+        id: secondsClock
+        precision: SystemClock.Seconds
+    }
+
     Process {
         id: infoProcess
         command: [Theme.infoCmd]
@@ -164,7 +170,7 @@ PanelWindow {
                 spacing: 8
 
                 Text {
-                    text: Qt.formatDateTime(clock.date, "HH:mm")
+                    text: Qt.formatDateTime(secondsClock.date, "HH:mm:ss")
                     color: Theme.base05
                     font.family: Theme.fontSans
                     font.pixelSize: 36
