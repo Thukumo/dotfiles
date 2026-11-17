@@ -3,7 +3,7 @@ _:
 {
   security.tpm2.enable = false;
 
-  security.sudo-rs.wheelNeedsPassword = true;
+  security.sudo-rs.wheelNeedsPassword = false;
 
   services.journald.settings.Journal = {
     Storage = "volatile";
