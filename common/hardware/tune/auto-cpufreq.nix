@@ -23,7 +23,7 @@
           turbo = "auto";
         };
         battery = {
-          governor = "powersave";
+          governor = "schedutil";
           energy_performance_preference = "power";
           turbo = "auto";
         };
