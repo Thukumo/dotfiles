@@ -26,6 +26,12 @@
           };
         };
 
+        # switch-to-configuration のユーザーユニット移行処理から触られないようにする
+        systemd.user.services.podman-auto-update = {
+          overrideStrategy = "asDropinIfExists";
+          unitConfig.X-OnlyManualStart = true;
+        };
+
         home-manager.users =
           myLib.mkForEachUsers config
             (user: user.custom.dev.podman.enable || user.custom.desktop.winapps != null)
@@ -48,6 +54,8 @@
                 # rootlessのautoPrune
                 systemd.user.services.podman-auto-update.Service.ExecStartPost =
                   lib.mkForce "${pkgs.podman}/bin/podman image prune -a -f";
+                # pullが5分を超えるので1時間まで許容
+                systemd.user.services.podman-auto-update.Service.TimeoutStartSec = lib.mkForce "1h";
                 home.persistence."/persist".directories = [
                   ".local/share/containers"
                 ];
