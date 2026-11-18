@@ -17,6 +17,9 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # Determinate Nix（並列 eval / バイナリキャッシュ）
+    determinate.url = "github:DeterminateSystems/determinate";
+
     bootvine = {
       url = "git+https://codeberg.org/wvhulle/bootvine?ref=v0.1.3";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -149,6 +152,9 @@
         {
           networking.hostName = name;
         }
+
+        inputs.determinate.nixosModules.default
+        { determinate.enable = true; }
 
         home-manager.nixosModules.home-manager
         {

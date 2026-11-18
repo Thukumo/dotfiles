@@ -14,19 +14,6 @@
     "flakes"
   ];
 
-  # https://lix.systems/add-to-config/
-  nixpkgs.overlays = [
-    (_: prev: {
-      inherit (prev.lixPackageSets.stable)
-        nixpkgs-review
-        nix-eval-jobs
-        nix-fast-build
-        colmena
-        ;
-    })
-  ];
-  nix.package = pkgs.lix;
-
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
 
