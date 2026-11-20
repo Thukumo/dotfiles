@@ -37,7 +37,7 @@
             }
             {
               timeout = 600; # 10min
-              on-timeout = "[ ! -f /tmp/no-suspend ] && [ ! -f /tmp/no-lock ] && systemctl suspend";
+              on-timeout = "[ ! -f /tmp/no-suspend ] && [ ! -f /tmp/no-lock ] && systemctl suspend-then-hibernate";
             }
           ];
         };
