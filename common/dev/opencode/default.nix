@@ -2,6 +2,7 @@
   lib,
   myLib,
   config,
+  pkgs,
   ...
 }:
 let
@@ -10,6 +11,54 @@ let
     If a necessary repository is not available locally, you may clone it into /tmp/opencode and use it from there.
   '';
   agentsFile = builtins.toFile "opencode-agents.md" agentsContent;
+
+  # デスクトップ操作MCP。
+  computerUseLinux = pkgs.stdenvNoCC.mkDerivation {
+    pname = "computer-use-linux";
+    version = "0.7.60";
+
+    src = pkgs.fetchurl {
+      url = "https://github.com/agent-sh/computer-use-linux/releases/download/v0.7.60/computer-use-linux-x86_64-unknown-linux-musl";
+      hash = "sha256-KvSekz7ZKdfLLV2mRIwG+mBkB3zhZFUYRzHWhbdpdMk=";
+    };
+    indicator = pkgs.fetchurl {
+      url = "https://github.com/agent-sh/computer-use-linux/releases/download/v0.7.60/computer-use-linux-indicator-x86_64-unknown-linux-musl";
+      hash = "sha256-8VXNUiMPrWAT8KbXADpclB7KOTIs0w/iKCXUSwbUIfA=";
+    };
+
+    dontUnpack = true;
+    dontConfigure = true;
+    dontBuild = true;
+
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 "$src" "$out/bin/computer-use-linux"
+      install -Dm755 "$indicator" "$out/bin/computer-use-linux-indicator"
+      runHook postInstall
+    '';
+
+    meta = {
+      description = "Native Linux desktop control for AI agents";
+      homepage = "https://github.com/agent-sh/computer-use-linux";
+      license = lib.licenses.mit;
+      mainProgram = "computer-use-linux";
+      platforms = [ "x86_64-linux" ];
+    };
+  };
+
+  # wtype は仮想キーボード、glib は AT-SPI の gsettings/gdbus 用。
+  computerUseLinuxWrapped = pkgs.writeShellScriptBin "computer-use-linux" ''
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.wtype
+        pkgs.glib
+        pkgs.dconf
+      ]
+    }:$PATH"
+    export GSETTINGS_SCHEMA_DIR="${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}/glib-2.0/schemas"
+    export COMPUTER_USE_LINUX_INDICATOR_BIN="${computerUseLinux}/bin/computer-use-linux-indicator"
+    exec "${computerUseLinux}/bin/computer-use-linux" "$@"
+  '';
 in
 {
   options.custom.users = myLib.mkUserOption {
@@ -47,6 +96,8 @@ in
           );
       in
       {
+        home.packages = [ computerUseLinuxWrapped ];
+
         age.secrets = {
           opencode_auth = {
             file = ./auth_tsukumo.age;
@@ -89,6 +140,14 @@ in
 
             # セッション永続化: ファイルシステムスナップショットを有効化（undo/redo用）
             "snapshots" = true;
+
+            "mcp"."servers"."desktop" = {
+              "type" = "local";
+              "command" = [
+                "${computerUseLinuxWrapped}/bin/computer-use-linux"
+                "mcp"
+              ];
+            };
 
             "compaction" = {
               "auto" = true;
