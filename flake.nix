@@ -21,7 +21,7 @@
     determinate.url = "github:DeterminateSystems/determinate";
 
     bootvine = {
-      url = "git+https://codeberg.org/wvhulle/bootvine?ref=v0.1.3";
+      url = "git+https://codeberg.org/wvhulle/bootvine?ref=refs/tags/v0.1.5";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -103,6 +103,9 @@
     winapps = {
       url = "github:winapps-org/winapps";
       inputs.nixpkgs.follows = "nixpkgs";
+      # FlakeHub の tarball は locked URL と取得結果が一致せず Nix 2.25+ で落ちるため GitHub に固定。
+      # upstream が flake-compat を GitHub 入力に変えたらこの override は削除。
+      inputs.flake-compat.url = "github:NixOS/flake-compat";
     };
 
     sidra = {

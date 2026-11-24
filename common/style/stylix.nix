@@ -50,4 +50,9 @@ in
       size = 24;
     };
   };
+
+  # ピン留め中の stylix は削除済みの programs.wayprompt を定義するため無効化（stylix 更新時に削除）
+  home-manager.sharedModules = [
+    { stylix.targets.wayprompt.enable = false; }
+  ];
 }
