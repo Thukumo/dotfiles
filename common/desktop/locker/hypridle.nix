@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   desktopLib,
   ...
@@ -37,7 +38,7 @@
             }
             {
               timeout = 600; # 10min
-              on-timeout = "[ ! -f /tmp/no-suspend ] && [ ! -f /tmp/no-lock ] && systemctl suspend-then-hibernate";
+              on-timeout = "[ ! -f /tmp/no-suspend ] && [ ! -f /tmp/no-lock ] && systemctl ${config.custom.power.sleepAction}";
             }
           ];
         };

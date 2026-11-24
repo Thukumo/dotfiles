@@ -1,5 +1,5 @@
 # Custom Options Tree
-Generated on 2026-11-24 14:29:23
+Generated on 2026-11-24 14:37:16
 
 - **custom**
   - `defaultUser` (Default: `"tsukumo"`): Default user for desktop sessions and host-level user services
@@ -82,6 +82,9 @@ Generated on 2026-11-24 14:29:23
       - `fallbackToWPA2` (Default: `false`) (Example: `true`): Whether to enable gen config for WPA2.
     - **zapret**
       - `enable` (Default: `false`) (Example: `true`): Whether to enable Zapret.
+  - **power**
+    - `allowHibernate` (Default: `true`): Whether hibernation and suspend-then-hibernate are allowed.
+    - `sleepAction` (Default: `"suspend"`): Sleep action derived from allowHibernate.
   - **secrets**
     - `extraIdentityPaths` (Default: `[]`): Additional identity paths for age encryption
     - **systemAgeKey**

@@ -3,6 +3,9 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
+  # MT7925 (mt7925e) does not survive hibernation resume.
+  custom.power.allowHibernate = false;
+
   security.sudo-rs.wheelNeedsPassword = false;
   custom.hardware.secure-boot.enable = true;
   custom.security.gaze = {
