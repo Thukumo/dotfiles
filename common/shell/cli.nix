@@ -19,6 +19,7 @@
     cargo
     rustc
     clippy
+    rustfmt
 
     hyperfine
   ];
